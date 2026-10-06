@@ -255,7 +255,7 @@ fn spawn_downloader(current_gen: Arc<AtomicU64>) -> Sender<DownloadJob> {
         .spawn(move || {
             let client = reqwest::blocking::Client::builder()
                 .timeout(Duration::from_secs(60))
-                .user_agent("Ziyadah/0.0.1")
+                .user_agent(concat!("Ziyadah/", env!("CARGO_PKG_VERSION")))
                 .build()
                 .expect("gagal membuat HTTP client");
             let mut pending: Option<DownloadJob> = None;

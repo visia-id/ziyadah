@@ -112,7 +112,7 @@ function App() {
       <header>
         <div>
           <h1>Ziyadah</h1>
-          <p className="sub">Prototipe mode Ambient · v0.0.1</p>
+          <p className="sub">Pratinjau · v0.0.2</p>
         </div>
         <div className="status">
           {state?.status === "loading" && "Memuat..."}
