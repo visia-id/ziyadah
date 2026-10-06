@@ -31,6 +31,7 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 - Mode Layar Penuh: ayat besar dengan sorot per kata, ayat sebelum dan sesudah, terjemah, latar bergerak pelan (Galaksi Whirlpool, Tebing Kosmik, Bumi, Bintang, Gradasi) berlisensi NASA/ESA dengan kredit, kontrol keyboard dan remote presentasi (F2-11)
 - Kenyamanan Mode Layar Penuh: ayat sekitar bawaannya mati dan tidak pernah tampil terpotong, transisi ayat bergulir, ukuran huruf bisa diatur dan diingat, latar Bumi ditata ulang sebagai ufuk di bawah layar (F2-13)
 - Font Arab Amiri Quran dibundel di aplikasi; tidak ada lagi permintaan ke Google Fonts dan tampilan tetap sama tanpa internet (F1-30)
+- Landing page https://ziyadah.untungkasirin.com: unduhan rilis terbaru, status tashih jujur, atribusi lengkap, tanpa cookie dan analitik (F1-31)
 
 ### Diperbaiki
 
