@@ -62,7 +62,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [x] **F1-27** Ayat panjang yang di-scroll: panel mengikuti baris yang sedang dibaca, berhenti saat pengguna menggulir, tepi memudar menggantikan scrollbar; jendela utama ikut menampilkan ayat aktif (6 Okt 2026)
 - [x] **F1-28** Jarak panel ke taskbar sama dengan jarak ke sisi kanan (posisi sempat tercatat menembus taskbar), lebar bawaan 440 (6 Okt 2026)
 - [x] **F1-29** Pernyataan status tashih yang jujur sejak awal: halaman pernyataan saat instal (PERNYATAAN.txt), bar status di jendela utama, README (6 Okt 2026)
-- [ ] **F1-30** Bundel font Arab di aplikasi; jangan memuat Amiri Quran dari Google Fonts (melanggar offline-first dan privasi), cek lisensi font
+- [x] **F1-30** Bundel font Arab di aplikasi; jangan memuat Amiri Quran dari Google Fonts (melanggar offline-first dan privasi), cek lisensi font (6 Okt 2026)
 
 ### Rilis
 
@@ -86,6 +86,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [ ] **F2-09** Siapkan dan ajukan permohonan tashih LPMQ *(target 4 Jan 2027)*
 - [ ] **F2-10** Rilis v0.2
 - [x] **F2-11** Mode Layar Penuh tahap 1 (dimajukan ke v0.0.8): ayat besar dengan sorot per kata, latar gambar bergerak berlisensi jelas, kontrol keyboard (6 Okt 2026)
+- [x] **F2-13** Kenyamanan Mode Layar Penuh: ayat sekitar bawaannya mati dan tidak pernah terpotong, transisi ayat bergulir, ukuran huruf bisa diatur (v0.0.9) (6 Okt 2026)
 - [ ] **F2-12** Mode Layar Penuh tahap 2: video latar unduhan terpisah, mode masjid (huruf ekstra besar, pindah ayat manual tanpa audio)
 
 **Gerbang Fase 2:** integritas teks lolos checksum; target khatam teruji simulasi 30 hari.
@@ -109,7 +110,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 
 - [ ] **F4-01** Aksesibilitas: navigasi keyboard penuh, label pembaca layar, kontras WCAG AA
 - [ ] **F4-02** Bahasa Inggris dan struktur i18n
-- [~] **F4-03** Auto-update bertanda tangan (plugin updater)
+- [x] **F4-03** Auto-update bertanda tangan (plugin updater) (6 Okt 2026: 0.0.7 -> 0.0.8 berhasil diperbarui otomatis)
 - [ ] **F4-04** Tanda tangan kode Windows dan notarisasi macOS
 - [ ] **F4-05** Ekspor/impor data pengguna (JSON)
 - [ ] **F4-06** Dokumentasi kontributor (CONTRIBUTING, panduan arsitektur, label good first issue)

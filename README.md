@@ -87,6 +87,7 @@ scripts/
 - Terjemah: Kementerian Agama RI, via Tanzil (`id.indonesian`)
 - Timing per kata untuk sorot kata: [quran-align](https://github.com/cpfair/quran-align) oleh Collin Fair, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - Latar Mode Layar Penuh: foto NASA, ESA, CSA, STScI (domain publik dan CC BY 4.0); rincian di [public/backgrounds/KREDIT.md](public/backgrounds/KREDIT.md)
+- Font Arab: [Amiri Quran](https://github.com/aliftype/amiri), SIL Open Font License 1.1, dibundel di `public/fonts`
 - Audio: [EveryAyah](https://everyayah.com), hak rekaman milik qari atau pemegang haknya
 
 Proyek ini bukan mushaf yang sudah ditashih. Data Qur'an sengaja tidak di-commit sampai izin dan tashih selesai.

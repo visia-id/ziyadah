@@ -1,4 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap");
+/* Font Arab dibundel (F1-30): tetap tampil tanpa internet dan tidak ada permintaan ke layanan luar.
+   Amiri Quran, SIL Open Font License 1.1; lisensi di public/fonts/OFL-AmiriQuran.txt. */
+@font-face {
+  font-family: "Amiri Quran";
+  src: url("/fonts/AmiriQuran-Arabic.woff2") format("woff2");
+  font-display: block;
+}
 
 :root {
   --arabic: "Amiri Quran", "KFGQPC Uthmanic Script HAFS", "Traditional Arabic", "Noto Naskh Arabic", serif;
