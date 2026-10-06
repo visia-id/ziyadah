@@ -38,7 +38,7 @@ Setiap keputusan fitur diuji terhadap enam prinsip berikut; fitur yang melanggar
 1. **Gratis dan terbuka selamanya.** Tidak ada iklan, langganan, fitur berbayar, maupun pelacakan. Kode berlisensi MIT.
 2. **Offline-first.** Semua fungsi inti berjalan tanpa internet. Internet hanya dipakai untuk mengunduh audio dan memeriksa pembaruan.
 3. **Teks Qur'an diperlakukan sebagai amanah.** Teks hanya diambil dari sumber terverifikasi, tidak pernah diubah oleh aplikasi, dan setiap perubahan data teks wajib ditinjau manusia.
-4. **Tidak mengganggu pekerjaan.** Mode Ambient tidak boleh mencuri fokus keyboard, tidak memunculkan notifikasi tanpa izin, dan hemat CPU.
+4. **Tidak mengganggu pekerjaan.** Mode Ambient tidak boleh mencuri fokus keyboard, tidak memunculkan notifikasi tanpa izin, dan hemat CPU. Ziyadah diposisikan sebagai teman Qur'an yang tidak mengganggu, bukan alat peningkat fokus: klaim neurosains (gelombang otak, hormon stres) tidak dipakai di aplikasi, README, maupun promosi kecuali sumbernya sudah diperiksa.
 5. **Privasi penuh.** Progres, rekaman suara, dan catatan tersimpan lokal. Tidak ada akun dan tidak ada telemetri tanpa persetujuan eksplisit.
 6. **Akrab bagi pengguna Indonesia.** Bahasa antarmuka Indonesia sebagai bawaan, terjemah Kemenag, dan tampilan mushaf yang familiar. Bahasa Inggris tersedia sebagai pilihan.
 
@@ -60,6 +60,7 @@ Versi 1.0 dicapai dalam empat fase; tiap fase menghasilkan rilis yang bisa dipak
 - Tafsir lengkap selain terjemah Kemenag
 - Fitur kelompok atau halaqah (setoran ke ustadz, kelas)
 - Build resmi Linux (Tauri mendukungnya; dibuka untuk kontribusi komunitas)
+- Sesi kerja ala Pomodoro: murottal diputar penuh untuk disimak saat jeda istirahat, bukan hanya sebagai suara latar
 
 ## Lapisan inti
 
@@ -119,6 +120,7 @@ Panel transparan yang melayang di atas semua jendela dan menampilkan ayat yang s
 - Ukuran huruf 18 sampai 48 pt, lebar panel 280 sampai 900 pt
 - Warna teks, bayangan, dan tingkat transparansi latar
 - Mode "kurangi gerakan" untuk mematikan animasi gulir
+- Opsi teks memudar beberapa detik setelah ayat berganti dan muncul lagi saat kursor di atas panel (bawaan: mati), untuk pengguna yang hanya ingin mendengar dan sesekali melirik
 
 **Kriteria diterima**
 
@@ -298,9 +300,10 @@ Angka target adalah usulan awal untuk didiskusikan, bukan hasil riset pasar. Tel
 - [ ] Domain, logo, dan identitas visual Ziyadah
 - [ ] Siapa pemohon tashih: pribadi, VIC, atau yayasan khusus untuk proyek ini?
 - [x] Pakai teks Mushaf Standar Indonesia atau Tanzil sebagai sumber utama? Tanzil (keputusan 0004)
-- [ ] Daftar qari bawaan untuk v0.1 (usulan: Alafasy, Husary, Minshawi, Abdul Basit, Sudais)
+- [ ] Daftar qari bawaan untuk v0.1 (usulan: Alafasy, Husary, Minshawi, Abdul Basit, Sudais). Pakai versi murattal bertempo stabil, bukan mujawwad: suara yang naik-turun lebih menyedot perhatian saat bekerja. Bawaan yang diusulkan: Al-Husary
 - [ ] Algoritma murajaah: SM-2 (sederhana) atau FSRS (lebih akurat, lebih kompleks)?
 - [ ] Apakah donasi diterima, dan lewat kanal apa?
+- [ ] Sikap aplikasi soal adab menyimak (QS. Al-A'raf: 204): Qur'an yang diputar sebagai suara latar saat bekerja. Perlu ditanyakan ke ustadz atau dewan syariah, lalu dituangkan di halaman Tentang
 
 ## Roadmap dan estimasi waktu
 
