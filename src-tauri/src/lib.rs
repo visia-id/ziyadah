@@ -2,7 +2,8 @@
 //!
 //! Jendela:
 //! - `main`  : jendela utama (pilih surah, qari, kontrol pemutaran)
-//! - `panel` : panel Ambient transparan, selalu di atas, tidak mengambil fokus
+//! - `panel` : panel Ambient transparan, selalu di atas, tidak mengambil fokus.
+//!   Tampil otomatis saat murottal mulai diputar dan tersembunyi saat pemutar idle.
 //!
 //! Aplikasi tetap hidup di tray saat jendela utama ditutup; keluar lewat menu tray.
 
@@ -11,14 +12,17 @@ mod audio;
 use audio::{Audio, Command, PlayerState};
 use tauri::menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::TrayIconBuilder;
-use tauri::{AppHandle, Manager, PhysicalPosition, State, WebviewWindow, Wry};
+use std::sync::atomic::{AtomicBool, Ordering};
+use tauri::{AppHandle, Listener, Manager, PhysicalPosition, State, WebviewWindow, Wry};
 
 struct ClickThroughItem(CheckMenuItem<Wry>);
 
 // ---------- Perintah pemutar ----------
 
 #[tauri::command]
-fn player_play(audio: State<Audio>, surah: u16, ayah_count: u16, start_ayah: u16, reciter: String) {
+fn player_play(app: AppHandle, audio: State<Audio>, surah: u16, ayah_count: u16, start_ayah: u16, reciter: String) {
+    // Memutar dari jendela utama selalu memunculkan panel, walau sebelumnya disembunyikan.
+    let _ = show_panel(&app);
     audio.send(Command::Play {
         surah,
         ayah_count,
@@ -65,6 +69,11 @@ fn panel_toggle(app: AppHandle) -> Result<bool, String> {
 }
 
 #[tauri::command]
+fn panel_hide(app: AppHandle) -> Result<(), String> {
+    panel_window(&app)?.hide().map_err(|e| e.to_string())
+}
+
+#[tauri::command]
 fn panel_set_click_through(app: AppHandle, on: bool) -> Result<(), String> {
     set_click_through(&app, on)
 }
@@ -80,11 +89,39 @@ fn toggle_panel(app: &AppHandle) -> Result<bool, String> {
     if visible {
         panel.hide().map_err(|e| e.to_string())?;
     } else {
-        panel.show().map_err(|e| e.to_string())?;
-        // Pastikan tetap di atas setelah ditampilkan ulang.
-        let _ = panel.set_always_on_top(true);
+        show_panel(app)?;
     }
     Ok(!visible)
+}
+
+fn show_panel(app: &AppHandle) -> Result<(), String> {
+    let panel = panel_window(app)?;
+    panel.show().map_err(|e| e.to_string())?;
+    // Pastikan tetap di atas setelah ditampilkan ulang.
+    let _ = panel.set_always_on_top(true);
+    Ok(())
+}
+
+/// Panel disembunyikan saat pemutar berubah dari aktif menjadi idle (berhenti atau surah selesai).
+/// Panel tidak dimunculkan dari sini; itu tugas `player_play`, supaya panel yang sengaja
+/// disembunyikan pengguna tidak muncul lagi saat ayat berganti.
+fn should_hide_panel(was_active: bool, status: &str) -> bool {
+    was_active && status == "idle"
+}
+
+fn watch_player_for_panel(app: &AppHandle) {
+    let handle = app.clone();
+    let was_active = AtomicBool::new(false);
+    app.listen_any("player://state", move |event| {
+        let Ok(state) = serde_json::from_str::<serde_json::Value>(event.payload()) else { return };
+        let status = state["status"].as_str().unwrap_or("idle");
+        if should_hide_panel(was_active.load(Ordering::Relaxed), status) {
+            if let Ok(panel) = panel_window(&handle) {
+                let _ = panel.hide();
+            }
+        }
+        was_active.store(status != "idle", Ordering::Relaxed);
+    });
 }
 
 fn set_click_through(app: &AppHandle, on: bool) -> Result<(), String> {
@@ -127,6 +164,7 @@ pub fn run() {
             if let Some(panel) = app.get_webview_window("panel") {
                 place_panel(&panel);
             }
+            watch_player_for_panel(&handle);
 
             // Menu tray / menu bar.
             let toggle = MenuItem::with_id(app, "toggle_panel", "Tampilkan/sembunyikan panel", true, None::<&str>)?;
@@ -192,8 +230,23 @@ pub fn run() {
             player_stop,
             player_state,
             panel_toggle,
+            panel_hide,
             panel_set_click_through,
         ])
         .run(tauri::generate_context!())
         .expect("gagal menjalankan Ziyadah");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::should_hide_panel;
+
+    #[test]
+    fn panel_disembunyikan_hanya_saat_aktif_menjadi_idle() {
+        assert!(should_hide_panel(true, "idle"));
+        assert!(!should_hide_panel(false, "idle"));
+        assert!(!should_hide_panel(true, "playing"));
+        assert!(!should_hide_panel(true, "paused"));
+        assert!(!should_hide_panel(false, "loading"));
+    }
 }

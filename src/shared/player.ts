@@ -60,6 +60,7 @@ export const player = {
 
 export const panel = {
   toggle: () => invoke<boolean>("panel_toggle"),
+  hide: () => invoke<void>("panel_hide"),
   setClickThrough: (on: boolean) => invoke<void>("panel_set_click_through", { on }),
 };
 

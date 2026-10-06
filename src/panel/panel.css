@@ -70,6 +70,8 @@ html, body, #root { height: 100%; }
 }
 .controls button:hover { background: rgba(255, 255, 255, 0.28); }
 .controls button.on { background: rgba(79, 191, 139, 0.55); }
+.controls button.hide { margin-left: 4px; }
+.controls button.hide:hover { background: rgba(220, 80, 70, 0.6); }
 
 @keyframes fade {
   from { opacity: 0; transform: translateY(4px); }

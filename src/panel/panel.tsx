@@ -2,10 +2,11 @@ import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "../shared/theme.css";
 import "./panel.css";
-import { data, player, type Basmalah, type PlayerState, type Surah } from "../shared/player";
+import { data, panel, player, type Basmalah, type PlayerState, type Surah } from "../shared/player";
 
 // Panel Ambient: teks ayat yang sedang dibaca qari, melayang di atas semua jendela.
 // Seret dari mana saja untuk memindah. Kontrol muncul saat kursor di atas panel.
+// Tombol × menyembunyikan panel saja; murottal tetap jalan dan panel bisa dimunculkan lagi dari tray.
 
 function Panel() {
   const [state, setState] = useState<PlayerState | null>(null);
@@ -77,6 +78,9 @@ function Panel() {
         <button onClick={() => player.next()} title="Ayat berikutnya">⏭</button>
         <button className={showTranslation ? "on" : ""} onClick={toggleTranslation} title="Terjemah">
           ID
+        </button>
+        <button className="hide" onClick={() => panel.hide()} title="Sembunyikan panel (murottal tetap jalan)">
+          ×
         </button>
       </div>
     </div>

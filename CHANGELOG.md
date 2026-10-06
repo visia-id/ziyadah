@@ -12,3 +12,4 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 - PRD, CLAUDE.md, roadmap, changelog, dan catatan keputusan (F0-02)
 - Toolchain Windows terpasang (Rust 1.99, VS 2022 C++ Build Tools); `cargo test` dan `npm run tauri dev` berjalan (F0-03)
 - Repo git dan push pertama ke GitHub `visia-id/ziyadah` (F0-04)
+- Panel Ambient bisa disembunyikan lewat tombol ×; panel tampil otomatis saat murottal diputar dan tersembunyi saat pemutar idle (F1-22)
