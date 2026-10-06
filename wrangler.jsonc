@@ -1,0 +1,14 @@
+// Situs ziyadah.untungkasirin.com di Cloudflare Workers (static assets).
+// Yang ditayangkan hanya folder website/ (landing page statis), BUKAN frontend aplikasi Tauri di dist/.
+// Header keamanan dan cache diatur di website/_headers.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ziyadah",
+  "compatibility_date": "2026-10-06",
+  "assets": {
+    "directory": "./website",
+    "not_found_handling": "single-page-application"
+  },
+  "workers_dev": true,
+  "preview_urls": false
+}
