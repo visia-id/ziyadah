@@ -1,0 +1,76 @@
+# CI Ziyadah (F0-05).
+#
+# Setiap pull request dan push ke main dicek di Windows (platform pengembangan utama)
+# dan macOS (pemelihara belum punya Mac). Repo publik, jadi menit Actions tidak dipotong kuota.
+# Bila repo kembali private: runner macOS dihitung 10x, jadi tambahkan
+# `if: github.event_name != 'pull_request'` di job macos.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    name: Windows (build frontend, cargo test, build Tauri)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - run: npm ci
+
+      # tsc + vite; hasil di dist/ juga dibutuhkan saat inti Rust dikompilasi.
+      - run: npm run build
+
+      - name: cargo test
+        working-directory: src-tauri
+        run: cargo test
+
+      - name: Build Tauri (tanpa installer)
+        run: npx tauri build --no-bundle
+
+  macos:
+    name: macOS (build Tauri)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: cargo test
+        working-directory: src-tauri
+        run: cargo test
+
+      - name: Build Tauri (tanpa installer)
+        run: npx tauri build --no-bundle
