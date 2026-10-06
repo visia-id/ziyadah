@@ -8,7 +8,9 @@ Usulan perubahan PRD diajukan lewat issue atau pull request di repo ini.
 
 Ziyadah adalah aplikasi Qur'an desktop gratis dan open source untuk macOS dan Windows, dibangun dengan Tauri v2, yang menyatukan tiga kebutuhan harian Muslim pekerja dalam satu aplikasi: tilawah, mendengarkan murottal sambil bekerja, dan menghafal.
 
-**Visi:** menjadi teman Qur'an yang selalu ada di depan laptop, tanpa mengganggu pekerjaan, tanpa iklan, dan tetap berjalan tanpa internet.
+**Positioning:** Qur'an teman kerja.
+
+**Visi:** menjadi teman Qur'an yang selalu ada di depan laptop, menemani jam kerja tanpa mengganggu pekerjaan, tanpa iklan, dan tetap berjalan tanpa internet.
 
 **Tujuan 12 bulan pertama:**
 
@@ -38,7 +40,7 @@ Setiap keputusan fitur diuji terhadap enam prinsip berikut; fitur yang melanggar
 1. **Gratis dan terbuka selamanya.** Tidak ada iklan, langganan, fitur berbayar, maupun pelacakan. Kode berlisensi MIT.
 2. **Offline-first.** Semua fungsi inti berjalan tanpa internet. Internet hanya dipakai untuk mengunduh audio dan memeriksa pembaruan.
 3. **Teks Qur'an diperlakukan sebagai amanah.** Teks hanya diambil dari sumber terverifikasi, tidak pernah diubah oleh aplikasi, dan setiap perubahan data teks wajib ditinjau manusia.
-4. **Tidak mengganggu pekerjaan.** Mode Ambient tidak boleh mencuri fokus keyboard, tidak memunculkan notifikasi tanpa izin, dan hemat CPU. Ziyadah diposisikan sebagai teman Qur'an yang tidak mengganggu, bukan alat peningkat fokus: klaim neurosains (gelombang otak, hormon stres) tidak dipakai di aplikasi, README, maupun promosi kecuali sumbernya sudah diperiksa.
+4. **Tidak mengganggu pekerjaan.** Mode Ambient tidak boleh mencuri fokus keyboard, tidak memunculkan notifikasi tanpa izin, dan hemat CPU. Positioning Ziyadah adalah "Qur'an teman kerja": menemani, bukan menjanjikan kerja lebih fokus atau produktif. Klaim neurosains (gelombang otak, hormon stres) tidak dipakai di aplikasi, README, maupun promosi kecuali sumbernya sudah diperiksa.
 5. **Privasi penuh.** Progres, rekaman suara, dan catatan tersimpan lokal. Tidak ada akun dan tidak ada telemetri tanpa persetujuan eksplisit.
 6. **Akrab bagi pengguna Indonesia.** Bahasa antarmuka Indonesia sebagai bawaan, terjemah Kemenag, dan tampilan mushaf yang familiar. Bahasa Inggris tersedia sebagai pilihan.
 
