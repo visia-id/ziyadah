@@ -20,7 +20,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [x] **F0-02** PRD, CLAUDE.md, roadmap, changelog, catatan keputusan (6 Okt 2026)
 - [x] **F0-03** Pasang toolchain di laptop Windows (Rust, C++ Build Tools) dan `npm run tauri dev` berhasil jalan (6 Okt 2026)
 - [x] **F0-04** Inisialisasi git, commit pertama, push ke repo GitHub `ziyadah` (6 Okt 2026)
-- [~] **F0-05** CI GitHub Actions: build frontend, `cargo test`, build Tauri untuk Windows dan macOS di setiap pull request
+- [x] **F0-05** CI GitHub Actions: build frontend, `cargo test`, build Tauri untuk Windows dan macOS di setiap pull request (6 Okt 2026)
 - [ ] **F0-06** Amankan nama: cek merek di PDKI, ambil domain, akun/organisasi GitHub *(non-kode, paralel)*
 - [ ] **F0-07** Kirim surat ke Kemenag/LPMQ: syarat pemakaian teks, terjemah, font, dan alur tashih aplikasi open source *(non-kode, paralel)*
 
@@ -41,8 +41,8 @@ Rujukan kebutuhan: `docs/PRD.md`.
 
 ### Audio
 
-- [ ] **F1-08** Mode putar: berhenti di akhir surah, lanjut ke surah berikutnya, ulang ayat, ulang surah, rentang ayat
-- [ ] **F1-09** Jeda 1 detik antar surah saat mode lanjut
+- [~] **F1-08** Mode putar: berhenti di akhir surah, lanjut ke surah berikutnya, ulang ayat, ulang surah, rentang ayat
+- [~] **F1-09** Jeda 1 detik antar surah saat mode lanjut
 - [ ] **F1-10** Kontrol media OS (tombol media keyboard/headset, kontrol media Windows, Now Playing macOS)
 - [ ] **F1-11** Manajer unduhan offline per surah, per juz, dan seluruh mushaf per qari, bisa dilanjutkan
 - [ ] **F1-12** Tampilan ruang disk per qari dan tombol hapus audio

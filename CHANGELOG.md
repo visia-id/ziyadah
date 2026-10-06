@@ -12,6 +12,7 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 - PRD, CLAUDE.md, roadmap, changelog, dan catatan keputusan (F0-02)
 - Toolchain Windows terpasang (Rust 1.99, VS 2022 C++ Build Tools); `cargo test` dan `npm run tauri dev` berjalan (F0-03)
 - Repo git dan push pertama ke GitHub `visia-id/ziyadah` (F0-04)
+- CI GitHub Actions: build frontend, `cargo test`, dan build Tauri di Windows dan macOS untuk setiap pull request dan push ke main (F0-05)
 - Panel Ambient bisa disembunyikan lewat tombol ×; panel tampil otomatis saat murottal diputar dan tersembunyi saat pemutar idle (F1-22)
 - Teks Arab di panel Ambient tidak lagi terpotong: tinggi panel mengikuti isi (maks 40% layar), huruf Arab mengecil sampai 18 px lalu bisa di-scroll (F1-23)
 - Keputusan 0004: Tanzil sebagai sumber teks Qur'an utama (F1-04)
