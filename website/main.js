@@ -1,50 +1,74 @@
 // Situs Ziyadah: tanpa cookie, tanpa analitik.
 
-// Contoh panel di hero: Ar-Ra'd 28 apa adanya dari Tanzil (text_display di quran.db), terjemah Kemenag,
-// dan timing per kata Alafasy dari quran-align. Indeks kata tidak menghitung token tanda waqaf.
-const AYAH = {
-  ar: "ٱلَّذِينَ ءَامَنُوا۟ وَتَطْمَئِنُّ قُلُوبُهُم بِذِكْرِ ٱللَّهِ ۗ أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ",
-  id: "(yaitu) orang-orang yang beriman dan hati mereka manjadi tenteram dengan mengingat Allah. Ingatlah, hanya dengan mengingati Allah-lah hati menjadi tenteram.",
-  segments: [[0, 1, 60, 1430], [1, 2, 1440, 2620], [2, 3, 2630, 4710], [3, 4, 4720, 6620], [4, 5, 6630, 7540], [5, 6, 7550, 10890], [6, 7, 10900, 11530], [7, 8, 11540, 12530], [8, 9, 12540, 13350], [9, 10, 13360, 15500], [10, 11, 15510, 17950]],
-};
-const MARK = /^[ۖ-ۭ]+$/u;
-const PAUSE_MS = 2500;
+// Panel contoh di hero: Al-Insyirah 5 dan 6 apa adanya dari Tanzil (text_display di quran.db), terjemah Kemenag,
+// dan timing per kata Alafasy dari quran-align. Diputar bergantian seperti murottal di aplikasi.
+const AYAT = [
+  {
+    n: 5,
+    ar: "فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا",
+    id: "Karena sesungguhnya sesudah kesulitan itu ada kemudahan,",
+    segments: [[0, 1, 30, 1580], [1, 2, 1590, 2030], [2, 3, 2040, 2860], [3, 4, 2870, 3880]],
+  },
+  {
+    n: 6,
+    ar: "إِنَّ مَعَ ٱلْعُسْرِ يُسْرًا",
+    id: "sesungguhnya sesudah kesulitan itu ada kemudahan.",
+    segments: [[0, 1, 30, 1330], [1, 2, 1340, 1730], [2, 3, 1740, 2610], [3, 4, 2620, 3540]],
+  },
+];
+const MARK = /^[\u06D6-\u06ED]+$/u;
+const GAP_BETWEEN_MS = 700;
+const GAP_LOOP_MS = 2600;
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-function renderAyah() {
-  const box = document.getElementById("hero-ayah");
-  document.getElementById("hero-tr").textContent = AYAH.id;
+const arEl = document.getElementById("hero-ayah");
+const trEl = document.getElementById("hero-tr");
+const metaEl = document.getElementById("hero-meta");
+
+function render(ayah) {
+  arEl.replaceChildren();
   const words = [];
-  AYAH.ar.split(" ").forEach((token, i) => {
-    if (i > 0) box.append(" ");
+  ayah.ar.split(" ").forEach((token, i) => {
+    if (i > 0) arEl.append(" ");
     const span = document.createElement("span");
     span.textContent = token;
     if (!MARK.test(token)) {
       span.className = "w";
       words.push(span);
     }
-    box.append(span);
+    arEl.append(span);
   });
+  arEl.append(" ", `﴿${String(ayah.n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[d])}﴾`);
+  trEl.textContent = ayah.id;
+  metaEl.textContent = `Al-Insyirah · ${ayah.n}/8`;
+  if (!reduceMotion) {
+    arEl.classList.remove("enter");
+    void arEl.offsetWidth;
+    arEl.classList.add("enter");
+  }
   return words;
 }
 
-function playHighlight(words) {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const total = AYAH.segments[AYAH.segments.length - 1][3] + PAUSE_MS;
-  let start = performance.now();
+function play(index) {
+  const ayah = AYAT[index];
+  const words = render(ayah);
+  if (reduceMotion) return;
+  const end = ayah.segments[ayah.segments.length - 1][3];
+  const start = performance.now();
   let current = -1;
   const tick = (now) => {
-    let t = now - start;
-    if (t > total) {
-      start = now;
-      t = 0;
-    }
+    const t = now - start;
     let active = -1;
-    for (const [ws, , s, e] of AYAH.segments) if (t >= s && t <= e) active = ws;
+    for (const [ws, , s, e] of ayah.segments) if (t >= s && t <= e) active = ws;
     if (active !== current) {
       words.forEach((w, i) => w.classList.toggle("on", i === active));
       current = active;
     }
-    requestAnimationFrame(tick);
+    if (t <= end) requestAnimationFrame(tick);
+    else {
+      const last = index === AYAT.length - 1;
+      setTimeout(() => play(last ? 0 : index + 1), last ? GAP_LOOP_MS : GAP_BETWEEN_MS);
+    }
   };
   requestAnimationFrame(tick);
 }
@@ -67,5 +91,5 @@ async function linkLatestInstaller() {
   }
 }
 
-playHighlight(renderAyah());
+play(0);
 linkLatestInstaller();

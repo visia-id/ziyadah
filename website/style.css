@@ -131,42 +131,96 @@ h1 em { color: var(--gold); }
 .btn-download.small { padding: 12px 20px; font-size: 15px; }
 .cta-meta { margin: 14px 0 0; font-size: 14px; color: var(--paper-dim); }
 
-/* Tiruan desktop: jendela kerja terang, panel Ziyadah melayang di sudut kanan bawahnya. */
-.hero-stage { position: relative; padding: 0 0 70px 0; }
-.workwin {
-  border-radius: 14px;
-  background: #f6f4ee;
-  box-shadow: 0 40px 80px -30px rgba(0,0,0,.7);
+/* Layar kerja: laptop gelap yang utuh dan proporsional. Panel Ziyadah di pojok kanan bawah di atas taskbar. */
+.hero-stage { position: relative; }
+.device { position: relative; filter: drop-shadow(0 40px 60px rgba(0,0,0,.55)); }
+.screen {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border: 10px solid #1b2232;
+  border-bottom-width: 12px;
+  border-radius: 16px 16px 6px 6px;
   overflow: hidden;
-  transform: rotate(-1.2deg);
+  background:
+    radial-gradient(ellipse 70% 60% at 80% 10%, rgba(33,122,87,.25), transparent 60%),
+    linear-gradient(160deg, #18243a, #0d1420 70%);
 }
-.workwin-bar { display: flex; align-items: center; gap: 7px; padding: 12px 16px; background: #e7e3d8; color: #7a776e; font-size: 13px; }
-.workwin-bar i { width: 11px; height: 11px; border-radius: 50%; background: #cfcabd; }
-.workwin-bar span { margin-left: 10px; }
-.workwin-body { padding: 24px 22px 120px; display: grid; gap: 14px; }
-.workwin-body span { height: 12px; border-radius: 6px; background: #dfdbd0; }
-.workwin-body span:nth-child(3n) { background: #cfe4d9; }
+.device-base {
+  height: 14px;
+  margin: 0 -5%;
+  border-radius: 2px 2px 16px 16px;
+  background: linear-gradient(#323b50, #161c28);
+}
+.device-base::after {
+  content: "";
+  display: block;
+  width: 18%;
+  height: 5px;
+  margin: 0 auto;
+  border-radius: 0 0 6px 6px;
+  background: #0d121b;
+}
 
-.panel-mock {
+.sheet {
   position: absolute;
-  right: -18px;
-  bottom: 0;
-  width: min(92%, 470px);
-  margin: 0;
-  padding: 20px 24px 14px;
-  border-radius: 18px;
-  background: rgba(14, 20, 17, 0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,.08);
-  box-shadow: 0 30px 60px -20px rgba(0,0,0,.8);
-  text-align: center;
+  inset: 4.5% 4% 14% 4%;
+  border-radius: 8px;
+  background: #121a28;
+  border: 1px solid rgba(255,255,255,.07);
+  overflow: hidden;
 }
-.panel-ar { margin: 0; font-family: var(--arabic); font-size: 27px; line-height: 2; color: #f4f7f5; min-height: 2em; }
-.panel-ar .w { transition: color .15s; }
-.panel-ar .w.on { color: var(--gold); }
-.panel-tr { margin: 4px 0 0; font-size: 13px; line-height: 1.5; color: rgba(244,247,245,.8); }
-.panel-mock figcaption { margin-top: 10px; font-size: 11px; color: rgba(244,247,245,.55); }
+.sheet-bar { display: flex; align-items: center; gap: 5px; padding: 7px 10px; background: #172133; color: rgba(241,236,224,.5); font-size: 10.5px; }
+.sheet-bar i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.18); }
+.sheet-bar span { margin-left: 8px; }
+.sheet table { width: 100%; border-collapse: collapse; font-size: clamp(8px, .78vw, 11px); font-variant-numeric: tabular-nums; }
+.sheet th, .sheet td { padding: .42em .7em; border: 1px solid rgba(255,255,255,.05); color: rgba(241,236,224,.45); font-weight: 400; text-align: right; white-space: nowrap; }
+.sheet th { background: #152031; color: rgba(241,236,224,.3); text-align: center; width: 1.8em; }
+.sheet td:first-of-type { text-align: left; }
+.sheet td.h { color: rgba(241,236,224,.7); font-weight: 600; }
+.sheet td.sel { outline: 2px solid var(--green-soft); outline-offset: -2px; color: var(--paper); }
+
+.mini-panel {
+  position: absolute;
+  right: 2.4%;
+  bottom: calc(9% + 2.4%);
+  width: 34%;
+  margin: 0;
+  padding: .7em .9em .5em;
+  border-radius: 10px;
+  background: rgba(14, 20, 17, .78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 12px 28px -10px rgba(0,0,0,.8);
+  text-align: center;
+  font-size: clamp(8px, .62vw, 10px);
+}
+.mini-ar { margin: 0; font-family: var(--arabic); font-size: 2.2em; line-height: 1.7; color: #f4f7f5; white-space: nowrap; }
+.mini-ar.enter { animation: mini-enter .5s ease-out; }
+.mini-ar .w { transition: color .15s; }
+.mini-ar .w.on { color: var(--gold); }
+.mini-tr { margin: .2em 0 0; font-size: .92em; line-height: 1.4; color: rgba(244,247,245,.78); }
+.mini-panel figcaption { margin-top: .45em; font-size: .78em; color: rgba(244,247,245,.5); }
+@keyframes mini-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.taskbar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 9%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2%;
+  background: rgba(14, 19, 29, .94);
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.tb-app { width: 3.2%; aspect-ratio: 1; border-radius: 4px; background: rgba(255,255,255,.14); }
+.tb-app.on { background: rgba(47,154,112,.55); }
+.tb-tray { position: absolute; right: 2.4%; display: flex; align-items: center; gap: .6em; color: rgba(241,236,224,.6); font-size: clamp(8px, .75vw, 11px); }
+.tb-tray img { border-radius: 3px; }
+
+.callout { margin: 18px 0 0; padding-right: 2%; text-align: right; font-size: 14px; color: var(--paper-dim); }
+.callout span { color: var(--gold); font-weight: 700; margin-right: 4px; }
 
 /* Bagian */
 section { padding: 96px 0; }
@@ -230,7 +284,8 @@ kbd { display: inline-block; min-width: 26px; padding: 2px 8px; border-radius: 7
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .hero-copy > *, .hero-stage { animation: none; opacity: 1; transform: none; }
-  .shot img, .btn-download, .panel-ar .w { transition: none; }
+  .shot img, .btn-download, .mini-ar .w { transition: none; }
+  .mini-ar.enter { animation: none; }
 }
 
 @media (max-width: 900px) {
@@ -241,7 +296,6 @@ kbd { display: inline-block; min-width: 26px; padding: 2px 8px; border-radius: 7
   .shots { grid-template-columns: 1fr; }
   .shot-main { grid-row: auto; }
   .install ol { grid-template-columns: 1fr; }
-  .panel-mock { right: 0; }
   section { padding: 64px 0; }
 }
 @media (max-width: 560px) {
@@ -249,5 +303,5 @@ kbd { display: inline-block; min-width: 26px; padding: 2px 8px; border-radius: 7
   main, .top { padding-left: 16px; padding-right: 16px; }
   .grid { grid-template-columns: 1fr; }
   .feat-wide { grid-column: auto; }
-  .panel-ar { font-size: 22px; }
+  .callout { text-align: left; }
 }
