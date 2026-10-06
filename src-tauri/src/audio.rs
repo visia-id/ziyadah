@@ -7,6 +7,8 @@
 //! - Ayat berikutnya ditentukan mode putar (`PlayMode`): berhenti di akhir surah, lanjut,
 //!   ulang ayat, ulang surah, atau ulang rentang. Pindah surah dan kembali ke awal diberi jeda 1 detik.
 //! - Status disiarkan ke semua jendela lewat event `player://state`.
+//! - Selama ayat diputar, posisi di dalam file ayat disiarkan lewat `player://pos` (sekitar 10 kali per detik)
+//!   untuk sorot per kata (F1-17). Event ini terpisah supaya `player://state` tetap hanya terkirim saat berubah.
 
 use std::fs::{self, File};
 use std::io::BufReader;
@@ -15,7 +17,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
 use std::sync::{Arc, Mutex};
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use rodio::source::Zero;
 use rodio::{Decoder, OutputStream, Sink, Source};
@@ -29,6 +31,8 @@ const LOOKAHEAD: usize = 2;
 const DOWNLOAD_AHEAD: usize = 20;
 /// Jeda hening saat pindah surah atau kembali ke awal surah/rentang (F1-09).
 const GAP: Duration = Duration::from_secs(1);
+/// Selang pengiriman posisi pemutaran untuk sorot per kata.
+const POS_INTERVAL: Duration = Duration::from_millis(100);
 
 /// Jumlah ayat per surah (hitungan Kufi, total 6.236). Sementara di sini sampai `quran.db` ada (F1-05).
 const AYAH_COUNTS: [u16; 114] = [
@@ -67,6 +71,15 @@ pub struct PlayerState {
     pub buffering: bool,
     pub error: Option<String>,
     pub mode: PlayMode,
+}
+
+/// Posisi di dalam file ayat yang sedang terdengar.
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PlayerPos {
+    pub surah: u16,
+    pub ayah: u16,
+    pub pos_ms: u64,
 }
 
 impl Default for PlayerState {
@@ -440,6 +453,25 @@ impl Player {
         false
     }
 
+    /// Posisi ayat yang sedang terdengar; `None` saat jeda hening, dijeda, atau tidak memutar.
+    fn position(&self) -> Option<PlayerPos> {
+        if !self.active || self.paused {
+            return None;
+        }
+        let in_sink = self.sink.len();
+        if in_sink == 0 || in_sink > self.appended.len() {
+            return None;
+        }
+        match self.appended[current_index(self.appended.len(), in_sink)] {
+            Entry::Ayah(it) => Some(PlayerPos {
+                surah: it.surah,
+                ayah: it.ayah,
+                pos_ms: self.sink.get_pos().as_millis() as u64,
+            }),
+            Entry::Gap(_) => None,
+        }
+    }
+
     fn snapshot(&self, buffering: bool) -> PlayerState {
         let status = if !self.active {
             "idle"
@@ -492,6 +524,7 @@ fn run_audio(app: AppHandle, cache_dir: PathBuf, rx: Receiver<Command>, shared: 
         last_error: None,
     };
     let mut last_sent = PlayerState::default();
+    let mut last_pos = Instant::now();
 
     loop {
         match rx.recv_timeout(Duration::from_millis(60)) {
@@ -535,6 +568,13 @@ fn run_audio(app: AppHandle, cache_dir: PathBuf, rx: Receiver<Command>, shared: 
             *shared.lock().unwrap() = next_state.clone();
             let _ = app.emit("player://state", next_state.clone());
             last_sent = next_state;
+        }
+
+        if last_pos.elapsed() >= POS_INTERVAL {
+            last_pos = Instant::now();
+            if let Some(pos) = p.position() {
+                let _ = app.emit("player://pos", pos);
+            }
         }
     }
 }

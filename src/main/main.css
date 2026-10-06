@@ -56,6 +56,8 @@ button.on { background: var(--accent-soft); border-color: var(--accent); }
 }
 .ayah:hover { background: var(--accent-soft); }
 .ayah.active { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+/* Kata yang sedang dibaca qari (F1-17). */
+.ayah .word.on { color: var(--accent); }
 .ayah .n { grid-row: span 2; color: var(--muted); font-size: 12px; padding-top: 10px; }
 .ayah .ar { font-family: var(--arabic); font-size: 24px; line-height: 2; text-align: right; }
 .ayah .id { color: var(--muted); font-size: 13px; line-height: 1.5; }

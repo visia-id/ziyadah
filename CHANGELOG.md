@@ -23,4 +23,9 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 - Inti Rust membaca `quran.db`; data JSON uji coba dan script Al Quran Cloud dihapus (F1-07)
 - Surah, qari, dan mode putar terakhir diingat antar sesi; pertama kali dibuka mulai dari Al-Fatihah (F1-26)
 - Hanya satu Ziyadah yang berjalan; membuka lagi memunculkan jendela yang sudah ada (F1-19)
+- Sorot per kata di panel dan jendela utama memakai timing quran-align untuk Alafasy, Al-Husary, Minshawi, dan Abdul Basit; ayat tanpa timing yang konsisten memakai sorot per ayat (F1-17)
+
+### Diperbaiki
+
+- Panel tidak lagi kosong bila pemutaran dimulai sebelum data surah selesai dimuat (F1-17)
 - Keputusan 0004: Tanzil sebagai sumber teks Qur'an utama (F1-04)

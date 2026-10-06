@@ -13,5 +13,10 @@
     "url": "https://tanzil.net/res/text/metadata/quran-data.xml",
     "file": "quran-data.xml",
     "sha256": "423afa57b81ccee79a4f15a2df1b8aa6a6c06498cfe8ce12e627adc41512c4a9"
+  },
+  "timing": {
+    "url": "https://github.com/cpfair/quran-align/releases/download/release-2016-11-24/quran-align-data-2016-11-24.zip",
+    "file": "quran-align-data-2016-11-24.zip",
+    "sha256": "5eeb045d8a7895208c94d2d7ec243567f8f550728835411527c4ffa1e789c9b7"
   }
 }

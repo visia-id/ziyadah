@@ -75,6 +75,7 @@ scripts/
 - Teks: [Tanzil Project](https://tanzil.net), Tanzil Quran Text (Uthmani, versi 1.1). Disalin verbatim tanpa perubahan sesuai syarat Tanzil; lihat [keputusan 0004](docs/decisions/0004-teks-tanzil.md)
 - Metadata juz, halaman, rub' hizb, sajdah: Tanzil `quran-data.xml`
 - Terjemah: Kementerian Agama RI, via Tanzil (`id.indonesian`)
+- Timing per kata untuk sorot kata: [quran-align](https://github.com/cpfair/quran-align) oleh Collin Fair, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - Audio: [EveryAyah](https://everyayah.com), hak rekaman milik qari atau pemegang haknya
 
 Proyek ini bukan mushaf yang sudah ditashih. Data Qur'an sengaja tidak di-commit sampai izin dan tashih selesai.

@@ -43,6 +43,14 @@ pub struct Surah {
     pub ayahs: Vec<Ayah>,
 }
 
+/// Timing per kata satu ayat dari quran-align: `[kata_awal, kata_akhir_eksklusif, mulai_ms, selesai_ms]`.
+/// Indeks kata dihitung dari teks tampilan tanpa token tanda waqaf.
+#[derive(Serialize)]
+pub struct AyahTiming {
+    pub ayah: u16,
+    pub segments: Vec<[u32; 4]>,
+}
+
 pub struct Quran {
     conn: Result<Mutex<Connection>, String>,
 }
@@ -75,6 +83,22 @@ impl Quran {
                     name_latin: r.get(2)?,
                     ayah_count: r.get(3)?,
                 })
+            })?;
+            rows.collect()
+        })
+    }
+
+    /// Timing per kata untuk satu surah dan qari. Ayat tanpa timing yang konsisten tidak ikut;
+    /// tampilan lalu memakai sorot per ayat.
+    pub fn timing(&self, reciter: &str, surah: u16) -> Result<Vec<AyahTiming>, String> {
+        self.with(|c| {
+            let mut st = c.prepare("SELECT ayah, segments FROM timing WHERE reciter = ?1 AND surah = ?2 ORDER BY ayah")?;
+            let rows = st.query_map(rusqlite::params![reciter, surah], |r| {
+                let raw: String = r.get(1)?;
+                let segments = serde_json::from_str(&raw).map_err(|e| {
+                    rusqlite::Error::FromSqlConversionFailure(1, rusqlite::types::Type::Text, Box::new(e))
+                })?;
+                Ok(AyahTiming { ayah: r.get(0)?, segments })
             })?;
             rows.collect()
         })
@@ -155,6 +179,28 @@ mod tests {
         assert!(q.surah(1).unwrap().basmalah.is_none());
         assert!(q.surah(9).unwrap().basmalah.is_none());
         assert!(q.surah(67).unwrap().basmalah.is_some());
+    }
+
+    #[test]
+    fn timing_per_kata_konsisten_dengan_teks() {
+        let q = db();
+        let mark = |t: &str| t.chars().all(|c| ('\u{06D6}'..='\u{06ED}').contains(&c));
+        for reciter in ["Alafasy_128kbps", "Husary_128kbps", "Minshawy_Murattal_128kbps", "Abdul_Basit_Murattal_192kbps"] {
+            let mut total = 0;
+            for n in 1..=114 {
+                let surah = q.surah(n).unwrap();
+                for t in q.timing(reciter, n).unwrap() {
+                    let text = &surah.ayahs[(t.ayah - 1) as usize].ar;
+                    let words = text.split(' ').filter(|w| !mark(w)).count() as u32;
+                    for s in &t.segments {
+                        assert!(s[0] < s[1] && s[1] <= words && s[2] <= s[3], "{reciter} {n}:{}", t.ayah);
+                    }
+                    total += 1;
+                }
+            }
+            assert!(total > 6170, "{reciter}: hanya {total} ayat bertiming");
+        }
+        assert!(q.timing("Abdurrahmaan_As-Sudais_192kbps", 1).unwrap().is_empty());
     }
 
     #[test]

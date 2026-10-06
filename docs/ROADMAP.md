@@ -53,7 +53,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [ ] **F1-14** Simpan posisi dan ukuran panel per monitor (plugin window-state)
 - [ ] **F1-15** Pintasan global tampil/sembunyi panel dan putar/jeda
 - [ ] **F1-16** Tray: pilih surah, qari, dan mode putar langsung dari menu
-- [ ] **F1-17** Sorot per kata memakai data quran-align untuk qari yang tersedia, turun ke sorot per ayat bila tidak ada
+- [x] **F1-17** Sorot per kata memakai data quran-align untuk qari yang tersedia, turun ke sorot per ayat bila tidak ada (6 Okt 2026)
 - [x] **F1-22** Panel bisa disembunyikan: tombol × di kontrol panel, panel hanya tampil saat murottal diputar dan tersembunyi saat idle (6 Okt 2026)
 - [x] **F1-23** Teks Arab di panel tidak pernah terpotong: tinggi panel mengikuti isi (maks 40% layar), huruf Arab mengecil sampai 18 px bila perlu, lalu bisa di-scroll (6 Okt 2026)
 - [ ] **F1-24** Opsi teks panel memudar beberapa detik setelah ayat berganti, muncul lagi saat kursor di atas panel (bawaan: mati)
@@ -126,3 +126,5 @@ Tulis temuan, hasil uji, dan hal yang mengganjal di sini, dengan tanggal. Yang s
 - 6 Okt 2026: build release pertama di laptop Windows (16 GB RAM) gagal kehabisan memori karena profil release memakai LTO dan codegen-units = 1, ditambah Chrome dan VM yang sedang berjalan. Berhasil dengan `CARGO_BUILD_JOBS=1` (installer NSIS 3,5 MB, MSI 4,9 MB). Vite juga crash karena memantau `src-tauri/target`; folder itu kini dikecualikan di vite.config.ts.
 - 6 Okt 2026: logo awal (buku terbuka dengan tanda + di atasnya) diganti karena mudah terbaca sebagai salib di atas Injil atau simbol P3K. Logo baru: huruf ز (zay), huruf awal Ziyadah, sumbernya `app-icon.svg`.
 - 6 Okt 2026: installer pratinjau 0.0.1 (logo lama, belum F1-19 dan F1-26) sudah terkirim ke beberapa penguji. Versi dinaikkan ke 0.0.2 supaya pembaruannya mudah dibedakan.
+- 6 Okt 2026 (F1-17): indeks kata quran-align tidak menghitung basmalah dan token tanda waqaf yang berdiri sendiri; dengan aturan itu 99,8% ayat cocok persis. Ayat yang tidak konsisten (antara lain muqatta'ah di awal surah 10 sampai 15) memakai sorot per ayat. Data Sudais di rilis quran-align rusak (berisi log galat). Data Al-Husary dan Abdul Basit dari bitrate 64 kbps, durasinya sama dengan rekaman yang diputar (selisih sekitar 0,1 detik).
+- 6 Okt 2026: panel crash (kosong) bila pemutaran mulai sebelum data surah selesai dimuat; diperbaiki bersama F1-17.

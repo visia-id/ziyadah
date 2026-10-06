@@ -4,6 +4,7 @@ import "../shared/theme.css";
 import "./panel.css";
 import { data, panel, player, type PlayerState, type SurahDetail } from "../shared/player";
 import { safeGet, safeSet } from "../shared/storage";
+import { ArabicWords, useActiveWords } from "../shared/words";
 
 // Panel Ambient: teks ayat yang sedang dibaca qari, melayang di atas semua jendela.
 // Seret dari mana saja untuk memindah. Kontrol muncul saat kursor di atas panel.
@@ -59,9 +60,12 @@ function Panel() {
   // Mode lanjut bisa masuk ke surah yang teksnya belum diambil (data uji coba hanya beberapa surah).
   const missingText = !idle && (!surah || surah.number !== state!.surah);
   const isBasmalah = state?.ayah === 0;
-  const ayah = !idle && !isBasmalah ? surah!.ayahs.find((a) => a.n === state!.ayah) : undefined;
+  // Data surah bisa belum selesai dimuat saat pemutaran baru mulai; jangan anggap sudah ada.
+  const ayah = !idle && !isBasmalah ? surah?.ayahs.find((a) => a.n === state!.ayah) : undefined;
   const ar = isBasmalah ? surah?.basmalah?.ar : ayah?.ar;
   const tr = isBasmalah ? surah?.basmalah?.id : ayah?.id;
+  const active = useActiveWords(state?.reciter, state?.surah, state?.status === "playing");
+  const range = active && active.ayah === state?.ayah ? active.range : null;
 
   return (
     <div className="panel" ref={ref} data-tauri-drag-region>
@@ -77,7 +81,7 @@ function Panel() {
         <>
           <div className="text" data-tauri-drag-region>
             <p key={`${state!.surah}:${state!.ayah}`} className="ar" dir="rtl" data-tauri-drag-region>
-              {ar}
+              {ar && <ArabicWords text={ar} range={range} />}
               {ayah && <span className="num"> ﴿{toArabicDigits(ayah.n)}﴾</span>}
             </p>
             {showTranslation && tr && (

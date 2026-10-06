@@ -4,6 +4,7 @@
 //   wajib menyebut Tanzil Project dan menautkan ke tanzil.net. Header lisensinya disimpan di tabel `meta`.
 // - Metadata juz, rub' hizb, halaman, sajdah: Tanzil quran-data.xml.
 // - Terjemah: id.indonesian (Kementerian Agama RI) dari Tanzil.
+// - Timing per kata (F1-17): quran-align oleh Collin Fair, CC BY 4.0, https://github.com/cpfair/quran-align
 //
 // Integritas (F1-06): isi teks dicocokkan dengan checksum di scripts/tanzil-sources.json.
 // Bila Tanzil memperbarui teks, script berhenti; perubahan wajib ditinjau manusia sebelum checksum diganti.
@@ -11,6 +12,7 @@
 // Hasilnya TIDAK di-commit (lihat .gitignore dan keputusan 0003). Jalankan: npm run fetch-data
 
 import { createHash } from "node:crypto";
+import { inflateRawSync } from "node:zlib";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
@@ -24,7 +26,7 @@ const SOURCES = JSON.parse(await readFile(join(ROOT, "scripts", "tanzil-sources.
 
 const TOTAL_AYAHS = 6236;
 
-async function fetchSource(name) {
+async function fetchSource(name, encoding = "utf8") {
   const { url, file } = SOURCES[name];
   const path = join(CACHE, file);
   if (!existsSync(path)) {
@@ -34,7 +36,61 @@ async function fetchSource(name) {
     await writeFile(path, Buffer.from(await res.arrayBuffer()));
     console.log(`Unduh ${file}`);
   }
-  return readFile(path, "utf8");
+  return encoding ? readFile(path, encoding) : readFile(path);
+}
+
+/** Pembaca zip minimal (direktori pusat + deflate) supaya tidak bergantung pada `tar`/`unzip` di sistem. */
+function readZip(buf) {
+  let eocd = buf.length - 22;
+  while (eocd >= 0 && buf.readUInt32LE(eocd) !== 0x06054b50) eocd--;
+  if (eocd < 0) throw new Error("Berkas zip rusak");
+  const count = buf.readUInt16LE(eocd + 10);
+  let p = buf.readUInt32LE(eocd + 16);
+  const files = new Map();
+  for (let i = 0; i < count; i++) {
+    const method = buf.readUInt16LE(p + 10);
+    const size = buf.readUInt32LE(p + 20);
+    const nameLen = buf.readUInt16LE(p + 28);
+    const extraLen = buf.readUInt16LE(p + 30);
+    const commentLen = buf.readUInt16LE(p + 32);
+    const local = buf.readUInt32LE(p + 42);
+    const name = buf.toString("utf8", p + 46, p + 46 + nameLen);
+    const dataStart = local + 30 + buf.readUInt16LE(local + 26) + buf.readUInt16LE(local + 28);
+    const raw = buf.subarray(dataStart, dataStart + size);
+    files.set(name, method === 8 ? inflateRawSync(raw) : raw);
+    p += 46 + nameLen + extraLen + commentLen;
+  }
+  return files;
+}
+
+// Qari Ziyadah -> berkas timing quran-align. Al-Husary dan Abdul Basit memakai rekaman yang sama dengan
+// bitrate lain (durasi dicek sama, selisih ~0,1 detik). Data Sudais di rilis quran-align rusak (berisi log galat),
+// jadi Sudais tetap memakai sorot per ayat.
+const TIMING_FILES = {
+  Alafasy_128kbps: "Alafasy_128kbps.json",
+  Husary_128kbps: "Husary_64kbps.json",
+  Minshawy_Murattal_128kbps: "Minshawy_Murattal_128kbps.json",
+  Abdul_Basit_Murattal_192kbps: "Abdul_Basit_Murattal_64kbps.json",
+};
+
+/** Tanda waqaf, rub' hizb, dan sajdah yang berdiri sendiri tidak dihitung sebagai kata oleh quran-align. */
+const MARK_TOKEN = /^[\u06D6-\u06ED]+$/u;
+export function countWords(display) {
+  return display.split(" ").filter((t) => !MARK_TOKEN.test(t)).length;
+}
+
+/**
+ * Segmen satu ayat dipakai hanya bila konsisten: indeks kata di dalam jumlah kata ayat, setiap segmen
+ * mencakup minimal satu kata, dan waktu tidak mundur. Bila tidak, ayat itu tanpa timing (sorot per ayat).
+ */
+function validSegments(segs, words) {
+  if (!Array.isArray(segs) || segs.length === 0) return false;
+  for (let i = 0; i < segs.length; i++) {
+    const [ws, we, start, end] = segs[i];
+    if (!(ws >= 0 && we > ws && we <= words && end >= start)) return false;
+    if (i > 0 && start < segs[i - 1][2]) return false;
+  }
+  return true;
 }
 
 /** Baris data `surah|ayah|teks` dan header komentar (`#`) dipisah. */
@@ -165,6 +221,12 @@ async function main() {
       lang TEXT NOT NULL, surah INTEGER NOT NULL, ayah INTEGER NOT NULL, text TEXT NOT NULL,
       PRIMARY KEY (lang, surah, ayah)
     );
+    -- Timing per kata: JSON [[kata_awal, kata_akhir_eksklusif, mulai_ms, selesai_ms], ...].
+    -- Indeks kata dihitung dari text_display tanpa token tanda waqaf (lihat countWords).
+    CREATE TABLE timing (
+      reciter TEXT NOT NULL, surah INTEGER NOT NULL, ayah INTEGER NOT NULL, segments TEXT NOT NULL,
+      PRIMARY KEY (reciter, surah, ayah)
+    );
   `);
 
   const putMeta = db.prepare("INSERT INTO meta VALUES (?, ?)");
@@ -176,6 +238,7 @@ async function main() {
     translation_id_source: "Kementerian Agama RI, via Tanzil (id.indonesian), https://tanzil.net",
     translation_id_header: trans.header,
     metadata_source: "Tanzil quran-data.xml, https://tanzil.net (CC BY)",
+    timing_source: "quran-align (Collin Fair), CC BY 4.0, https://github.com/cpfair/quran-align",
     basmalah: basmalah,
     basmalah_id: basmalahId,
     built_at: new Date().toISOString(),
@@ -198,6 +261,28 @@ async function main() {
       sajdah.get(`${r.surah}:${r.ayah}`) ?? null,
     );
     putTr.run(r.surah, r.ayah, r.tr);
+  }
+  db.exec("COMMIT");
+
+  // Timing per kata (F1-17).
+  const zipBuf = await fetchSource("timing", null);
+  if (sha256(zipBuf) !== SOURCES.timing.sha256) fail("checksum data timing quran-align berbeda");
+  const zip = readZip(zipBuf);
+  const wordsOf = new Map(rows.map((r) => [`${r.surah}:${r.ayah}`, countWords(r.display)]));
+  const putTiming = db.prepare("INSERT INTO timing VALUES (?, ?, ?, ?)");
+  db.exec("BEGIN");
+  for (const [reciter, file] of Object.entries(TIMING_FILES)) {
+    const data = JSON.parse(zip.get(file).toString("utf8"));
+    let kept = 0;
+    for (const a of data) {
+      const segs = a.segments;
+      if (!validSegments(segs, wordsOf.get(`${a.surah}:${a.ayah}`))) continue;
+      putTiming.run(reciter, a.surah, a.ayah, JSON.stringify(segs));
+      kept++;
+    }
+    if (kept < TOTAL_AYAHS * 0.99) fail(`timing ${reciter} hanya ${kept} ayat yang konsisten`);
+    putMeta.run(`timing_${reciter}`, `${kept}/${TOTAL_AYAHS}`);
+    console.log(`Timing ${reciter}: ${kept} dari ${TOTAL_AYAHS} ayat konsisten`);
   }
   db.exec("COMMIT");
 

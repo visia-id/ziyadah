@@ -30,6 +30,12 @@
   animation: fade 300ms ease-out;
 }
 .num { font-size: 0.8em; opacity: 0.8; }
+/* Kata yang sedang dibaca qari (F1-17). Hanya warna yang berubah supaya tata letak tidak bergeser. */
+.word { transition: color 120ms; }
+.word.on { color: #e8c46c; }
+@media (prefers-reduced-motion: reduce) {
+  .word { transition: none; }
+}
 
 .tr {
   margin: 0;

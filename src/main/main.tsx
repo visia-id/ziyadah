@@ -13,6 +13,7 @@ import {
   type SurahIndexItem,
 } from "../shared/player";
 import { safeGet, safeSet } from "../shared/storage";
+import { ArabicWords, useActiveWords } from "../shared/words";
 
 // Pilihan terakhir diingat antar sesi; pertama kali dibuka mulai dari Al-Fatihah.
 const KEY_SURAH = "ziyadah.main.surah";
@@ -106,6 +107,7 @@ function App() {
 
   const playing = state?.status === "playing";
   const current = state && state.surah === surahNo ? state.ayah : -1;
+  const active = useActiveWords(state?.reciter, state?.surah, playing);
 
   return (
     <main>
@@ -230,7 +232,12 @@ function App() {
                   title="Putar mulai ayat ini"
                 >
                   <span className="n">{a.n}</span>
-                  <span className="ar" dir="rtl">{a.ar}</span>
+                  <span className="ar" dir="rtl">
+                    <ArabicWords
+                      text={a.ar}
+                      range={active && active.surah === surahNo && active.ayah === a.n ? active.range : null}
+                    />
+                  </span>
                   <span className="id">{a.id}</span>
                 </button>
               ))}
@@ -240,7 +247,8 @@ function App() {
       )}
 
       <footer className="muted">
-        Teks: Tanzil Project (tanzil.net), Uthmani 1.1 · Terjemah: Kementerian Agama RI · Audio: EveryAyah.
+        Teks: Tanzil Project (tanzil.net), Uthmani 1.1 · Terjemah: Kementerian Agama RI · Audio: EveryAyah ·
+        Timing per kata: quran-align (Collin Fair, CC BY 4.0).
         Pratinjau: belum ditashih LPMQ, belum untuk diedarkan luas.
       </footer>
     </main>

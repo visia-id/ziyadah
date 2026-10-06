@@ -46,6 +46,19 @@ export interface Basmalah {
   id: string;
 }
 
+/** Timing per kata satu ayat: [kata_awal, kata_akhir_eksklusif, mulai_ms, selesai_ms]. */
+export interface AyahTiming {
+  ayah: number;
+  segments: [number, number, number, number][];
+}
+
+/** Posisi di dalam berkas ayat yang sedang terdengar; ayat 0 = basmalah. */
+export interface PlayerPos {
+  surah: number;
+  ayah: number;
+  posMs: number;
+}
+
 export interface SurahDetail extends Surah {
   /** Basmalah di awal surah persis seperti di Tanzil; null untuk Al-Fatihah dan At-Taubah. */
   basmalah: Basmalah | null;
@@ -71,6 +84,8 @@ export const player = {
   state: () => invoke<PlayerState>("player_state"),
   onState: (cb: (s: PlayerState) => void): Promise<UnlistenFn> =>
     listen<PlayerState>("player://state", (e) => cb(e.payload)),
+  onPos: (cb: (p: PlayerPos) => void): Promise<UnlistenFn> =>
+    listen<PlayerPos>("player://pos", (e) => cb(e.payload)),
 };
 
 export const panel = {
@@ -95,4 +110,6 @@ function cached<T>(key: string, load: () => Promise<T>): Promise<T> {
 export const data = {
   index: () => cached("index", () => invoke<SurahIndexItem[]>("quran_index")),
   surah: (n: number) => cached(`surah:${n}`, () => invoke<SurahDetail>("quran_surah", { number: n })),
+  timing: (reciter: string, surah: number) =>
+    cached(`timing:${reciter}:${surah}`, () => invoke<AyahTiming[]>("quran_timing", { reciter, surah })),
 };

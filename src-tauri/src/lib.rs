@@ -14,7 +14,7 @@ use audio::{Audio, Command, PlayMode, PlayerState};
 use tauri::menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::TrayIconBuilder;
 use std::sync::atomic::{AtomicBool, Ordering};
-use quran::{Quran, Surah, SurahIndexItem};
+use quran::{AyahTiming, Quran, Surah, SurahIndexItem};
 use tauri::path::BaseDirectory;
 use tauri::{AppHandle, Listener, Manager, PhysicalPosition, PhysicalSize, State, WebviewWindow, Wry};
 
@@ -78,6 +78,11 @@ fn quran_index(quran: State<Quran>) -> Result<Vec<SurahIndexItem>, String> {
 #[tauri::command]
 fn quran_surah(quran: State<Quran>, number: u16) -> Result<Surah, String> {
     quran.surah(number)
+}
+
+#[tauri::command]
+fn quran_timing(quran: State<Quran>, reciter: String, surah: u16) -> Result<Vec<AyahTiming>, String> {
+    quran.timing(&reciter, surah)
 }
 
 // ---------- Perintah panel ----------
@@ -281,6 +286,7 @@ pub fn run() {
             player_state,
             quran_index,
             quran_surah,
+            quran_timing,
             panel_toggle,
             panel_hide,
             panel_fit,
