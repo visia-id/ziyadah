@@ -1,0 +1,150 @@
+/* Mode Layar Penuh (F2-11). Latar di lapisan bawah, lapisan gelap di atasnya, teks paling atas. */
+.fs {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #05070a;
+  color: #f4f1e8;
+  font-family: var(--ui);
+  z-index: 10;
+}
+.fs.calm { cursor: none; }
+
+.fs-bg { position: absolute; inset: 0; }
+.fs-photo-frame { overflow: hidden; }
+.fs-photo {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+}
+/* Galaksi berputar sangat pelan; kotak dibuat lebih besar dari layar supaya sudut tidak terlihat saat berputar. */
+.fs-photo.rotate {
+  inset: auto;
+  left: 50%;
+  top: 50%;
+  width: 160vmax;
+  height: 160vmax;
+  margin: -80vmax 0 0 -80vmax;
+  animation: fs-rotate 420s linear infinite;
+}
+.fs-photo.pan { right: -25%; animation: fs-pan 150s ease-in-out infinite alternate; }
+.fs-photo.zoom { background-size: auto 100%; background-color: #000; animation: fs-zoom 70s ease-in-out infinite alternate; }
+
+.fs-gradient {
+  background: linear-gradient(120deg, #0b1d2a, #1d3b4f, #3a2a4c, #12302a, #0b1d2a);
+  background-size: 400% 400%;
+  animation: fs-shift 90s ease-in-out infinite alternate;
+}
+.fs-stars { width: 100%; height: 100%; background: radial-gradient(ellipse at 50% 120%, #10233a, #04060b 70%); }
+
+@keyframes fs-rotate { to { transform: rotate(360deg); } }
+@keyframes fs-pan { to { transform: translateX(-20%); } }
+@keyframes fs-zoom { from { transform: scale(1); } to { transform: scale(1.12); } }
+@keyframes fs-shift { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+
+/* Lapisan gelap: teks tetap terbaca di atas latar seterang apa pun. */
+.fs-shade {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.78));
+}
+
+.fs-stage {
+  position: absolute;
+  inset: 8vh 8vw 14vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2.4vh;
+  text-align: center;
+}
+.fs-side {
+  margin: 0;
+  font-family: var(--arabic);
+  font-size: clamp(16px, 1.6vw, 26px);
+  line-height: 1.8;
+  opacity: 0.35;
+  max-height: 2em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.fs-current {
+  position: relative; /* titik acuan offsetTop kata aktif */
+  max-height: 58vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  width: 100%;
+}
+.fs-current::-webkit-scrollbar { width: 0; }
+.fs-ar {
+  margin: 0;
+  font-family: var(--arabic);
+  font-size: var(--fs-ar, 64px);
+  line-height: 2;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+  animation: fs-fade 500ms ease-out;
+}
+.fs-num { font-size: 0.7em; opacity: 0.75; }
+.fs-tr {
+  margin: 1.6vh auto 0;
+  max-width: 60em;
+  font-size: clamp(15px, 1.35vw, 22px);
+  line-height: 1.55;
+  opacity: 0.88;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+}
+.fs .word { transition: color 150ms; }
+.fs .word.on { color: #f0c96a; }
+
+.fs-idle .fs-surah-ar { margin: 0; font-family: var(--arabic); font-size: clamp(48px, 7vw, 110px); text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8); }
+.fs-hint { margin: 1vh 0 0; font-size: clamp(14px, 1.3vw, 20px); opacity: 0.75; }
+
+.fs-meta, .fs-credit {
+  position: absolute;
+  bottom: 2.4vh;
+  font-size: 12px;
+  opacity: 0.6;
+  text-shadow: 0 1px 4px #000;
+}
+.fs-meta { left: 2.4vw; font-size: clamp(12px, 1vw, 16px); opacity: 0.8; }
+.fs-credit { right: 2.4vw; max-width: 46vw; text-align: right; }
+
+.fs-controls {
+  position: absolute;
+  left: 50%;
+  bottom: 6vh;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 14px;
+  background: rgba(10, 14, 18, 0.55);
+  backdrop-filter: blur(8px);
+  transition: opacity 300ms;
+}
+.fs.calm .fs-controls { opacity: 0; pointer-events: none; }
+.fs-controls button {
+  border: 0;
+  border-radius: 9px;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 14px;
+  color: #f4f1e8;
+  background: rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+}
+.fs-controls button:hover { background: rgba(255, 255, 255, 0.24); }
+.fs-controls button.on { background: rgba(240, 201, 106, 0.35); }
+.fs-controls button.main { min-width: 52px; background: rgba(240, 201, 106, 0.45); }
+
+@keyframes fs-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .fs-photo, .fs-gradient, .fs-ar { animation: none !important; }
+  .fs .word, .fs-controls { transition: none; }
+}

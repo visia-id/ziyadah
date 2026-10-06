@@ -22,6 +22,9 @@ use tauri::{AppHandle, Listener, Manager, PhysicalPosition, PhysicalSize, State,
 
 struct ClickThroughItem(CheckMenuItem<Wry>);
 
+/// Selama Mode Layar Penuh, panel Ambient tidak dimunculkan (ia selalu di atas dan akan menutupi layar penuh).
+struct PanelSuppressed(AtomicBool);
+
 // ---------- Perintah pemutar ----------
 
 #[tauri::command]
@@ -99,6 +102,21 @@ fn panel_hide(app: AppHandle) -> Result<(), String> {
     panel_window(&app)?.hide().map_err(|e| e.to_string())
 }
 
+/// Masuk/keluar Mode Layar Penuh: sembunyikan panel saat masuk, munculkan lagi saat keluar bila murottal berjalan.
+#[tauri::command]
+fn panel_set_suppressed(app: AppHandle, audio: State<Audio>, on: bool) -> Result<(), String> {
+    if let Some(flag) = app.try_state::<PanelSuppressed>() {
+        flag.0.store(on, Ordering::SeqCst);
+    }
+    if on {
+        panel_window(&app)?.hide().map_err(|e| e.to_string())
+    } else if audio.state().status != "idle" {
+        show_panel(&app)
+    } else {
+        Ok(())
+    }
+}
+
 /// Ubah tinggi panel mengikuti isinya (tinggi logis dari frontend), dengan tepi bawah tetap
 /// di tempat supaya panel tumbuh ke atas dan tidak masuk ke bawah taskbar.
 #[tauri::command]
@@ -155,6 +173,9 @@ fn toggle_panel(app: &AppHandle) -> Result<bool, String> {
 }
 
 fn show_panel(app: &AppHandle) -> Result<(), String> {
+    if app.try_state::<PanelSuppressed>().is_some_and(|f| f.0.load(Ordering::SeqCst)) {
+        return Ok(());
+    }
     let panel = panel_window(app)?;
     panel.show().map_err(|e| e.to_string())?;
     // Pastikan tetap di atas setelah ditampilkan ulang.
@@ -244,6 +265,7 @@ pub fn run() {
             let sep = PredefinedMenuItem::separator(app)?;
             let menu = Menu::with_items(app, &[&play_pause, &toggle, &click, &sep, &open, &quit])?;
             app.manage(ClickThroughItem(click.clone()));
+            app.manage(PanelSuppressed(AtomicBool::new(false)));
 
             TrayIconBuilder::with_id("ziyadah-tray")
                 .icon(app.default_window_icon().cloned().expect("ikon aplikasi tidak ada"))
@@ -308,6 +330,7 @@ pub fn run() {
             quran_timing,
             panel_toggle,
             panel_hide,
+            panel_set_suppressed,
             panel_fit,
             panel_set_click_through,
         ])

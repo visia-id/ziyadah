@@ -85,6 +85,8 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [ ] **F2-08** Pengingat tilawah opsional
 - [ ] **F2-09** Siapkan dan ajukan permohonan tashih LPMQ *(target 4 Jan 2027)*
 - [ ] **F2-10** Rilis v0.2
+- [x] **F2-11** Mode Layar Penuh tahap 1 (dimajukan ke v0.0.8): ayat besar dengan sorot per kata, latar gambar bergerak berlisensi jelas, kontrol keyboard (6 Okt 2026)
+- [ ] **F2-12** Mode Layar Penuh tahap 2: video latar unduhan terpisah, mode masjid (huruf ekstra besar, pindah ayat manual tanpa audio)
 
 **Gerbang Fase 2:** integritas teks lolos checksum; target khatam teruji simulasi 30 hari.
 

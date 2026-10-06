@@ -28,6 +28,7 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 - Ayat panjang di panel otomatis bergulir mengikuti baris yang sedang dibaca, berhenti sebentar bila pengguna menggulir sendiri; tepi memudar menggantikan scrollbar; daftar ayat di jendela utama ikut menampilkan ayat aktif (F1-27)
 - Pernyataan status tashih yang jujur sejak awal: halaman pernyataan saat instal, bar status di jendela utama, dan README (F1-29)
 - Pembaruan otomatis bertanda tangan dari GitHub Releases dan workflow rilis yang membuat draf rilis dari tag versi (F4-03)
+- Mode Layar Penuh: ayat besar dengan sorot per kata, ayat sebelum dan sesudah, terjemah, latar bergerak pelan (Galaksi Whirlpool, Tebing Kosmik, Bumi, Bintang, Gradasi) berlisensi NASA/ESA dengan kredit, kontrol keyboard dan remote presentasi (F2-11)
 
 ### Diperbaiki
 

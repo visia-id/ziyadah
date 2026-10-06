@@ -16,6 +16,8 @@ import { safeGet, safeSet } from "../shared/storage";
 import { ArabicWords, useActiveWords } from "../shared/words";
 import { scrollBehavior, useManualScrollPause } from "../shared/follow";
 import { UpdateBanner } from "./updater";
+import { Fullscreen } from "./fullscreen";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 // Pilihan terakhir diingat antar sesi; pertama kali dibuka mulai dari Al-Fatihah.
 const KEY_SURAH = "ziyadah.main.surah";
@@ -101,6 +103,29 @@ function App() {
     player.play(surah.number, from, reciter);
   };
 
+  // Mode Layar Penuh (F2-11): jendela utama masuk layar penuh, panel Ambient disembunyikan selama itu.
+  const [full, setFull] = useState(false);
+  const enterFull = () => {
+    setFull(true);
+    panel.setSuppressed(true).catch(() => {});
+    getCurrentWindow().setFullscreen(true).catch(() => {});
+  };
+  const exitFull = () => {
+    setFull(false);
+    getCurrentWindow().setFullscreen(false).catch(() => {});
+    panel.setSuppressed(false).catch(() => {});
+  };
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "F11") return;
+      e.preventDefault();
+      if (full) exitFull();
+      else enterFull();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
   const toggleClickThrough = async () => {
     const next = !clickThrough;
     await panel.setClickThrough(next);
@@ -122,12 +147,16 @@ function App() {
     row.scrollIntoView({ block: "center", behavior: scrollBehavior() });
   }, [current, surahNo]);
 
+  if (full) {
+    return <Fullscreen state={state} surahNo={surahNo} onStart={() => play(1)} onExit={exitFull} />;
+  }
+
   return (
     <main>
       <header>
         <div>
           <h1>Ziyadah</h1>
-          <p className="sub">Beta · v0.0.7</p>
+          <p className="sub">Beta · v0.0.8</p>
         </div>
         <div className="status">
           {state?.status === "loading" && "Memuat..."}
@@ -255,6 +284,7 @@ function App() {
               <button onClick={() => player.stop()}>Stop</button>
             </div>
             <div className="buttons">
+              <button className="primary" onClick={enterFull} title="Layar penuh (F11)">Layar penuh</button>
               <button onClick={() => panel.toggle()}>Tampilkan/sembunyikan panel</button>
               <button className={clickThrough ? "on" : ""} onClick={toggleClickThrough}>
                 Klik-tembus: {clickThrough ? "aktif" : "mati"}

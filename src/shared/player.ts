@@ -91,6 +91,8 @@ export const player = {
 export const panel = {
   toggle: () => invoke<boolean>("panel_toggle"),
   hide: () => invoke<void>("panel_hide"),
+  /** Mode Layar Penuh: panel disembunyikan dan tidak muncul sampai dilepas lagi. */
+  setSuppressed: (on: boolean) => invoke<void>("panel_set_suppressed", { on }),
   /** Tinggi logis (CSS px) isi panel; jendela panel menyesuaikan dengan tepi bawah tetap. */
   fit: (height: number) => invoke<void>("panel_fit", { height }),
   setClickThrough: (on: boolean) => invoke<void>("panel_set_click_through", { on }),

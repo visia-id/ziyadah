@@ -161,6 +161,32 @@ Jendela utama untuk membaca Qur'an dengan nyaman di layar besar, dengan progres 
 - [ ] Pindah ke halaman mana pun di bawah 200 ms
 - [ ] Target khatam menyesuaikan otomatis bila pengguna tertinggal atau lebih cepat
 
+## Mode Layar Penuh (dimajukan ke v0.0.8)
+
+Tampilan layar penuh ala video murottal: ayat besar di tengah dengan sorot per kata, terjemah di bawahnya, dan latar gambar yang bergerak pelan. Pengalaman yang biasa dicari orang di YouTube, tanpa iklan, tanpa rekomendasi, dan tetap jalan tanpa internet.
+
+**Situasi pemakaian**
+
+1. Jeda kerja: menyimak penuh beberapa menit (pasangan dari panel Ambient saat bekerja)
+2. Tilawah santai, terutama malam hari dan Ramadan
+3. Masjid, majelis, dan kajian: laptop disambung ke TV atau proyektor
+4. Layar saat komputer menganggur (seperti screensaver)
+
+**Kebutuhan tahap 1 (v0.0.8)**
+
+- Masuk dari jendela utama atau tombol F11; keluar dengan Esc
+- Ayat aktif besar di tengah, ayat sebelum dan sesudah samar, terjemah opsional, nama surah dan nomor ayat kecil
+- Kontrol hanya muncul saat mouse bergerak; Spasi untuk jeda/lanjut, panah untuk pindah ayat
+- Latar bawaan: foto langit dan alam yang bergerak pelan (zoom, geser, galaksi berputar), bintang berkelip yang digambar aplikasi, dan gradasi; pilihan latar diingat
+- Teks selalu di atas lapisan gelap atau blur, kontras memenuhi WCAG AA
+
+**Aturan latar**
+
+- Tanpa gambar makhluk bernyawa; tema langit, luar angkasa, alam, dan gradasi
+- Lisensi wajib jelas: domain publik (misalnya NASA) atau lisensi terbuka dengan atribusi (misalnya ESA, CC BY 4.0); kredit tiap gambar dicantumkan di aplikasi dan README
+- Gambar tidak dipasangkan dengan ayat tertentu sebagai "bukti ilmiah"; latar hanya suasana
+- Tahap berikutnya: video latar diunduh terpisah (misalnya timelapse Bumi dari ISS), mode masjid dengan huruf ekstra besar dan pindah ayat manual tanpa audio
+
 ## Mode Hafalan (Fase 3)
 
 Mode Hafalan adalah pembeda utama aplikasi: ia memisahkan hafalan baru dari murajaah (pengulangan) dan menjadwalkan murajaah otomatis supaya hafalan lama tidak hilang. Di antarmuka, istilah yang dipakai adalah "Hafalan baru" dan "Murajaah"; kata Ziyadah hanya dipakai sebagai nama aplikasi agar tidak ambigu.
