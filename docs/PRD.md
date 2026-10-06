@@ -236,9 +236,9 @@ Kode aplikasi berlisensi MIT, tetapi setiap aset data punya syarat sendiri dan t
 
 | Aset | Kandidat sumber | Catatan lisensi dan risiko |
 | --- | --- | --- |
-| Teks Rasm Utsmani | Data Qur'an Kemenag (Mushaf Standar Indonesia) atau Tanzil | Tanzil mengizinkan penyalinan verbatim dengan atribusi, tanpa perubahan. Mushaf Standar Indonesia lebih akrab bagi pengguna dan memudahkan tashih. Syarat penggunaan data Kemenag perlu dikonfirmasi |
+| Teks Rasm Utsmani | Tanzil edisi Uthmani, dari berkas resmi tanzil.net (keputusan [0004](decisions/0004-teks-tanzil.md)) | Boleh disalin verbatim dengan menyebut Tanzil Project dan menautkan ke tanzil.net; teks tidak boleh diubah. Tashih LPMQ tetap wajib sebelum diedarkan luas |
 | Terjemah Indonesia | Terjemah Kemenag | Izin redistribusi dalam aplikasi pihak ketiga perlu dikonfirmasi tertulis |
-| Font mushaf | LPMQ Isep Misbah (Kemenag) atau font KFGQPC | Syarat redistribusi masing-masing font perlu dibaca sebelum dibundel |
+| Font mushaf | Font Uthmani gaya Madinah (misalnya KFGQPC), mengikuti teks Tanzil | Syarat redistribusi masing-masing font perlu dibaca sebelum dibundel |
 | Audio murottal | EveryAyah (per ayat) | Hak atas rekaman tetap milik qari atau pemegang hak; aplikasi hanya mengunduh, tidak mengklaim |
 | Data uji coba (sementara) | Al Quran Cloud: edisi `quran-uthmani` (bersumber dari Tanzil) dan `id.indonesian` (Kemenag) | Hanya untuk prototipe lewat `npm run fetch-data`, tidak di-commit dan tidak dibundel. Diganti sumber final setelah keputusan F1-04 |
 | Timing per kata | quran-align (Colin Fair) | CC BY 4.0, wajib atribusi; hanya mencakup sebagian qari dan ada ayat yang meleset |
@@ -297,7 +297,7 @@ Angka target adalah usulan awal untuk didiskusikan, bukan hasil riset pasar. Tel
 
 - [ ] Domain, logo, dan identitas visual Ziyadah
 - [ ] Siapa pemohon tashih: pribadi, VIC, atau yayasan khusus untuk proyek ini?
-- [ ] Pakai teks Mushaf Standar Indonesia atau Tanzil sebagai sumber utama?
+- [x] Pakai teks Mushaf Standar Indonesia atau Tanzil sebagai sumber utama? Tanzil (keputusan 0004)
 - [ ] Daftar qari bawaan untuk v0.1 (usulan: Alafasy, Husary, Minshawi, Abdul Basit, Sudais)
 - [ ] Algoritma murajaah: SM-2 (sederhana) atau FSRS (lebih akurat, lebih kompleks)?
 - [ ] Apakah donasi diterima, dan lewat kanal apa?

@@ -32,3 +32,4 @@ Apa yang jadi lebih mudah, apa yang jadi lebih sulit.
 | 0001 | [Tauri v2 sebagai shell aplikasi](0001-tauri-v2.md) | diterima |
 | 0002 | [Audio dan status pemutaran di inti Rust](0002-audio-di-inti-rust.md) | diterima |
 | 0003 | [Data Qur'an tidak di-commit sampai izin dan tashih beres](0003-data-quran-tidak-di-commit.md) | diterima |
+| 0004 | [Tanzil sebagai sumber teks Qur'an utama](0004-teks-tanzil.md) | diterima |

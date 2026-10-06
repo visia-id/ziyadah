@@ -34,8 +34,8 @@ Rujukan kebutuhan: `docs/PRD.md`.
 
 ### Data
 
-- [ ] **F1-04** Putuskan sumber teks utama (Mushaf Standar Indonesia atau Tanzil), catat di `docs/decisions/`
-- [ ] **F1-05** Script pembangun `quran.db` (SQLite): 114 surah, metadata juz/halaman/hizb, terjemah Kemenag
+- [x] **F1-04** Putuskan sumber teks utama (Mushaf Standar Indonesia atau Tanzil), catat di `docs/decisions/` (6 Okt 2026: Tanzil, keputusan 0004)
+- [ ] **F1-05** Script pembangun `quran.db` (SQLite) dari berkas resmi Tanzil: 114 surah, metadata juz/halaman/hizb, terjemah Kemenag
 - [ ] **F1-06** Checksum teks dan tes integritas (jumlah ayat 6.236, basmalah, tidak ada teks berubah)
 - [ ] **F1-07** Inti Rust membaca `quran.db`; frontend berhenti memakai JSON di `public/data`
 
