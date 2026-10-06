@@ -8,8 +8,9 @@ import { data, panel, player, type Basmalah, type PlayerState, type Surah } from
 // Seret dari mana saja untuk memindah. Kontrol muncul saat kursor di atas panel.
 // Tombol × menyembunyikan panel saja; murottal tetap jalan dan panel bisa dimunculkan lagi dari tray.
 //
-// Teks ayat tidak pernah dipotong: tinggi panel mengikuti isi sampai batas MAX_SCREEN_RATIO,
-// lalu huruf Arab dikecilkan sampai AR_MIN, dan bila masih tidak muat teks Arab bisa di-scroll.
+// Teks ayat dan terjemahnya tidak pernah dipotong: tinggi panel mengikuti isi sampai batas
+// MAX_SCREEN_RATIO, lalu huruf Arab dikecilkan sampai AR_MIN, dan bila masih tidak muat
+// teks ayat beserta terjemahnya bisa di-scroll.
 
 const AR_MAX = 28;
 const AR_MIN = 18;
@@ -75,15 +76,17 @@ function Panel() {
         </p>
       ) : (
         <>
-          <p key={`${state!.surah}:${state!.ayah}`} className="ar" dir="rtl" data-tauri-drag-region>
-            {ar}
-            {ayah && <span className="num"> ﴿{toArabicDigits(ayah.n)}﴾</span>}
-          </p>
-          {showTranslation && tr && (
-            <p className="tr" dir="ltr" data-tauri-drag-region>
-              {tr}
+          <div className="text" data-tauri-drag-region>
+            <p key={`${state!.surah}:${state!.ayah}`} className="ar" dir="rtl" data-tauri-drag-region>
+              {ar}
+              {ayah && <span className="num"> ﴿{toArabicDigits(ayah.n)}﴾</span>}
             </p>
-          )}
+            {showTranslation && tr && (
+              <p className="tr" dir="ltr" data-tauri-drag-region>
+                {tr}
+              </p>
+            )}
+          </div>
           <div className="meta" dir="ltr" data-tauri-drag-region>
             {surah!.nameLatin} · {isBasmalah ? "Basmalah" : `${state!.ayah}/${surah!.ayahCount}`}
             {state!.buffering && " · memuat audio"}

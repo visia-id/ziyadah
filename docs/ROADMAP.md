@@ -57,6 +57,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [x] **F1-22** Panel bisa disembunyikan: tombol × di kontrol panel, panel hanya tampil saat murottal diputar dan tersembunyi saat idle (6 Okt 2026)
 - [x] **F1-23** Teks Arab di panel tidak pernah terpotong: tinggi panel mengikuti isi (maks 40% layar), huruf Arab mengecil sampai 18 px bila perlu, lalu bisa di-scroll (6 Okt 2026)
 - [ ] **F1-24** Opsi teks panel memudar beberapa detik setelah ayat berganti, muncul lagi saat kursor di atas panel (bawaan: mati)
+- [x] **F1-25** Terjemah di panel tidak dipotong 2 baris: tinggi panel mengikuti ayat dan terjemah, bila melebihi batas keduanya bisa di-scroll (6 Okt 2026)
 
 ### Rilis
 
