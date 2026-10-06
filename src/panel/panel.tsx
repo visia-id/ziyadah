@@ -55,7 +55,9 @@ function Panel() {
     safeSet("ziyadah.panel.translation", next ? "1" : "0");
   };
 
-  const idle = !state || state.status === "idle" || !surah;
+  const idle = !state || state.status === "idle";
+  // Mode lanjut bisa masuk ke surah yang teksnya belum diambil (data uji coba hanya beberapa surah).
+  const missingText = !idle && (!surah || surah.number !== state!.surah);
   const isBasmalah = state?.ayah === 0;
   const ayah = !idle && !isBasmalah ? surah!.ayahs.find((a) => a.n === state!.ayah) : undefined;
   const ar = isBasmalah ? basmalah?.ar : ayah?.ar;
@@ -66,6 +68,10 @@ function Panel() {
       {idle ? (
         <p className="idle" data-tauri-drag-region>
           Ziyadah · pilih surah di jendela utama
+        </p>
+      ) : missingText ? (
+        <p className="idle" data-tauri-drag-region>
+          Surah {state!.surah} · {isBasmalah ? "Basmalah" : `ayat ${state!.ayah}`} · teks belum tersedia
         </p>
       ) : (
         <>

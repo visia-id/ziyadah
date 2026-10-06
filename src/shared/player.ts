@@ -4,6 +4,14 @@ import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 // Status pemutaran dipegang inti Rust dan disiarkan ke semua jendela.
 export type PlayerStatus = "idle" | "loading" | "playing" | "paused";
 
+/** Apa yang terjadi setelah sebuah ayat selesai. Rentang berlaku di surah yang sedang diputar. */
+export type PlayMode =
+  | { kind: "stop" }
+  | { kind: "continue" }
+  | { kind: "repeatAyah" }
+  | { kind: "repeatSurah" }
+  | { kind: "range"; from: number; to: number };
+
 export interface PlayerState {
   status: PlayerStatus;
   surah: number;
@@ -13,6 +21,7 @@ export interface PlayerState {
   /** true bila ayat yang ditunggu sedang diunduh */
   buffering: boolean;
   error: string | null;
+  mode: PlayMode;
 }
 
 export interface SurahIndexItem {
@@ -46,8 +55,9 @@ export const RECITERS = [
 ];
 
 export const player = {
-  play: (surah: number, ayahCount: number, startAyah: number, reciter: string) =>
-    invoke<void>("player_play", { surah, ayahCount, startAyah, reciter }),
+  play: (surah: number, startAyah: number, reciter: string) =>
+    invoke<void>("player_play", { surah, startAyah, reciter }),
+  setMode: (mode: PlayMode) => invoke<void>("player_set_mode", { mode }),
   pause: () => invoke<void>("player_pause"),
   resume: () => invoke<void>("player_resume"),
   next: () => invoke<void>("player_next"),

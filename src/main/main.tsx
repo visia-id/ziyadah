@@ -7,6 +7,7 @@ import {
   panel,
   player,
   RECITERS,
+  type PlayMode,
   type PlayerState,
   type Surah,
   type SurahIndexItem,
@@ -23,6 +24,7 @@ function App() {
   const [reciter, setReciter] = useState(RECITERS[0].id);
   const [state, setState] = useState<PlayerState | null>(null);
   const [clickThrough, setClickThrough] = useState(false);
+  const [mode, setMode] = useState<PlayMode>({ kind: "stop" });
 
   useEffect(() => {
     data
@@ -43,8 +45,27 @@ function App() {
     data.surah(surahNo).then(setSurah).catch(() => setSurah(null));
   }, [surahNo]);
 
+  // Mode lanjut bisa pindah surah sendiri; jendela utama ikut menampilkan surah yang sedang diputar.
+  useEffect(() => {
+    if (state && state.status !== "idle" && state.surah > 0 && index.some((s) => s.number === state.surah)) {
+      setSurahNo(state.surah);
+    }
+  }, [state?.surah, state?.status, index]);
+
+  // Mode dipegang inti Rust; ikuti bila diubah dari jendela lain.
+  useEffect(() => {
+    if (state?.mode) setMode(state.mode);
+  }, [state?.mode?.kind, state?.mode?.kind === "range" ? `${state.mode.from}-${state.mode.to}` : ""]);
+
+  const changeMode = (next: PlayMode) => {
+    setMode(next);
+    player.setMode(next);
+  };
+
   const play = (start = 1) => {
-    if (surah) player.play(surah.number, surah.ayahCount, start, reciter);
+    if (!surah) return;
+    const from = mode.kind === "range" && start === 1 ? mode.from : start;
+    player.play(surah.number, from, reciter);
   };
 
   const toggleClickThrough = async () => {
@@ -99,6 +120,55 @@ function App() {
                 ))}
               </select>
             </label>
+            <label>
+              Mode putar
+              <select
+                value={mode.kind}
+                onChange={(e) => {
+                  const kind = e.target.value as PlayMode["kind"];
+                  const max = surah?.ayahCount ?? 1;
+                  changeMode(kind === "range" ? { kind, from: 1, to: Math.min(5, max) } : { kind });
+                }}
+              >
+                <option value="stop">Berhenti di akhir surah</option>
+                <option value="continue">Lanjut ke surah berikutnya</option>
+                <option value="repeatAyah">Ulang ayat</option>
+                <option value="repeatSurah">Ulang surah</option>
+                <option value="range">Ulang rentang ayat</option>
+              </select>
+            </label>
+            {mode.kind === "range" && surah ? (
+              <div className="range">
+                <label>
+                  Dari ayat
+                  <input
+                    type="number"
+                    min={1}
+                    max={surah.ayahCount}
+                    value={mode.from}
+                    onChange={(e) => {
+                      const from = clamp(Number(e.target.value), 1, surah.ayahCount);
+                      changeMode({ kind: "range", from, to: Math.max(from, mode.to) });
+                    }}
+                  />
+                </label>
+                <label>
+                  Sampai ayat
+                  <input
+                    type="number"
+                    min={mode.from}
+                    max={surah.ayahCount}
+                    value={mode.to}
+                    onChange={(e) => {
+                      const to = clamp(Number(e.target.value), mode.from, surah.ayahCount);
+                      changeMode({ kind: "range", from: mode.from, to });
+                    }}
+                  />
+                </label>
+              </div>
+            ) : (
+              <div />
+            )}
             <div className="buttons">
               <button onClick={() => player.prev()}>⏮</button>
               {playing ? (
@@ -145,6 +215,10 @@ function App() {
       </footer>
     </main>
   );
+}
+
+function clamp(n: number, min: number, max: number) {
+  return Number.isFinite(n) ? Math.min(max, Math.max(min, Math.round(n))) : min;
 }
 
 createRoot(document.getElementById("root")!).render(

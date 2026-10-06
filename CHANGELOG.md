@@ -15,4 +15,6 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 - CI GitHub Actions: build frontend, `cargo test`, dan build Tauri di Windows dan macOS untuk setiap pull request dan push ke main (F0-05)
 - Panel Ambient bisa disembunyikan lewat tombol ×; panel tampil otomatis saat murottal diputar dan tersembunyi saat pemutar idle (F1-22)
 - Teks Arab di panel Ambient tidak lagi terpotong: tinggi panel mengikuti isi (maks 40% layar), huruf Arab mengecil sampai 18 px lalu bisa di-scroll (F1-23)
+- Mode putar: berhenti di akhir surah, lanjut ke surah berikutnya, ulang ayat, ulang surah, dan ulang rentang ayat; bisa diganti saat murottal berjalan (F1-08)
+- Jeda 1 detik saat pindah surah dan saat kembali ke awal surah atau rentang (F1-09)
 - Keputusan 0004: Tanzil sebagai sumber teks Qur'an utama (F1-04)

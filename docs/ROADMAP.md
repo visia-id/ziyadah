@@ -41,8 +41,8 @@ Rujukan kebutuhan: `docs/PRD.md`.
 
 ### Audio
 
-- [~] **F1-08** Mode putar: berhenti di akhir surah, lanjut ke surah berikutnya, ulang ayat, ulang surah, rentang ayat
-- [~] **F1-09** Jeda 1 detik antar surah saat mode lanjut
+- [x] **F1-08** Mode putar: berhenti di akhir surah, lanjut ke surah berikutnya, ulang ayat, ulang surah, rentang ayat (6 Okt 2026)
+- [x] **F1-09** Jeda 1 detik antar surah saat mode lanjut (6 Okt 2026)
 - [ ] **F1-10** Kontrol media OS (tombol media keyboard/headset, kontrol media Windows, Now Playing macOS)
 - [ ] **F1-11** Manajer unduhan offline per surah, per juz, dan seluruh mushaf per qari, bisa dilanjutkan
 - [ ] **F1-12** Tampilan ruang disk per qari dan tombol hapus audio

@@ -9,7 +9,7 @@
 
 mod audio;
 
-use audio::{Audio, Command, PlayerState};
+use audio::{Audio, Command, PlayMode, PlayerState};
 use tauri::menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::TrayIconBuilder;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -20,15 +20,19 @@ struct ClickThroughItem(CheckMenuItem<Wry>);
 // ---------- Perintah pemutar ----------
 
 #[tauri::command]
-fn player_play(app: AppHandle, audio: State<Audio>, surah: u16, ayah_count: u16, start_ayah: u16, reciter: String) {
+fn player_play(app: AppHandle, audio: State<Audio>, surah: u16, start_ayah: u16, reciter: String) {
     // Memutar dari jendela utama selalu memunculkan panel, walau sebelumnya disembunyikan.
     let _ = show_panel(&app);
     audio.send(Command::Play {
         surah,
-        ayah_count,
         start_ayah,
         reciter,
     });
+}
+
+#[tauri::command]
+fn player_set_mode(audio: State<Audio>, mode: PlayMode) {
+    audio.send(Command::SetMode(mode));
 }
 
 #[tauri::command]
@@ -246,6 +250,7 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             player_play,
+            player_set_mode,
             player_pause,
             player_resume,
             player_next,

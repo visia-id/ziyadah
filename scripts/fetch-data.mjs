@@ -10,7 +10,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const SURAHS = [1, 67, 112, 113, 114];
+const SURAHS = [1, 67, 68, 112, 113, 114];
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "public", "data");
 const API = "https://api.alquran.cloud/v1/surah";
 
