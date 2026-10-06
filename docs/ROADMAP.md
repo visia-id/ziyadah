@@ -88,6 +88,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [ ] **F2-10** Rilis v0.2
 - [x] **F2-11** Mode Layar Penuh tahap 1 (dimajukan ke v0.0.8): ayat besar dengan sorot per kata, latar gambar bergerak berlisensi jelas, kontrol keyboard (6 Okt 2026)
 - [x] **F2-13** Kenyamanan Mode Layar Penuh: ayat sekitar bawaannya mati dan tidak pernah terpotong, transisi ayat bergulir, ukuran huruf bisa diatur (v0.0.9) (6 Okt 2026)
+- [x] **F2-14** Transisi ayat di Mode Layar Penuh berurutan, tidak tumpang tindih: ayat lama memudar 250 ms, ayat baru dan terjemahnya muncul setelahnya (7 Okt 2026)
 - [ ] **F2-12** Mode Layar Penuh tahap 2: video latar unduhan terpisah, mode masjid (huruf ekstra besar, pindah ayat manual tanpa audio)
 
 **Gerbang Fase 2:** integritas teks lolos checksum; target khatam teruji simulasi 30 hari.

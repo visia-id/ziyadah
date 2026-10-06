@@ -17,8 +17,8 @@ const KEY_CTX = "ziyadah.full.ctx";
 const KEY_SCALE = "ziyadah.full.scale";
 const SCALE_MIN = 0.7;
 const SCALE_MAX = 1.6;
-/** Lama transisi ayat lama naik dan memudar, ms. */
-const LEAVE_MS = 600;
+/** Lama ayat lama naik dan memudar, ms (sama dengan fs-leave di CSS). Ayat baru baru muncul setelahnya. */
+const LEAVE_MS = 250;
 const CONTROLS_HIDE_MS = 2500;
 /** Ukuran huruf Arab (px): mulai dari AR_MAX relatif layar, dikecilkan sampai AR_MIN untuk ayat panjang. */
 const AR_MIN = 26;
@@ -173,7 +173,11 @@ export function Fullscreen({ state, surahNo, onStart, onExit }: Props) {
                 {ar && <ArabicWords text={ar} range={range} />}
                 {ayah && <span className="fs-num"> ﴿{toArabicDigits(ayah.n)}﴾</span>}
               </p>
-              {showTr && tr && <p className="fs-tr">{tr}</p>}
+              {showTr && tr && (
+                <p key={`${state!.surah}:${n}:tr`} className="fs-tr">
+                  {tr}
+                </p>
+              )}
             </div>
             {showCtx && <ContextAyah ayah={nextAyah} />}
           </>

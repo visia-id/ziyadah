@@ -39,5 +39,6 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 - Versi installer tidak lagi gagal memuat data Qur'an saat dibuka ("state not managed"): jendela kini dibuat setelah audio dan data Qur'an siap
 - Panel tidak lagi menempel ke taskbar: jarak ke taskbar sama dengan jarak ke sisi kanan, posisi tidak lagi tercatat keliru saat tinggi panel berubah, dan lebar bawaan 440 (F1-28)
 - Mode Layar Penuh: huruf Arab tidak lagi mengecil drastis saat terjemah dimatikan (harakat bawah sempat terbaca sebagai teks yang meluap)
+- Mode Layar Penuh: ayat lama dan ayat baru tidak lagi bertumpuk saat berganti; terjemah ikut transisi yang sama (F2-14)
 - Pemeriksaan pembaruan tiap 1 jam, sebelumnya tiap 6 jam
 - Keputusan 0004: Tanzil sebagai sumber teks Qur'an utama (F1-04)

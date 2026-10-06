@@ -150,7 +150,9 @@
 .fs-controls button.main { min-width: 52px; background: rgba(240, 201, 106, 0.45); }
 
 /* Transisi ayat: yang baru muncul dari bawah, yang lama naik dan memudar di tempat yang sama. */
-.fs-ar { animation: fs-enter 600ms ease-out; }
+/* Berurutan, tidak tumpang tindih: ayat lama memudar dalam 250 ms, ayat baru baru muncul setelah 200 ms.
+   Dengan begitu hanya satu ayat yang terbaca di satu waktu, dan kata pertama tidak terlambat jauh dari suara qari. */
+.fs-ar, .fs-current .fs-tr { animation: fs-enter 450ms ease-out 200ms both; }
 @keyframes fs-enter { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
 .fs-leaving {
   position: absolute;
@@ -161,11 +163,11 @@
   align-items: center;
   text-align: center;
   pointer-events: none;
-  animation: fs-leave 600ms ease-in forwards;
+  animation: fs-leave 250ms ease-in forwards;
 }
-@keyframes fs-leave { to { opacity: 0; transform: translateY(-40px); } }
+@keyframes fs-leave { to { opacity: 0; transform: translateY(-24px); filter: blur(2px); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .fs-photo, .fs-gradient, .fs-ar, .fs-leaving { animation: none !important; }
+  .fs-photo, .fs-gradient, .fs-ar, .fs-current .fs-tr, .fs-leaving { animation: none !important; }
   .fs .word, .fs-controls { transition: none; }
 }
