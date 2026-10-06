@@ -63,6 +63,10 @@ Aplikasi memeriksa pembaruan dari [GitHub Releases](https://github.com/visia-id/
 
 Membangun installer di komputer sendiri membutuhkan variabel `TAURI_SIGNING_PRIVATE_KEY` berisi kunci privat updater.
 
+## Situs
+
+Landing page statis ada di folder `website/` (HTML, CSS, sedikit JS, tanpa build), untuk `ziyadah.untungkasirin.com`. Tombol unduh otomatis menunjuk ke installer rilis terbaru lewat API GitHub. Situs tidak memakai cookie maupun analitik, dan semua font di-host sendiri.
+
 ## Struktur
 
 ```

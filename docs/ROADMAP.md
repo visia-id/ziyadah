@@ -63,6 +63,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [x] **F1-28** Jarak panel ke taskbar sama dengan jarak ke sisi kanan (posisi sempat tercatat menembus taskbar), lebar bawaan 440 (6 Okt 2026)
 - [x] **F1-29** Pernyataan status tashih yang jujur sejak awal: halaman pernyataan saat instal (PERNYATAAN.txt), bar status di jendela utama, README (6 Okt 2026)
 - [x] **F1-30** Bundel font Arab di aplikasi; jangan memuat Amiri Quran dari Google Fonts (melanggar offline-first dan privasi), cek lisensi font (6 Okt 2026)
+- [~] **F1-31** Landing page `website/` untuk ziyadah.untungkasirin.com: unduhan rilis terbaru, status tashih jujur, atribusi lengkap, tanpa cookie dan analitik
 
 ### Rilis
 

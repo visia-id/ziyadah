@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ziyadah · Qur'an teman kerja</title>
+  <meta name="description" content="Ziyadah: aplikasi Qur'an gratis untuk Windows. Murottal menemani kerja dengan panel ayat yang melayang, sorot per kata, dan mode layar penuh. Tanpa iklan, tanpa akun. Versi uji coba, belum ditashih LPMQ.">
+  <meta property="og:title" content="Ziyadah · Qur'an teman kerja">
+  <meta property="og:description" content="Murottal menemani kerja, ayatnya melayang di layar tanpa mengganggu. Gratis, tanpa iklan, open source.">
+  <meta property="og:image" content="https://ziyadah.untungkasirin.com/img/layar-penuh-cosmic-cliffs.webp">
+  <meta name="theme-color" content="#0a1220">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/InstrumentSerif.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/AmiriQuran-Arabic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Status tashih tampil paling atas, jujur sejak awal. Isinya sama dengan PERNYATAAN.txt di repo. -->
+  <a class="ribbon" href="#amanah">
+    <span class="ribbon-dot"></span>
+    Versi uji coba (beta) · <strong>Belum ditashih LPMQ</strong> · Baca pernyataan kami
+  </a>
+
+  <header class="top">
+    <a class="brand" href="#">
+      <img src="favicon.svg" alt="" width="34" height="34">
+      <span>Ziyadah</span>
+    </a>
+    <nav>
+      <a href="#fitur">Fitur</a>
+      <a href="#layar-penuh">Layar penuh</a>
+      <a href="#amanah">Amanah teks</a>
+      <a href="https://github.com/visia-id/ziyadah">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Gratis · Tanpa iklan · Open source</p>
+        <h1>Qur'an <em>teman kerja</em>.</h1>
+        <p class="lede">
+          Murottal menemani jam kerja, ayatnya melayang kecil di sudut layar dan mengikuti bacaan qari kata demi kata.
+          Tidak mencuri fokus, tidak ada iklan, tidak perlu akun.
+        </p>
+        <div class="cta">
+          <a class="btn-download" id="download" href="https://github.com/visia-id/ziyadah/releases/latest">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5 10.5 4.4v7H3V5.5Zm0 13 7.5 1.1V12.6H3v5.9Zm8.4 1.2L21 21V12.6h-9.6v7.1Zm0-15.4v7.1H21V3l-9.6 1.3Z"/></svg>
+            <span>Unduh untuk Windows</span>
+          </a>
+          <p class="cta-meta" id="download-meta">Windows 10 dan 11 · sekitar 5 MB · pembaruan otomatis</p>
+        </div>
+      </div>
+
+      <!-- Tiruan desktop: panel Ambient di atas jendela kerja. Penanda kata memakai timing asli Alafasy (quran-align). -->
+      <div class="hero-stage" aria-label="Contoh panel Ziyadah di atas jendela kerja">
+        <div class="workwin">
+          <div class="workwin-bar"><i></i><i></i><i></i><span>laporan-kuartal.xlsx</span></div>
+          <div class="workwin-body">
+            <span style="width:62%"></span><span style="width:84%"></span><span style="width:48%"></span>
+            <span style="width:76%"></span><span style="width:58%"></span><span style="width:90%"></span>
+            <span style="width:40%"></span><span style="width:70%"></span>
+          </div>
+        </div>
+        <figure class="panel-mock">
+          <p class="panel-ar" dir="rtl" id="hero-ayah" lang="ar"></p>
+          <p class="panel-tr" id="hero-tr"></p>
+          <figcaption>Ar-Ra'd · 28 · Mishary Rashid Alafasy</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="features" id="fitur">
+      <h2 class="section-title">Dirancang untuk menemani, <em>bukan mengalihkan</em>.</h2>
+      <div class="grid">
+        <article class="feat feat-wide">
+          <span class="num">01</span>
+          <h3>Panel ayat yang melayang</h3>
+          <p>Panel kecil di pojok kanan bawah menampilkan ayat yang sedang dibaca. Tidak mengambil alih keyboard, bisa dibuat tembus klik, dan posisinya diingat di setiap monitor.</p>
+        </article>
+        <article class="feat">
+          <span class="num">02</span>
+          <h3>Sorot kata demi kata</h3>
+          <p>Kata yang sedang dibaca qari ditandai, untuk Alafasy, Al-Husary, Minshawi, dan Abdul Basit.</p>
+        </article>
+        <article class="feat">
+          <span class="num">03</span>
+          <h3>Mode putar untuk menghafal</h3>
+          <p>Ulang ayat, ulang surah, ulang rentang ayat, atau lanjut terus sampai An-Nas.</p>
+        </article>
+        <article class="feat">
+          <span class="num">04</span>
+          <h3>114 surah, tanpa internet</h3>
+          <p>Teks dan terjemah ada di dalam aplikasi. Audio diunduh saat diputar, lalu tersimpan.</p>
+        </article>
+        <article class="feat">
+          <span class="num">05</span>
+          <h3>Privasi penuh</h3>
+          <p>Tanpa akun, tanpa pelacakan, tanpa iklan. Pengaturan Anda tersimpan di komputer Anda sendiri.</p>
+        </article>
+        <article class="feat feat-wide">
+          <span class="num">06</span>
+          <h3>Selalu terbaru</h3>
+          <p>Pasang sekali. Setiap ada perbaikan, Ziyadah memberi tahu dan memperbarui dirinya, dengan tanda tangan digital agar hanya pembaruan resmi yang terpasang.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="fullscreen" id="layar-penuh">
+      <div class="fs-head">
+        <h2 class="section-title">Saat jeda, <em>menyimak penuh</em>.</h2>
+        <p>Tekan F11 untuk Mode Layar Penuh: ayat besar dengan terjemah di atas langit yang bergerak pelan. Untuk jeda kerja, tilawah malam, atau disambung ke proyektor di majelis.</p>
+      </div>
+      <div class="shots">
+        <figure class="shot shot-main">
+          <img src="img/layar-penuh-cosmic-cliffs.webp" alt="Mode Layar Penuh: Al-Mulk ayat 2 di atas foto Nebula Carina" loading="lazy" width="1600" height="1000">
+          <figcaption>Tebing Kosmik · foto NASA, ESA, CSA, STScI</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="img/layar-penuh-whirlpool.webp" alt="Mode Layar Penuh: Al-Fatihah ayat 3 di atas Galaksi Whirlpool" loading="lazy" width="1600" height="1000">
+          <figcaption>Galaksi Whirlpool · NASA, ESA, Hubble Heritage Team</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="img/layar-penuh-blue-marble.webp" alt="Mode Layar Penuh: Al-Ikhlas ayat 1 di atas foto Bumi dari Apollo 17" loading="lazy" width="1600" height="1000">
+          <figcaption>Bumi · NASA, kru Apollo 17</figcaption>
+        </figure>
+      </div>
+      <ul class="keys">
+        <li><kbd>Spasi</kbd> putar / jeda</li>
+        <li><kbd>→</kbd> <kbd>←</kbd> pindah ayat</li>
+        <li><kbd>T</kbd> terjemah</li>
+        <li><kbd>B</kbd> ganti latar</li>
+        <li><kbd>−</kbd> <kbd>+</kbd> ukuran huruf</li>
+      </ul>
+    </section>
+
+    <section class="amanah" id="amanah">
+      <div class="amanah-card">
+        <p class="eyebrow gold">Amanah teks</p>
+        <h2>Kami jujur sejak awal.</h2>
+        <dl>
+          <div>
+            <dt>Belum ditashih LPMQ</dt>
+            <dd>Ziyadah belum ditashih oleh Lajnah Pentashihan Mushaf Al-Qur'an Kementerian Agama RI. Kami sedang mengurus komunikasi dengan LPMQ tentang proses tashih untuk aplikasi ini, dan status ini akan diperbarui di sini.</dd>
+          </div>
+          <div>
+            <dt>Teks tidak diubah</dt>
+            <dd>Teks diambil apa adanya dari <a href="https://tanzil.net">Tanzil Project</a> (Uthmani 1.1, mengikuti Mushaf Madinah) dan dicocokkan dengan checksum sumbernya setiap kali aplikasi dibangun. Sebagian tanda baca dan tanda waqaf bisa berbeda dari Mushaf Standar Indonesia.</dd>
+          </div>
+          <div>
+            <dt>Masih uji coba</dt>
+            <dd>Gunakan mushaf yang sudah ditashih sebagai rujukan utama, terutama untuk menghafal.</dd>
+          </div>
+          <div>
+            <dt>Temukan kesalahan?</dt>
+            <dd>Laporkan dengan nama surah dan nomor ayat di <a href="https://github.com/visia-id/ziyadah/issues">GitHub Issues</a>. Setiap laporan tentang teks kami periksa lebih dulu.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="install">
+      <h2 class="section-title">Cara memasang</h2>
+      <ol>
+        <li><span>1</span><p>Unduh <strong>Ziyadah_…_x64-setup.exe</strong> dari tombol di atas.</p></li>
+        <li><span>2</span><p>Bila muncul <em>"Windows protected your PC"</em>, klik <strong>More info</strong> lalu <strong>Run anyway</strong>. Ini karena installer belum memakai sertifikat tanda tangan berbayar, bukan karena virus.</p></li>
+        <li><span>3</span><p>Pilih surah dan qari, lalu <strong>Putar</strong>. Pemutaran pertama butuh internet untuk mengunduh audio.</p></li>
+      </ol>
+      <a class="btn-download small" href="https://github.com/visia-id/ziyadah/releases/latest">Unduh Ziyadah</a>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="foot-cols">
+      <div>
+        <p class="foot-brand"><img src="favicon.svg" alt="" width="22" height="22"> Ziyadah</p>
+        <p>Ziyadah berarti tambahan. Semoga pahala membaca, mendengar, dan menghafal Al-Qur'an terus bertambah.</p>
+        <p class="muted">Dibuat oleh <a href="https://untungkasirin.com">Untung Kasirin</a>. Kode aplikasi berlisensi MIT di <a href="https://github.com/visia-id/ziyadah">GitHub</a>.</p>
+      </div>
+      <div>
+        <p class="foot-h">Sumber dan atribusi</p>
+        <ul>
+          <li>Teks: <a href="https://tanzil.net">Tanzil Project</a>, Uthmani 1.1</li>
+          <li>Terjemah: Kementerian Agama RI, melalui Tanzil</li>
+          <li>Audio: <a href="https://everyayah.com">EveryAyah</a>; hak rekaman milik qari atau pemegang haknya</li>
+          <li>Timing per kata: <a href="https://github.com/cpfair/quran-align">quran-align</a>, Collin Fair, CC BY 4.0</li>
+          <li>Foto latar: NASA, ESA, CSA, STScI (<a href="https://github.com/visia-id/ziyadah/blob/main/public/backgrounds/KREDIT.md">rincian</a>)</li>
+          <li>Huruf: Amiri Quran, Instrument Serif, Plus Jakarta Sans (SIL OFL)</li>
+        </ul>
+      </div>
+    </div>
+    <p class="muted small">Situs ini tidak memakai cookie maupun analitik. Penggunaan foto NASA tidak berarti NASA mendukung Ziyadah.</p>
+  </footer>
+
+  <script src="main.js" defer></script>
+</body>
+</html>

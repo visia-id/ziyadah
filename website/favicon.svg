@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Ziyadah: huruf zay (ز), huruf awal nama aplikasi -->
+  <rect x="40" y="40" width="944" height="944" rx="200" fill="#217A57"/>
+  <!-- badan huruf gaya naskh: kepala tebal di atas, turun miring, ekor meruncing ke kiri bawah -->
+  <path d="M 545 430
+           C 540 400 560 380 595 382
+           C 630 384 655 400 662 430
+           C 690 560 640 690 500 765
+           C 420 806 330 818 236 806
+           C 330 790 420 760 480 712
+           C 560 650 570 540 545 430 Z"
+        fill="#FFFFFF"/>
+  <!-- titik di atas, belah ketupat seperti titik kaligrafi -->
+  <path d="M 600 205 L 668 273 L 600 341 L 532 273 Z" fill="#E8C46C"/>
+</svg>
