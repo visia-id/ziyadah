@@ -302,7 +302,7 @@ Angka target adalah usulan awal untuk didiskusikan, bukan hasil riset pasar. Tel
 - [ ] Domain, logo, dan identitas visual Ziyadah
 - [ ] Siapa pemohon tashih: pribadi, VIC, atau yayasan khusus untuk proyek ini?
 - [x] Pakai teks Mushaf Standar Indonesia atau Tanzil sebagai sumber utama? Tanzil (keputusan 0004)
-- [ ] Daftar qari bawaan untuk v0.1 (usulan: Alafasy, Husary, Minshawi, Abdul Basit, Sudais). Pakai versi murattal bertempo stabil, bukan mujawwad: suara yang naik-turun lebih menyedot perhatian saat bekerja. Bawaan yang diusulkan: Al-Husary
+- [x] Daftar qari bawaan untuk v0.1: Alafasy, Al-Husary, Minshawi, Abdul Basit (semuanya murattal, semuanya punya timing per kata). As-Sudais dikeluarkan karena temponya cepat dan data timing per katanya rusak di sumber. Bawaan saat pertama dibuka masih Alafasy; usulan Al-Husary sebagai bawaan belum diputuskan
 - [ ] Algoritma murajaah: SM-2 (sederhana) atau FSRS (lebih akurat, lebih kompleks)?
 - [ ] Apakah donasi diterima, dan lewat kanal apa?
 - [ ] Sikap aplikasi soal adab menyimak (QS. Al-A'raf: 204): Qur'an yang diputar sebagai suara latar saat bekerja. Perlu ditanyakan ke ustadz atau dewan syariah, lalu dituangkan di halaman Tentang

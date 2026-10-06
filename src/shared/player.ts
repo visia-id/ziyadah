@@ -69,7 +69,7 @@ export const RECITERS = [
   { id: "Husary_128kbps", name: "Mahmoud Khalil Al-Husary" },
   { id: "Minshawy_Murattal_128kbps", name: "Mohamed Siddiq Al-Minshawi" },
   { id: "Abdul_Basit_Murattal_192kbps", name: "Abdul Basit Abdus Samad" },
-  { id: "Abdurrahmaan_As-Sudais_192kbps", name: "Abdurrahman As-Sudais" },
+  // As-Sudais dikeluarkan: temponya cepat untuk menemani kerja dan data timing per katanya rusak di sumber.
 ];
 
 export const player = {
