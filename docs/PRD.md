@@ -2,7 +2,7 @@
 
 Versi 6 Oktober 2026 · Untung Kasirin
 
-Sumber hidup dokumen ini: https://claude.ai/code/artifact/9fc4b5f4-4e8f-4196-bdc2-3a55841bb644 (salinan ini bisa tertinggal dari versi terbaru).
+Usulan perubahan PRD diajukan lewat issue atau pull request di repo ini.
 
 ## Ringkasan
 
@@ -240,6 +240,7 @@ Kode aplikasi berlisensi MIT, tetapi setiap aset data punya syarat sendiri dan t
 | Terjemah Indonesia | Terjemah Kemenag | Izin redistribusi dalam aplikasi pihak ketiga perlu dikonfirmasi tertulis |
 | Font mushaf | LPMQ Isep Misbah (Kemenag) atau font KFGQPC | Syarat redistribusi masing-masing font perlu dibaca sebelum dibundel |
 | Audio murottal | EveryAyah (per ayat) | Hak atas rekaman tetap milik qari atau pemegang hak; aplikasi hanya mengunduh, tidak mengklaim |
+| Data uji coba (sementara) | Al Quran Cloud: edisi `quran-uthmani` (bersumber dari Tanzil) dan `id.indonesian` (Kemenag) | Hanya untuk prototipe lewat `npm run fetch-data`, tidak di-commit dan tidak dibundel. Diganti sumber final setelah keputusan F1-04 |
 | Timing per kata | quran-align (Colin Fair) | CC BY 4.0, wajib atribusi; hanya mencakup sebagian qari dan ada ayat yang meleset |
 | Data tajwid | Belum ditentukan | Masuk hanya bila ada sumber berlisensi terbuka |
 

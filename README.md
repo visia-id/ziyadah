@@ -12,6 +12,7 @@ Aplikasi Qur'an desktop gratis dan open source untuk tilawah, mendengarkan murot
 - Basmalah otomatis sebelum ayat 1 (kecuali Al-Fatihah dan At-Taubah)
 - Ayat berikutnya selalu sudah diantrikan supaya pergantian ayat tanpa jeda
 - Terjemah Indonesia opsional di panel (tombol "ID")
+- Panel tampil saat murottal diputar dan bisa disembunyikan dengan tombol ×; tinggi panel mengikuti panjang ayat sehingga teks Arab tidak terpotong
 - Menutup jendela utama tidak menghentikan murottal; aplikasi tetap hidup di tray
 
 ## Prasyarat (Windows)
