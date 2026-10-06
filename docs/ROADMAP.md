@@ -18,7 +18,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 
 - [x] **F0-01** Scaffold Tauri v2 + React + Vite + TypeScript (6 Okt 2026)
 - [x] **F0-02** PRD, CLAUDE.md, roadmap, changelog, catatan keputusan (6 Okt 2026)
-- [ ] **F0-03** Pasang toolchain di laptop Windows (Rust, C++ Build Tools) dan `npm run tauri dev` berhasil jalan
+- [x] **F0-03** Pasang toolchain di laptop Windows (Rust, C++ Build Tools) dan `npm run tauri dev` berhasil jalan (6 Okt 2026)
 - [x] **F0-04** Inisialisasi git, commit pertama, push ke repo GitHub `ziyadah` (6 Okt 2026)
 - [ ] **F0-05** CI GitHub Actions: build frontend, `cargo test`, build Tauri untuk Windows dan macOS di setiap pull request
 - [ ] **F0-06** Amankan nama: cek merek di PDKI, ambil domain, akun/organisasi GitHub *(non-kode, paralel)*
@@ -113,3 +113,4 @@ Rujukan kebutuhan: `docs/PRD.md`.
 Tulis temuan, hasil uji, dan hal yang mengganjal di sini, dengan tanggal. Yang sudah jadi keputusan dipindah ke `docs/decisions/`.
 
 - 6 Okt 2026: data uji coba (5 surah) berhasil diambil di laptop Windows; basmalah terpisah dengan benar. `cargo` belum terpasang.
+- 6 Okt 2026: toolchain Windows terpasang lewat winget (Rust 1.99.0 stable MSVC, VS 2022 Build Tools + Windows SDK). Build Rust pertama sekitar 8 menit. `cargo test` lolos 3 tes, `npm run tauri dev` membuka aplikasi.
