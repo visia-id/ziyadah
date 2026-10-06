@@ -22,6 +22,8 @@ rodio = { version = "0.20", default-features = false, features = ["symphonia-mp3
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
 # Membaca quran.db (read-only). "bundled" menyertakan SQLite sehingga tidak bergantung pada sistem.
 rusqlite = { version = "0.32", features = ["bundled"] }
+# Hanya satu Ziyadah yang berjalan; membuka lagi memunculkan jendela yang sudah ada (F1-19).
+tauri-plugin-single-instance = "2"
 
 [profile.release]
 codegen-units = 1

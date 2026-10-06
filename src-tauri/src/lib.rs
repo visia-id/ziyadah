@@ -196,6 +196,9 @@ fn show_main(app: &AppHandle) {
 
 pub fn run() {
     tauri::Builder::default()
+        // Harus plugin pertama: instance kedua langsung keluar dan jendela utama instance pertama dimunculkan,
+        // supaya tidak ada dua tray dan murottal yang berbunyi dobel.
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| show_main(app)))
         .setup(|app| {
             let handle = app.handle().clone();
 

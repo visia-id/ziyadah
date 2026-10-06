@@ -22,4 +22,5 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 - Checksum teks sumber dan tes integritas: 6.236 ayat, basmalah dipisah tanpa mengubah teks (termasuk penulisan khusus di surah 95 dan 97), ayat lain sama persis dengan sumber (F1-06)
 - Inti Rust membaca `quran.db`; data JSON uji coba dan script Al Quran Cloud dihapus (F1-07)
 - Surah, qari, dan mode putar terakhir diingat antar sesi; pertama kali dibuka mulai dari Al-Fatihah (F1-26)
+- Hanya satu Ziyadah yang berjalan; membuka lagi memunculkan jendela yang sudah ada (F1-19)
 - Keputusan 0004: Tanzil sebagai sumber teks Qur'an utama (F1-04)

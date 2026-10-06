@@ -63,7 +63,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 ### Rilis
 
 - [ ] **F1-18** Penyimpanan preferensi pengguna (`user.db` atau file pengaturan)
-- [~] **F1-19** Satu instance saja (plugin single-instance)
+- [x] **F1-19** Satu instance saja (plugin single-instance) (6 Okt 2026)
 - [ ] **F1-20** Ukur CPU dan memori saat memutar; optimalkan bila di atas target PRD
 - [ ] **F1-21** Installer Windows dan macOS, checksum SHA-256, rilis v0.1 di GitHub Releases berlabel pratinjau
 
