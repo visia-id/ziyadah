@@ -12,6 +12,33 @@ import {
   type Surah,
   type SurahIndexItem,
 } from "../shared/player";
+import { safeGet, safeSet } from "../shared/storage";
+
+// Pilihan terakhir diingat antar sesi; pertama kali dibuka mulai dari Al-Fatihah.
+const KEY_SURAH = "ziyadah.main.surah";
+const KEY_RECITER = "ziyadah.main.reciter";
+const KEY_MODE = "ziyadah.main.mode";
+
+function storedSurah() {
+  const n = Number(safeGet(KEY_SURAH));
+  return Number.isInteger(n) && n >= 1 && n <= 114 ? n : 1;
+}
+
+function storedReciter() {
+  const r = safeGet(KEY_RECITER);
+  return RECITERS.some((x) => x.id === r) ? r! : RECITERS[0].id;
+}
+
+function storedMode(): PlayMode {
+  try {
+    const m = JSON.parse(safeGet(KEY_MODE) ?? "null");
+    if (m?.kind === "range" && Number.isInteger(m.from) && Number.isInteger(m.to)) return m;
+    if (["stop", "continue", "repeatAyah", "repeatSurah"].includes(m?.kind)) return { kind: m.kind };
+  } catch {
+    /* data rusak: pakai bawaan */
+  }
+  return { kind: "stop" };
+}
 
 // Jendela utama untuk spike: pilih surah dan qari, kendalikan pemutaran,
 // tampilkan/sembunyikan panel Ambient. Mode Tilawah dan Hafalan menyusul di fase berikutnya.
@@ -19,21 +46,20 @@ import {
 function App() {
   const [index, setIndex] = useState<SurahIndexItem[]>([]);
   const [dataError, setDataError] = useState<string | null>(null);
-  const [surahNo, setSurahNo] = useState(67);
+  const [surahNo, setSurahNo] = useState(storedSurah);
   const [surah, setSurah] = useState<Surah | null>(null);
-  const [reciter, setReciter] = useState(RECITERS[0].id);
+  const [reciter, setReciter] = useState(storedReciter);
   const [state, setState] = useState<PlayerState | null>(null);
   const [clickThrough, setClickThrough] = useState(false);
-  const [mode, setMode] = useState<PlayMode>({ kind: "stop" });
+  const [mode, setMode] = useState<PlayMode>(storedMode);
 
   useEffect(() => {
     data
       .index()
-      .then((items) => {
-        setIndex(items);
-        if (!items.some((s) => s.number === 67) && items[0]) setSurahNo(items[0].number);
-      })
+      .then(setIndex)
       .catch((e) => setDataError(String(e.message ?? e)));
+    // Mode dipegang inti Rust; kirim mode terakhir sebelum membaca status supaya tidak tertimpa bawaan.
+    player.setMode(storedMode()).catch(() => {});
     player.state().then(setState).catch(() => {});
     const un = player.onState(setState);
     return () => {
@@ -43,7 +69,11 @@ function App() {
 
   useEffect(() => {
     data.surah(surahNo).then(setSurah).catch(() => setSurah(null));
+    safeSet(KEY_SURAH, String(surahNo));
   }, [surahNo]);
+
+  useEffect(() => safeSet(KEY_RECITER, reciter), [reciter]);
+  useEffect(() => safeSet(KEY_MODE, JSON.stringify(mode)), [mode]);
 
   // Mode lanjut bisa pindah surah sendiri; jendela utama ikut menampilkan surah yang sedang diputar.
   useEffect(() => {

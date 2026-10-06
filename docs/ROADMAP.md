@@ -58,11 +58,12 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [x] **F1-23** Teks Arab di panel tidak pernah terpotong: tinggi panel mengikuti isi (maks 40% layar), huruf Arab mengecil sampai 18 px bila perlu, lalu bisa di-scroll (6 Okt 2026)
 - [ ] **F1-24** Opsi teks panel memudar beberapa detik setelah ayat berganti, muncul lagi saat kursor di atas panel (bawaan: mati)
 - [x] **F1-25** Terjemah di panel tidak dipotong 2 baris: tinggi panel mengikuti ayat dan terjemah, bila melebihi batas keduanya bisa di-scroll (6 Okt 2026)
+- [x] **F1-26** Ingat surah, qari, dan mode putar terakhir antar sesi; pertama kali dibuka mulai dari Al-Fatihah, bukan Al-Mulk (sementara di localStorage, dipindah saat F1-18) (6 Okt 2026)
 
 ### Rilis
 
 - [ ] **F1-18** Penyimpanan preferensi pengguna (`user.db` atau file pengaturan)
-- [ ] **F1-19** Satu instance saja (plugin single-instance)
+- [~] **F1-19** Satu instance saja (plugin single-instance)
 - [ ] **F1-20** Ukur CPU dan memori saat memutar; optimalkan bila di atas target PRD
 - [ ] **F1-21** Installer Windows dan macOS, checksum SHA-256, rilis v0.1 di GitHub Releases berlabel pratinjau
 

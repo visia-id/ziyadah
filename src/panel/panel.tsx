@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "../shared/theme.css";
 import "./panel.css";
 import { data, panel, player, type PlayerState, type SurahDetail } from "../shared/player";
+import { safeGet, safeSet } from "../shared/storage";
 
 // Panel Ambient: teks ayat yang sedang dibaca qari, melayang di atas semua jendela.
 // Seret dari mana saja untuk memindah. Kontrol muncul saat kursor di atas panel.
@@ -135,20 +136,6 @@ function toArabicDigits(n: number) {
   return String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[Number(d)]);
 }
 
-function safeGet(k: string) {
-  try {
-    return localStorage.getItem(k);
-  } catch {
-    return null;
-  }
-}
-function safeSet(k: string, v: string) {
-  try {
-    localStorage.setItem(k, v);
-  } catch {
-    /* abaikan */
-  }
-}
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
