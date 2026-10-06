@@ -7,7 +7,8 @@ import { relaunch } from "@tauri-apps/plugin-process";
 // Pengecekan diam-diam: tanpa internet atau belum ada rilis, tidak ada pesan apa pun.
 
 const FIRST_CHECK_MS = 5_000;
-const RECHECK_MS = 6 * 60 * 60 * 1000;
+// Tiap jam: aplikasi sering dibiarkan terbuka seharian, dan perbaikan (termasuk teks) harus cepat sampai.
+const RECHECK_MS = 60 * 60 * 1000;
 
 type Phase = { kind: "idle" } | { kind: "ready"; update: Update } | { kind: "installing"; percent: number | null } | { kind: "error"; message: string };
 
