@@ -1,7 +1,7 @@
 {
   "name": "ziyadah",
   "private": true,
-  "version": "0.0.6",
+  "version": "0.0.7",
   "type": "module",
   "description": "Ziyadah: aplikasi Qur'an desktop untuk tilawah, murottal sambil kerja, dan hafalan",
   "license": "MIT",
@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-process": "^2.4.0",
+    "@tauri-apps/plugin-updater": "^2.13.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

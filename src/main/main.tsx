@@ -15,6 +15,7 @@ import {
 import { safeGet, safeSet } from "../shared/storage";
 import { ArabicWords, useActiveWords } from "../shared/words";
 import { scrollBehavior, useManualScrollPause } from "../shared/follow";
+import { UpdateBanner } from "./updater";
 
 // Pilihan terakhir diingat antar sesi; pertama kali dibuka mulai dari Al-Fatihah.
 const KEY_SURAH = "ziyadah.main.surah";
@@ -126,7 +127,7 @@ function App() {
       <header>
         <div>
           <h1>Ziyadah</h1>
-          <p className="sub">Pratinjau · v0.0.6</p>
+          <p className="sub">Beta · v0.0.7</p>
         </div>
         <div className="status">
           {state?.status === "loading" && "Memuat..."}
@@ -134,6 +135,34 @@ function App() {
           {state?.error && <span className="err">{state.error}</span>}
         </div>
       </header>
+
+      <UpdateBanner />
+
+      {/* Status tashih ditampilkan jujur sejak awal dan selalu terlihat (PRD: teks Qur'an sebagai amanah).
+          Isinya sama dengan PERNYATAAN.txt yang tampil saat instal; perbarui keduanya bersamaan. */}
+      <details className="tashih">
+        <summary>
+          <strong>Belum ditashih LPMQ.</strong> Teks dari Tanzil (Mushaf Madinah), tidak diubah. Selengkapnya
+        </summary>
+        <ul>
+          <li>
+            Ziyadah belum ditashih oleh Lajnah Pentashihan Mushaf Al-Qur'an (LPMQ) Kementerian Agama RI. Kami sedang
+            mengurus komunikasi dengan LPMQ tentang proses tashih untuk aplikasi ini.
+          </li>
+          <li>
+            Teks diambil apa adanya dari Tanzil Project (tanzil.net), Uthmani versi 1.1, dan dicocokkan dengan checksum
+            sumbernya setiap kali aplikasi dibangun. Karena mengikuti Mushaf Madinah, sebagian tanda baca dan tanda
+            waqaf bisa berbeda dari Mushaf Standar Indonesia.
+          </li>
+          <li>
+            Ziyadah masih tahap uji coba. Gunakan mushaf yang sudah ditashih sebagai rujukan utama, terutama untuk
+            menghafal.
+          </li>
+          <li>
+            Temukan kesalahan? Laporkan dengan nama surah dan nomor ayat di github.com/visia-id/ziyadah/issues.
+          </li>
+        </ul>
+      </details>
 
       {dataError ? (
         <section className="card notice">

@@ -24,6 +24,9 @@ Aplikasi Qur'an desktop gratis dan open source (MIT): tilawah, murottal sambil k
 - `npm run tauri dev`: jalankan aplikasi
 - `npm run build`: cek TypeScript + build frontend
 - `cd src-tauri && cargo test`: tes Rust
+- Build installer lokal: `npx tauri build` butuh `TAURI_SIGNING_PRIVATE_KEY` (isi kunci privat updater, disimpan pemilik di luar repo); di laptop 16 GB pakai `CARGO_BUILD_JOBS=1`
+- Rilis: samakan versi di `package.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`, lalu push tag `vX.Y.Z`; workflow `release.yml` membuat draf rilis yang diperiksa pemilik sebelum dipublikasikan
+- Sebelum installer dibagikan, uji build release-nya, bukan hanya `tauri dev`
 
 ## Aturan
 

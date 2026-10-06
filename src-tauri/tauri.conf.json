@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Ziyadah",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "identifier": "id.ziyadah.app",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -48,7 +48,9 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["nsis", "app", "dmg"],
+    "licenseFile": "../PERNYATAAN.txt",
+    "createUpdaterArtifacts": true,
     "resources": ["resources/quran.db"],
     "icon": [
       "icons/32x32.png",
@@ -57,5 +59,12 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IENFQ0Y0QkU2MjY3N0JCODQKUldTRXUzY201a3ZQem00S3dFSUp5Y29iTEVRSjhWVEIyRkt0SnY1ZkMxTTZjSW9YTEdYMmxZQkoK",
+      "endpoints": ["https://github.com/visia-id/ziyadah/releases/latest/download/latest.json"],
+      "windows": { "installMode": "passive" }
+    }
   }
 }

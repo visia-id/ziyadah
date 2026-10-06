@@ -1,0 +1,38 @@
+ZIYADAH - PERNYATAAN STATUS TEKS AL-QUR'AN
+
+Mohon dibaca sebelum memasang.
+
+1. Belum ditashih LPMQ
+   Ziyadah BELUM ditashih oleh Lajnah Pentashihan Mushaf Al-Qur'an (LPMQ)
+   Kementerian Agama RI. Kami sedang mengurus komunikasi dengan LPMQ
+   tentang proses tashih untuk aplikasi ini. Status ini akan diperbarui
+   di aplikasi dan di situs Ziyadah begitu ada perkembangan.
+
+2. Sumber teks
+   Teks Al-Qur'an diambil apa adanya dari Tanzil Project (tanzil.net),
+   Tanzil Quran Text Uthmani versi 1.1, yang mengikuti Mushaf Madinah.
+   Teks tidak diubah sama sekali: setiap kali aplikasi dibangun, teks
+   dicocokkan dengan checksum dari sumber aslinya.
+
+   Karena mengikuti Mushaf Madinah, bentuk sebagian tanda baca dan tanda
+   waqaf bisa berbeda dari Mushaf Standar Indonesia yang biasa dipakai
+   di masjid dan sekolah di Indonesia.
+
+3. Terjemah dan audio
+   Terjemah bahasa Indonesia: Kementerian Agama RI (melalui Tanzil).
+   Audio murottal: EveryAyah; hak rekaman milik qari atau pemegang haknya.
+   Penanda kata yang sedang dibaca: data quran-align (Collin Fair,
+   CC BY 4.0), dibuat otomatis dan bisa meleset di sebagian kecil kata.
+
+4. Versi uji coba
+   Ziyadah masih dalam tahap uji coba (beta). Mohon gunakan mushaf yang
+   sudah ditashih sebagai rujukan utama, terutama untuk menghafal.
+
+5. Melaporkan kesalahan
+   Bila menemukan kesalahan teks, terjemah, atau tampilan, mohon laporkan
+   dengan menyebut nama surah dan nomor ayat di:
+   https://github.com/visia-id/ziyadah/issues
+
+Ziyadah gratis dan open source (lisensi MIT untuk kode aplikasi).
+Lisensi MIT tidak berlaku untuk teks Al-Qur'an, terjemah, audio, dan
+data timing; masing-masing mengikuti syarat dari sumbernya.

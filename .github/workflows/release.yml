@@ -1,0 +1,79 @@
+# Rilis Ziyadah (F4-03, F1-21).
+#
+# Cara merilis:
+#   1. Naikkan versi di package.json, src-tauri/Cargo.toml, dan src-tauri/tauri.conf.json (harus sama).
+#   2. Commit, lalu buat tag dan push:  git tag v0.0.7 && git push origin v0.0.7
+#   3. Workflow ini membangun installer Windows yang ditandatangani untuk pembaruan otomatis dan membuat
+#      DRAF rilis di GitHub. Periksa draf itu, lalu klik "Publish release".
+#   4. Setelah dipublikasikan, aplikasi yang sudah terpasang menemukan pembaruan lewat latest.json.
+#
+# Rahasia yang dibutuhkan (Settings > Secrets and variables > Actions):
+#   TAURI_SIGNING_PRIVATE_KEY  isi berkas kunci privat updater (bukan kunci publik).
+#
+# macOS belum dirilis: build belum ditandatangani Apple sehingga diblokir Gatekeeper (lihat F4-04).
+
+name: Rilis
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Installer Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cek versi tag sama dengan versi aplikasi
+        shell: bash
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          app=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          pkg=$(node -p "require('./package.json').version")
+          cargo=$(grep -m1 '^version' src-tauri/Cargo.toml | cut -d'"' -f2)
+          echo "tag=$tag tauri=$app package=$pkg cargo=$cargo"
+          [ "$tag" = "$app" ] && [ "$tag" = "$pkg" ] && [ "$tag" = "$cargo" ]
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - run: npm ci
+
+      # quran.db dibangun dari Tanzil dan dicek checksum-nya sebelum dibundel.
+      - run: npm run fetch-data
+
+      - name: Tes
+        working-directory: src-tauri
+        run: cargo test
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ""
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Ziyadah ${{ github.ref_name }}
+          releaseBody: |
+            Unduh `Ziyadah_*_x64-setup.exe` untuk Windows 10/11.
+
+            **Status: uji coba (beta), belum ditashih LPMQ.** Teks Al-Qur'an diambil apa adanya dari Tanzil Project (Uthmani 1.1, mengikuti Mushaf Madinah) dan tidak diubah. Pernyataan lengkap: [PERNYATAAN.txt](https://github.com/visia-id/ziyadah/blob/main/PERNYATAAN.txt).
+
+            Saat memasang, Windows dapat menampilkan "Windows protected your PC" karena installer belum memakai sertifikat tanda tangan kode. Klik **More info** lalu **Run anyway**.
+
+            Perubahan: lihat [CHANGELOG.md](https://github.com/visia-id/ziyadah/blob/main/CHANGELOG.md).
+          releaseDraft: true
+          prerelease: false
+          includeUpdaterJson: true

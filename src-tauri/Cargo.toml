@@ -1,6 +1,6 @@
 [package]
 name = "ziyadah"
-version = "0.0.6"
+version = "0.0.7"
 description = "Ziyadah: aplikasi Qur'an desktop"
 authors = ["Untung Kasirin"]
 license = "MIT"
@@ -24,6 +24,8 @@ reqwest = { version = "0.12", default-features = false, features = ["blocking", 
 rusqlite = { version = "0.32", features = ["bundled"] }
 # Hanya satu Ziyadah yang berjalan; membuka lagi memunculkan jendela yang sudah ada (F1-19).
 tauri-plugin-single-instance = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
 
 [profile.release]
 codegen-units = 1

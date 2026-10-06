@@ -206,6 +206,9 @@ pub fn run() {
         // Harus plugin pertama: instance kedua langsung keluar dan jendela utama instance pertama dimunculkan,
         // supaya tidak ada dua tray dan murottal yang berbunyi dobel.
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| show_main(app)))
+        // Pembaruan otomatis dari GitHub Releases, diverifikasi dengan kunci publik di tauri.conf.json (F4-03).
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .setup(|app| {
             let handle = app.handle().clone();
 

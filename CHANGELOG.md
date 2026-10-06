@@ -26,6 +26,8 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 - Sorot per kata di panel dan jendela utama memakai timing quran-align untuk Alafasy, Al-Husary, Minshawi, dan Abdul Basit; ayat tanpa timing yang konsisten memakai sorot per ayat (F1-17)
 - Panel Ambient bawaannya di pojok kanan bawah area kerja dengan lebar lebih ramping; posisi dan lebar yang dipilih pengguna diingat per monitor (F1-14)
 - Ayat panjang di panel otomatis bergulir mengikuti baris yang sedang dibaca, berhenti sebentar bila pengguna menggulir sendiri; tepi memudar menggantikan scrollbar; daftar ayat di jendela utama ikut menampilkan ayat aktif (F1-27)
+- Pernyataan status tashih yang jujur sejak awal: halaman pernyataan saat instal, bar status di jendela utama, dan README (F1-29)
+- Pembaruan otomatis bertanda tangan dari GitHub Releases dan workflow rilis yang membuat draf rilis dari tag versi (F4-03)
 
 ### Diperbaiki
 

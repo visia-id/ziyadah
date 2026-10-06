@@ -21,6 +21,35 @@ h1 { margin: 0; font-size: 22px; color: var(--accent); }
   padding: 16px;
   margin-bottom: 14px;
 }
+.update {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  background: var(--accent-soft);
+  font-size: 13px;
+}
+
+.tashih {
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border: 1px solid #e0c27a;
+  border-radius: 10px;
+  background: #fbf3df;
+  color: #5c4712;
+  font-size: 13px;
+}
+.tashih summary { cursor: pointer; }
+.tashih ul { margin: 8px 0 2px; padding-left: 18px; line-height: 1.5; }
+.tashih li + li { margin-top: 4px; }
+@media (prefers-color-scheme: dark) {
+  .tashih { background: #2b2414; border-color: #6b5524; color: #f0dca6; }
+}
+
 .notice code { background: var(--accent-soft); padding: 1px 6px; border-radius: 4px; }
 
 .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }

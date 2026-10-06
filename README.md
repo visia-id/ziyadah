@@ -2,7 +2,7 @@
 
 Aplikasi Qur'an desktop gratis dan open source untuk tilawah, mendengarkan murottal sambil bekerja, dan menghafal. Ziyadah berarti tambahan: harapannya pahala membaca, mendengarkan, dan menghafal Al-Qur'an terus bertambah, insya Allah.
 
-> **Status: prototipe (spike mode Ambient).** Belum untuk diedarkan. Teks dan terjemah belum ditashih LPMQ.
+> **Status: uji coba (beta), belum ditashih LPMQ.** Teks Al-Qur'an diambil apa adanya dari Tanzil Project (Uthmani 1.1, mengikuti Mushaf Madinah) dan tidak diubah; sebagian tanda baca dan waqaf bisa berbeda dari Mushaf Standar Indonesia. Kami sedang mengurus komunikasi dengan LPMQ tentang proses tashih. Pernyataan lengkap: [PERNYATAAN.txt](PERNYATAAN.txt). Laporkan kesalahan lewat [Issues](https://github.com/visia-id/ziyadah/issues).
 
 ## Yang sudah ada di spike ini
 
@@ -52,6 +52,16 @@ Ini gerbang Fase 1 di PRD. Centang setelah dicoba:
 - [ ] Pergantian ayat tanpa jeda yang terasa
 - [ ] Menutup jendela utama, murottal tetap jalan; tray bisa jeda dan keluar
 - [ ] Pemakaian CPU saat memutar (Task Manager) di bawah 3%
+
+## Rilis dan pembaruan otomatis
+
+Aplikasi memeriksa pembaruan dari [GitHub Releases](https://github.com/visia-id/ziyadah/releases) dan hanya memasang rilis yang ditandatangani kunci updater milik pemelihara.
+
+1. Samakan versi di `package.json`, `src-tauri/Cargo.toml`, dan `src-tauri/tauri.conf.json`.
+2. Commit, lalu `git tag vX.Y.Z` dan `git push origin vX.Y.Z`.
+3. Workflow `release.yml` membangun installer Windows bertanda tangan dan membuat draf rilis. Periksa, lalu publikasikan.
+
+Membangun installer di komputer sendiri membutuhkan variabel `TAURI_SIGNING_PRIVATE_KEY` berisi kunci privat updater.
 
 ## Struktur
 
