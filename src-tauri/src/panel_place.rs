@@ -8,18 +8,24 @@
 
 use std::collections::HashMap;
 use std::fs;
-use std::path::PathBuf;
-use std::sync::Mutex;
-use std::time::{Duration, Instant};
+use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Mutex};
+use std::thread;
+use std::time::Duration;
 
 use serde::{Deserialize, Serialize};
 use tauri::{Monitor, PhysicalPosition, PhysicalSize, Runtime, WebviewWindow, Window};
 
-/// Lebar bawaan dan jarak ke tepi area kerja, dalam piksel logis.
-const DEFAULT_WIDTH: f64 = 520.0;
+/// Lebar bawaan dan jarak ke tepi area kerja (kanan dan bawah sama), dalam piksel logis.
+const DEFAULT_WIDTH: f64 = 440.0;
 const DEFAULT_MARGIN: f64 = 24.0;
-/// Selang minimum menulis berkas saat panel sedang diseret; posisi terakhir tetap disimpan saat keluar.
-const WRITE_INTERVAL: Duration = Duration::from_millis(800);
+/// Penulisan berkas ditunda sebentar setelah perubahan terakhir supaya tidak menulis terus saat panel diseret.
+/// Yang ditulis selalu posisi terbaru, jadi posisi akhir tidak pernah terlewat.
+const WRITE_DELAY: Duration = Duration::from_millis(800);
+/// Versi format berkas. Posisi dari versi 1 (0.0.4 dan 0.0.5) bisa tercemar keadaan antara saat tinggi panel
+/// berubah, jadi diabaikan sekali dan panel kembali ke posisi bawaan.
+const FORMAT_VERSION: u32 = 2;
 
 /// Jarak tepi kanan dan tepi bawah panel ke tepi area kerja, serta lebar panel. Piksel fisik.
 #[derive(Serialize, Deserialize, Clone, Copy, PartialEq, Eq, Debug)]
@@ -47,6 +53,8 @@ impl Area {
 
 #[derive(Serialize, Deserialize, Default)]
 struct Saved {
+    #[serde(default)]
+    version: u32,
     last: Option<String>,
     monitors: HashMap<String, Placement>,
 }
@@ -82,17 +90,26 @@ fn placement_from(area: Area, x: i32, y: i32, width: u32, height: u32) -> Placem
 
 pub struct PanelPlacement {
     path: PathBuf,
-    saved: Mutex<Saved>,
-    last_write: Mutex<Option<Instant>>,
+    saved: Arc<Mutex<Saved>>,
+    write_scheduled: Arc<AtomicBool>,
+}
+
+fn write_file(path: &Path, saved: &Mutex<Saved>) {
+    let json = serde_json::to_string_pretty(&*saved.lock().unwrap()).unwrap_or_default();
+    if let Some(dir) = path.parent() {
+        let _ = fs::create_dir_all(dir);
+    }
+    let _ = fs::write(path, json);
 }
 
 impl PanelPlacement {
     pub fn load(path: PathBuf) -> Self {
         let saved = fs::read_to_string(&path)
             .ok()
-            .and_then(|s| serde_json::from_str(&s).ok())
-            .unwrap_or_default();
-        Self { path, saved: Mutex::new(saved), last_write: Mutex::new(None) }
+            .and_then(|s| serde_json::from_str::<Saved>(&s).ok())
+            .filter(|s| s.version == FORMAT_VERSION)
+            .unwrap_or_else(|| Saved { version: FORMAT_VERSION, ..Default::default() });
+        Self { path, saved: Arc::new(Mutex::new(saved)), write_scheduled: Arc::new(AtomicBool::new(false)) }
     }
 
     /// Pasang panel di posisi tersimpan pada monitor terakhir bila monitor itu masih ada;
@@ -131,7 +148,10 @@ impl PanelPlacement {
             return;
         };
         let key = monitor_key(&monitor);
-        let placement = placement_from(Area::of(&monitor), pos.x, pos.y, size.width, size.height);
+        let mut placement = placement_from(Area::of(&monitor), pos.x, pos.y, size.width, size.height);
+        // Panel yang diseret sebagian keluar layar disimpan menempel tepi, bukan di luar area kerja.
+        placement.right = placement.right.max(0);
+        placement.bottom = placement.bottom.max(0);
         {
             let mut saved = self.saved.lock().unwrap();
             if saved.last.as_deref() == Some(key.as_str()) && saved.monitors.get(&key) == Some(&placement) {
@@ -140,21 +160,25 @@ impl PanelPlacement {
             saved.monitors.insert(key.clone(), placement);
             saved.last = Some(key);
         }
-        self.save(false);
+        self.schedule_write();
     }
 
-    /// Tulis ke berkas. Saat panel diseret penulisan dibatasi; `force` dipakai saat aplikasi keluar.
-    pub fn save(&self, force: bool) {
-        let mut last = self.last_write.lock().unwrap();
-        if !force && last.is_some_and(|t| t.elapsed() < WRITE_INTERVAL) {
+    /// Tulis posisi terbaru sebentar lagi; perubahan berikutnya dalam selang itu ikut tertulis.
+    fn schedule_write(&self) {
+        if self.write_scheduled.swap(true, Ordering::SeqCst) {
             return;
         }
-        *last = Some(Instant::now());
-        let json = serde_json::to_string_pretty(&*self.saved.lock().unwrap()).unwrap_or_default();
-        if let Some(dir) = self.path.parent() {
-            let _ = fs::create_dir_all(dir);
-        }
-        let _ = fs::write(&self.path, json);
+        let (path, saved, scheduled) = (self.path.clone(), self.saved.clone(), self.write_scheduled.clone());
+        thread::spawn(move || {
+            thread::sleep(WRITE_DELAY);
+            scheduled.store(false, Ordering::SeqCst);
+            write_file(&path, &saved);
+        });
+    }
+
+    /// Tulis sekarang juga; dipakai saat aplikasi keluar.
+    pub fn save_now(&self) {
+        write_file(&self.path, &self.saved);
     }
 }
 
@@ -168,9 +192,10 @@ mod tests {
     #[test]
     fn bawaan_di_pojok_kanan_bawah_area_kerja() {
         let p = default_placement(1.0);
-        assert_eq!(p, Placement { right: 24, bottom: 24, width: 520 });
-        assert_eq!(position_in(AREA, p, 150), (1920 - 24 - 520, 1032 - 24 - 150));
-        assert_eq!(default_placement(1.25).width, 650);
+        assert_eq!(p, Placement { right: 24, bottom: 24, width: 440 });
+        assert_eq!(position_in(AREA, p, 150), (1920 - 24 - 440, 1032 - 24 - 150));
+        // Skala 125%: jarak kanan dan bawah tetap sama.
+        assert_eq!(default_placement(1.25), Placement { right: 30, bottom: 30, width: 550 });
     }
 
     #[test]
@@ -185,6 +210,20 @@ mod tests {
     fn simpan_lalu_pulihkan_menghasilkan_posisi_sama() {
         let p = placement_from(AREA, 300, 500, 600, 160);
         assert_eq!(position_in(AREA, p, 160), (300, 500));
+    }
+
+    #[test]
+    fn posisi_dari_versi_lama_diabaikan() {
+        let dir = std::env::temp_dir().join(format!("ziyadah-panel-test-{}", std::process::id()));
+        let path = dir.join("panel.json");
+        fs::create_dir_all(&dir).unwrap();
+        fs::write(&path, r#"{"last":"A","monitors":{"A":{"right":30,"bottom":-46,"width":650}}}"#).unwrap();
+        let p = PanelPlacement::load(path.clone());
+        assert!(p.saved.lock().unwrap().monitors.is_empty());
+        p.saved.lock().unwrap().monitors.insert("A".into(), Placement { right: 30, bottom: 30, width: 550 });
+        p.save_now();
+        assert_eq!(PanelPlacement::load(path).saved.lock().unwrap().monitors.len(), 1);
+        let _ = fs::remove_dir_all(dir);
     }
 
     #[test]

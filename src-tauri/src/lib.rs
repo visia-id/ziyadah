@@ -112,14 +112,25 @@ fn panel_fit(app: AppHandle, height: f64) -> Result<(), String> {
         return Ok(());
     }
     let bottom = pos.y + size.height as i32;
-    panel
-        .set_size(PhysicalSize::new(size.width, target))
-        .map_err(|e| e.to_string())?;
-    // Baca ulang: OS bisa membatasi ke minHeight.
-    let applied = panel.outer_size().map(|s| s.height).unwrap_or(target);
-    panel
-        .set_position(PhysicalPosition::new(pos.x, bottom - applied as i32))
-        .map_err(|e| e.to_string())
+    // Ukuran dan posisi tidak bisa diubah sekaligus. Urutannya dipilih supaya keadaan antara tidak pernah
+    // melewati tepi bawah: kalau tidak, posisi sesaat itu ikut tercatat sebagai posisi panel (F1-28).
+    if target > size.height {
+        panel
+            .set_position(PhysicalPosition::new(pos.x, bottom - target as i32))
+            .map_err(|e| e.to_string())?;
+        panel
+            .set_size(PhysicalSize::new(size.width, target))
+            .map_err(|e| e.to_string())
+    } else {
+        panel
+            .set_size(PhysicalSize::new(size.width, target))
+            .map_err(|e| e.to_string())?;
+        // Baca ulang: OS bisa membatasi ke minHeight.
+        let applied = panel.outer_size().map(|s| s.height).unwrap_or(target);
+        panel
+            .set_position(PhysicalPosition::new(pos.x, bottom - applied as i32))
+            .map_err(|e| e.to_string())
+    }
 }
 
 #[tauri::command]
@@ -300,10 +311,10 @@ pub fn run() {
         .build(tauri::generate_context!())
         .expect("gagal menjalankan Ziyadah")
         .run(|app, event| {
-            // Penulisan posisi panel dibatasi saat diseret; pastikan posisi terakhir tersimpan saat keluar.
+            // Penulisan posisi panel ditunda sebentar; pastikan posisi terakhir tersimpan saat keluar.
             if let tauri::RunEvent::Exit = event {
                 if let Some(placement) = app.try_state::<PanelPlacement>() {
-                    placement.save(true);
+                    placement.save_now();
                 }
             }
         });
