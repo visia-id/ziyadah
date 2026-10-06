@@ -14,6 +14,7 @@ import {
 } from "../shared/player";
 import { safeGet, safeSet } from "../shared/storage";
 import { ArabicWords, useActiveWords } from "../shared/words";
+import { scrollBehavior, useManualScrollPause } from "../shared/follow";
 
 // Pilihan terakhir diingat antar sesi; pertama kali dibuka mulai dari Al-Fatihah.
 const KEY_SURAH = "ziyadah.main.surah";
@@ -109,12 +110,23 @@ function App() {
   const current = state && state.surah === surahNo ? state.ayah : -1;
   const active = useActiveWords(state?.reciter, state?.surah, playing);
 
+  // Daftar ayat ikut menampilkan ayat yang sedang dibaca (F1-27), kecuali pengguna baru saja menggulir sendiri.
+  const manualScroll = useManualScrollPause("window");
+  useEffect(() => {
+    if (current < 0 || manualScroll()) return;
+    const row = document.querySelector<HTMLElement>(".ayah.active");
+    if (!row) return;
+    const r = row.getBoundingClientRect();
+    if (r.top >= 80 && r.bottom <= window.innerHeight - 40) return;
+    row.scrollIntoView({ block: "center", behavior: scrollBehavior() });
+  }, [current, surahNo]);
+
   return (
     <main>
       <header>
         <div>
           <h1>Ziyadah</h1>
-          <p className="sub">Pratinjau · v0.0.4</p>
+          <p className="sub">Pratinjau · v0.0.5</p>
         </div>
         <div className="status">
           {state?.status === "loading" && "Memuat..."}

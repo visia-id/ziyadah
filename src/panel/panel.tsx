@@ -5,6 +5,7 @@ import "./panel.css";
 import { data, panel, player, type PlayerState, type SurahDetail } from "../shared/player";
 import { safeGet, safeSet } from "../shared/storage";
 import { ArabicWords, useActiveWords } from "../shared/words";
+import { scrollBehavior, updateScrollEdges, useManualScrollPause } from "../shared/follow";
 
 // Panel Ambient: teks ayat yang sedang dibaca qari, melayang di atas semua jendela.
 // Seret dari mana saja untuk memindah. Kontrol muncul saat kursor di atas panel.
@@ -67,6 +68,26 @@ function Panel() {
   const active = useActiveWords(state?.reciter, state?.surah, state?.status === "playing");
   const range = active && active.ayah === state?.ayah ? active.range : null;
 
+  // Ayat panjang yang di-scroll (F1-27): ganti ayat kembali ke atas; selama dibaca, baris aktif dijaga
+  // di sekitar sepertiga atas. Panel hanya bergeser saat qari pindah baris, dan berhenti bila pengguna menggulir.
+  const textRef = useRef<HTMLDivElement>(null);
+  const manualScroll = useManualScrollPause(textRef);
+  useEffect(() => {
+    const box = textRef.current;
+    if (!box) return;
+    box.scrollTop = 0;
+    updateScrollEdges(box);
+  }, [state?.surah, state?.ayah]);
+  useEffect(() => {
+    const box = textRef.current;
+    const word = box?.querySelector<HTMLElement>(".word.on");
+    if (!box || !word || box.scrollHeight <= box.clientHeight + 1 || manualScroll()) return;
+    const h = box.clientHeight;
+    const top = word.offsetTop;
+    if (top >= box.scrollTop + h * 0.15 && top + word.offsetHeight <= box.scrollTop + h * 0.75) return;
+    box.scrollTo({ top: Math.max(0, top - h * 0.3), behavior: scrollBehavior() });
+  }, [range?.[0], state?.ayah]);
+
   return (
     <div className="panel" ref={ref} data-tauri-drag-region>
       {idle ? (
@@ -79,7 +100,7 @@ function Panel() {
         </p>
       ) : (
         <>
-          <div className="text" data-tauri-drag-region>
+          <div className="text" ref={textRef} onScroll={(e) => updateScrollEdges(e.currentTarget)} data-tauri-drag-region>
             <p key={`${state!.surah}:${state!.ayah}`} className="ar" dir="rtl" data-tauri-drag-region>
               {ar && <ArabicWords text={ar} range={range} />}
               {ayah && <span className="num"> ﴿{toArabicDigits(ayah.n)}﴾</span>}
@@ -133,6 +154,7 @@ function fitToContent(el: HTMLDivElement) {
     el.classList.add("overflow");
     el.style.maxHeight = `${maxH}px`;
   }
+  updateScrollEdges(el.querySelector<HTMLElement>(".text"));
   panel.fit(el.offsetHeight).catch(() => {});
 }
 

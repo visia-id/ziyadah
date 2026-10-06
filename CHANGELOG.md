@@ -25,6 +25,7 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 - Hanya satu Ziyadah yang berjalan; membuka lagi memunculkan jendela yang sudah ada (F1-19)
 - Sorot per kata di panel dan jendela utama memakai timing quran-align untuk Alafasy, Al-Husary, Minshawi, dan Abdul Basit; ayat tanpa timing yang konsisten memakai sorot per ayat (F1-17)
 - Panel Ambient bawaannya di pojok kanan bawah area kerja dengan lebar lebih ramping; posisi dan lebar yang dipilih pengguna diingat per monitor (F1-14)
+- Ayat panjang di panel otomatis bergulir mengikuti baris yang sedang dibaca, berhenti sebentar bila pengguna menggulir sendiri; tepi memudar menggantikan scrollbar; daftar ayat di jendela utama ikut menampilkan ayat aktif (F1-27)
 
 ### Diperbaiki
 

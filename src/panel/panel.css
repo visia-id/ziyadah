@@ -48,6 +48,7 @@
 
 /* Teks ayat dan terjemah: keduanya tidak boleh dipotong maupun ikut menyusut di flex. */
 .text {
+  position: relative; /* titik acuan offsetTop kata aktif untuk auto-scroll */
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -59,7 +60,25 @@
   flex-shrink: 1;
   min-height: 0;
   overflow-y: auto;
-  scrollbar-width: thin;
+  overscroll-behavior: contain;
+  /* Scrollbar disembunyikan; tepi yang memudar menandai masih ada teks. Muncul tipis saat kursor di atas panel. */
+  scrollbar-width: none;
+}
+.panel.overflow .text::-webkit-scrollbar { width: 0; }
+.panel.overflow:hover .text { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.3) transparent; }
+.panel.overflow:hover .text::-webkit-scrollbar { width: 6px; }
+.panel.overflow:hover .text::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 3px; }
+.panel.overflow .text.can-down {
+  -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent);
+  mask-image: linear-gradient(to bottom, #000 82%, transparent);
+}
+.panel.overflow .text.can-up {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%);
+  mask-image: linear-gradient(to bottom, transparent, #000 14%);
+}
+.panel.overflow .text.can-up.can-down {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 82%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 82%, transparent);
 }
 
 .meta { flex-shrink: 0; font-size: 11px; text-align: center; opacity: 0.65; }

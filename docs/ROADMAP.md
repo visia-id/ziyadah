@@ -59,6 +59,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [ ] **F1-24** Opsi teks panel memudar beberapa detik setelah ayat berganti, muncul lagi saat kursor di atas panel (bawaan: mati)
 - [x] **F1-25** Terjemah di panel tidak dipotong 2 baris: tinggi panel mengikuti ayat dan terjemah, bila melebihi batas keduanya bisa di-scroll (6 Okt 2026)
 - [x] **F1-26** Ingat surah, qari, dan mode putar terakhir antar sesi; pertama kali dibuka mulai dari Al-Fatihah, bukan Al-Mulk (sementara di localStorage, dipindah saat F1-18) (6 Okt 2026)
+- [x] **F1-27** Ayat panjang yang di-scroll: panel mengikuti baris yang sedang dibaca, berhenti saat pengguna menggulir, tepi memudar menggantikan scrollbar; jendela utama ikut menampilkan ayat aktif (6 Okt 2026)
 
 ### Rilis
 
