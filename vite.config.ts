@@ -9,6 +9,8 @@ export default defineConfig({
   server: {
     port: 1420,
     strictPort: true,
+    // Jangan pantau folder Rust: build release menulis ribuan file di src-tauri/target dan bisa membuat Vite crash.
+    watch: { ignored: ["**/src-tauri/**"] },
   },
   build: {
     target: "es2021",
