@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap");
+
+:root {
+  --arabic: "Amiri Quran", "KFGQPC Uthmanic Script HAFS", "Traditional Arabic", "Noto Naskh Arabic", serif;
+  --ui: "Segoe UI", -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+  --bg: #f7f5ef;
+  --surface: #ffffff;
+  --ink: #1f2a24;
+  --muted: #6b756f;
+  --line: #e2ded3;
+  --accent: #1f7a55;
+  --accent-soft: #e3f1ea;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121714;
+    --surface: #1a211d;
+    --ink: #e8ece9;
+    --muted: #9aa59f;
+    --line: #2b342f;
+    --accent: #4fbf8b;
+    --accent-soft: #1d3329;
+  }
+}
+
+* { box-sizing: border-box; }

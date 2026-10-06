@@ -1,0 +1,12 @@
+node_modules/
+dist/
+src-tauri/target/
+src-tauri/gen/
+
+# Data Qur'an diambil lewat `npm run fetch-data`, tidak di-commit
+# sampai urusan lisensi dan tashih selesai.
+public/data/
+
+.DS_Store
+Thumbs.db
+*.log
