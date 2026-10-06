@@ -13,3 +13,4 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 - Toolchain Windows terpasang (Rust 1.99, VS 2022 C++ Build Tools); `cargo test` dan `npm run tauri dev` berjalan (F0-03)
 - Repo git dan push pertama ke GitHub `visia-id/ziyadah` (F0-04)
 - Panel Ambient bisa disembunyikan lewat tombol ×; panel tampil otomatis saat murottal diputar dan tersembunyi saat pemutar idle (F1-22)
+- Teks Arab di panel Ambient tidak lagi terpotong: tinggi panel mengikuti isi (maks 40% layar), huruf Arab mengecil sampai 18 px lalu bisa di-scroll (F1-23)

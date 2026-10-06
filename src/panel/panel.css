@@ -1,8 +1,7 @@
-html, body, #root { height: 100%; }
-
+/* Tinggi panel mengikuti isi; jendela diubah ukurannya dari panel.tsx (fitToContent). */
 .panel {
   position: relative;
-  height: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -22,20 +21,19 @@ html, body, #root { height: 100%; }
 .ar {
   margin: 0;
   font-family: var(--arabic);
-  font-size: 28px;
+  font-size: var(--ar-size, 28px);
   line-height: 1.9;
   text-align: center;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  /* Teks ayat tidak boleh dipotong maupun ikut menyusut di flex. */
+  flex-shrink: 0;
   animation: fade 300ms ease-out;
 }
 .num { font-size: 0.8em; opacity: 0.8; }
 
 .tr {
   margin: 0;
+  flex-shrink: 0;
   font-size: 13px;
   line-height: 1.45;
   text-align: center;
@@ -46,7 +44,15 @@ html, body, #root { height: 100%; }
   overflow: hidden;
 }
 
-.meta { font-size: 11px; text-align: center; opacity: 0.65; }
+/* Ayat terlalu panjang walau huruf sudah AR_MIN: teks Arab di-scroll, tetap utuh. */
+.panel.overflow .ar {
+  flex-shrink: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.meta { flex-shrink: 0; font-size: 11px; text-align: center; opacity: 0.65; }
 .idle { margin: 0; text-align: center; font-size: 13px; opacity: 0.8; }
 
 .controls {

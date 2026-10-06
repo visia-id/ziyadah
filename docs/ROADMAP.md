@@ -55,6 +55,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [ ] **F1-16** Tray: pilih surah, qari, dan mode putar langsung dari menu
 - [ ] **F1-17** Sorot per kata memakai data quran-align untuk qari yang tersedia, turun ke sorot per ayat bila tidak ada
 - [x] **F1-22** Panel bisa disembunyikan: tombol × di kontrol panel, panel hanya tampil saat murottal diputar dan tersembunyi saat idle (6 Okt 2026)
+- [x] **F1-23** Teks Arab di panel tidak pernah terpotong: tinggi panel mengikuti isi (maks 40% layar), huruf Arab mengecil sampai 18 px bila perlu, lalu bisa di-scroll (6 Okt 2026)
 
 ### Rilis
 
@@ -116,3 +117,4 @@ Tulis temuan, hasil uji, dan hal yang mengganjal di sini, dengan tanggal. Yang s
 - 6 Okt 2026: data uji coba (5 surah) berhasil diambil di laptop Windows; basmalah terpisah dengan benar. `cargo` belum terpasang.
 - 6 Okt 2026: toolchain Windows terpasang lewat winget (Rust 1.99.0 stable MSVC, VS 2022 Build Tools + Windows SDK). Build Rust pertama sekitar 8 menit. `cargo test` lolos 3 tes, `npm run tauri dev` membuka aplikasi.
 - 6 Okt 2026: panel Ambient tampil saat idle di tengah bawah layar, menutupi input aplikasi lain, dan tidak bisa ditutup dari panel (tidak ada tombol, hanya lewat tray). Ditindaklanjuti di F1-22; pintasan global tetap di F1-15 karena tombol × tidak bisa diklik saat klik-tembus aktif.
+- 6 Okt 2026: dengan terjemah aktif, baris kedua teks Arab terpotong (Al-Mulk 15) karena tinggi panel dikunci 180 px. Teks Arab juga sengaja di-clamp 3 baris, sehingga ayat panjang selalu terpotong tanpa tanda. Ditindaklanjuti di F1-23.

@@ -13,7 +13,7 @@ use audio::{Audio, Command, PlayerState};
 use tauri::menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::TrayIconBuilder;
 use std::sync::atomic::{AtomicBool, Ordering};
-use tauri::{AppHandle, Listener, Manager, PhysicalPosition, State, WebviewWindow, Wry};
+use tauri::{AppHandle, Listener, Manager, PhysicalPosition, PhysicalSize, State, WebviewWindow, Wry};
 
 struct ClickThroughItem(CheckMenuItem<Wry>);
 
@@ -71,6 +71,29 @@ fn panel_toggle(app: AppHandle) -> Result<bool, String> {
 #[tauri::command]
 fn panel_hide(app: AppHandle) -> Result<(), String> {
     panel_window(&app)?.hide().map_err(|e| e.to_string())
+}
+
+/// Ubah tinggi panel mengikuti isinya (tinggi logis dari frontend), dengan tepi bawah tetap
+/// di tempat supaya panel tumbuh ke atas dan tidak masuk ke bawah taskbar.
+#[tauri::command]
+fn panel_fit(app: AppHandle, height: f64) -> Result<(), String> {
+    let panel = panel_window(&app)?;
+    let scale = panel.scale_factor().map_err(|e| e.to_string())?;
+    let size = panel.outer_size().map_err(|e| e.to_string())?;
+    let pos = panel.outer_position().map_err(|e| e.to_string())?;
+    let target = (height * scale).round() as u32;
+    if target == size.height {
+        return Ok(());
+    }
+    let bottom = pos.y + size.height as i32;
+    panel
+        .set_size(PhysicalSize::new(size.width, target))
+        .map_err(|e| e.to_string())?;
+    // Baca ulang: OS bisa membatasi ke minHeight.
+    let applied = panel.outer_size().map(|s| s.height).unwrap_or(target);
+    panel
+        .set_position(PhysicalPosition::new(pos.x, bottom - applied as i32))
+        .map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -231,6 +254,7 @@ pub fn run() {
             player_state,
             panel_toggle,
             panel_hide,
+            panel_fit,
             panel_set_click_through,
         ])
         .run(tauri::generate_context!())
