@@ -19,7 +19,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [x] **F0-01** Scaffold Tauri v2 + React + Vite + TypeScript (6 Okt 2026)
 - [x] **F0-02** PRD, CLAUDE.md, roadmap, changelog, catatan keputusan (6 Okt 2026)
 - [ ] **F0-03** Pasang toolchain di laptop Windows (Rust, C++ Build Tools) dan `npm run tauri dev` berhasil jalan
-- [ ] **F0-04** Inisialisasi git, commit pertama, push ke repo GitHub `ziyadah`
+- [x] **F0-04** Inisialisasi git, commit pertama, push ke repo GitHub `ziyadah` (6 Okt 2026)
 - [ ] **F0-05** CI GitHub Actions: build frontend, `cargo test`, build Tauri untuk Windows dan macOS di setiap pull request
 - [ ] **F0-06** Amankan nama: cek merek di PDKI, ambil domain, akun/organisasi GitHub *(non-kode, paralel)*
 - [ ] **F0-07** Kirim surat ke Kemenag/LPMQ: syarat pemakaian teks, terjemah, font, dan alur tashih aplikasi open source *(non-kode, paralel)*
