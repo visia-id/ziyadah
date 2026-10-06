@@ -8,12 +8,14 @@
 //! Aplikasi tetap hidup di tray saat jendela utama ditutup; keluar lewat menu tray.
 
 mod audio;
+mod panel_place;
 mod quran;
 
 use audio::{Audio, Command, PlayMode, PlayerState};
 use tauri::menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::TrayIconBuilder;
 use std::sync::atomic::{AtomicBool, Ordering};
+use panel_place::PanelPlacement;
 use quran::{AyahTiming, Quran, Surah, SurahIndexItem};
 use tauri::path::BaseDirectory;
 use tauri::{AppHandle, Listener, Manager, PhysicalPosition, PhysicalSize, State, WebviewWindow, Wry};
@@ -180,17 +182,6 @@ fn set_click_through(app: &AppHandle, on: bool) -> Result<(), String> {
     Ok(())
 }
 
-/// Letakkan panel di tengah bawah monitor utama, sedikit di atas taskbar.
-fn place_panel(panel: &WebviewWindow) {
-    let Ok(Some(monitor)) = panel.primary_monitor() else { return };
-    let Ok(size) = panel.outer_size() else { return };
-    let area = monitor.size();
-    let pos = monitor.position();
-    let x = pos.x + (area.width as i32 - size.width as i32) / 2;
-    let y = pos.y + area.height as i32 - size.height as i32 - (96.0 * monitor.scale_factor()) as i32;
-    let _ = panel.set_position(PhysicalPosition::new(x, y));
-}
-
 fn show_main(app: &AppHandle) {
     if let Some(w) = app.get_webview_window("main") {
         let _ = w.show();
@@ -222,9 +213,12 @@ pub fn run() {
                 tauri::WebviewWindowBuilder::from_config(app.handle(), &config)?.build()?;
             }
 
+            // Posisi panel: yang terakhir diingat per monitor, atau pojok kanan bawah (F1-14).
+            let placement = PanelPlacement::load(app.path().app_config_dir()?.join("panel.json"));
             if let Some(panel) = app.get_webview_window("panel") {
-                place_panel(&panel);
+                placement.restore(&panel);
             }
+            app.manage(placement);
             watch_player_for_panel(&handle);
 
             // Menu tray / menu bar.
@@ -273,14 +267,18 @@ pub fn run() {
 
             Ok(())
         })
-        .on_window_event(|window, event| {
+        .on_window_event(|window, event| match event {
             // Menutup jendela utama hanya menyembunyikannya; murottal tetap jalan dari tray.
-            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
-                if window.label() == "main" {
-                    api.prevent_close();
-                    let _ = window.hide();
+            tauri::WindowEvent::CloseRequested { api, .. } if window.label() == "main" => {
+                api.prevent_close();
+                let _ = window.hide();
+            }
+            tauri::WindowEvent::Moved(_) | tauri::WindowEvent::Resized(_) if window.label() == "panel" => {
+                if let Some(placement) = window.try_state::<PanelPlacement>() {
+                    placement.remember(window);
                 }
             }
+            _ => {}
         })
         .invoke_handler(tauri::generate_handler![
             player_play,
@@ -299,8 +297,16 @@ pub fn run() {
             panel_fit,
             panel_set_click_through,
         ])
-        .run(tauri::generate_context!())
-        .expect("gagal menjalankan Ziyadah");
+        .build(tauri::generate_context!())
+        .expect("gagal menjalankan Ziyadah")
+        .run(|app, event| {
+            // Penulisan posisi panel dibatasi saat diseret; pastikan posisi terakhir tersimpan saat keluar.
+            if let tauri::RunEvent::Exit = event {
+                if let Some(placement) = app.try_state::<PanelPlacement>() {
+                    placement.save(true);
+                }
+            }
+        });
 }
 
 #[cfg(test)]
