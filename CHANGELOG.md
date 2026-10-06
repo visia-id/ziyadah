@@ -28,4 +28,5 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 ### Diperbaiki
 
 - Panel tidak lagi kosong bila pemutaran dimulai sebelum data surah selesai dimuat (F1-17)
+- Versi installer tidak lagi gagal memuat data Qur'an saat dibuka ("state not managed"): jendela kini dibuat setelah audio dan data Qur'an siap
 - Keputusan 0004: Tanzil sebagai sumber teks Qur'an utama (F1-04)

@@ -215,6 +215,13 @@ pub fn run() {
             let db_path = app.path().resolve("resources/quran.db", BaseDirectory::Resource)?;
             app.manage(Quran::open(&db_path));
 
+            // Jendela dibuat setelah semua state siap (tauri.conf: "create": false). Kalau dibuat lebih dulu,
+            // halaman bisa memanggil perintah quran_* / player_* sebelum state dikelola, dan pada build release
+            // jendela utama gagal memuat data ("state not managed").
+            for config in app.config().app.windows.clone() {
+                tauri::WebviewWindowBuilder::from_config(app.handle(), &config)?.build()?;
+            }
+
             if let Some(panel) = app.get_webview_window("panel") {
                 place_panel(&panel);
             }
