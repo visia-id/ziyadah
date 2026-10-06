@@ -18,4 +18,7 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 - Mode putar: berhenti di akhir surah, lanjut ke surah berikutnya, ulang ayat, ulang surah, dan ulang rentang ayat; bisa diganti saat murottal berjalan (F1-08)
 - Jeda 1 detik saat pindah surah dan saat kembali ke awal surah atau rentang (F1-09)
 - Terjemah di panel tidak lagi dipotong 2 baris; ayat dan terjemah di-scroll bersama bila melebihi batas tinggi panel (F1-25)
+- Data Qur'an lengkap 114 surah dari berkas resmi Tanzil (Uthmani 1.1) beserta terjemah Kemenag, juz, halaman, rub' hizb, dan sajdah, dibangun menjadi `quran.db` lewat `npm run fetch-data` (F1-05)
+- Checksum teks sumber dan tes integritas: 6.236 ayat, basmalah dipisah tanpa mengubah teks (termasuk penulisan khusus di surah 95 dan 97), ayat lain sama persis dengan sumber (F1-06)
+- Inti Rust membaca `quran.db`; data JSON uji coba dan script Al Quran Cloud dihapus (F1-07)
 - Keputusan 0004: Tanzil sebagai sumber teks Qur'an utama (F1-04)

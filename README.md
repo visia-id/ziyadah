@@ -17,7 +17,7 @@ Aplikasi Qur'an desktop gratis dan open source untuk tilawah, mendengarkan murot
 
 ## Prasyarat (Windows)
 
-1. [Node.js](https://nodejs.org) 20 atau lebih baru
+1. [Node.js](https://nodejs.org) 22.13 atau lebih baru (memakai `node:sqlite` bawaan)
 2. [Rust](https://rustup.rs) (toolchain MSVC)
 3. [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) dengan workload **Desktop development with C++**
 4. WebView2 (sudah ada di Windows 10/11 yang ter-update)
@@ -35,7 +35,7 @@ Untuk macOS: Xcode Command Line Tools (`xcode-select --install`) dan Rust.
 
 ```powershell
 npm install
-npm run fetch-data      # ambil teks surah uji coba ke public/data (tidak di-commit)
+npm run fetch-data      # unduh teks Tanzil, cek checksum, bangun src-tauri/resources/quran.db (tidak di-commit)
 npm run tauri dev
 ```
 
@@ -61,17 +61,20 @@ src/
   panel/      panel Ambient (React)
   shared/     API pemutar dan pemuat data
 src-tauri/
-  src/audio.rs  mesin audio: antrian, unduhan, cache, status
+  src/audio.rs  mesin audio: mode putar, antrian, unduhan, cache, status
+  src/quran.rs  membaca quran.db, tes integritas teks
   src/lib.rs    perintah, panel, tray
 scripts/
-  fetch-data.mjs  ambil teks dan terjemah untuk uji coba
+  build-quran-db.mjs   bangun quran.db dari berkas resmi Tanzil
+  tanzil-sources.json  alamat sumber dan checksum teks
 ```
 
 ## Sumber data dan lisensi
 
 - Kode: MIT, lihat [LICENSE](LICENSE)
-- Teks: [Al Quran Cloud](https://alquran.cloud) edisi `quran-uthmani` (uji coba; sumber final ditentukan bersama urusan tashih)
-- Terjemah: Kementerian Agama RI, via Al Quran Cloud edisi `id.indonesian`
+- Teks: [Tanzil Project](https://tanzil.net), Tanzil Quran Text (Uthmani, versi 1.1). Disalin verbatim tanpa perubahan sesuai syarat Tanzil; lihat [keputusan 0004](docs/decisions/0004-teks-tanzil.md)
+- Metadata juz, halaman, rub' hizb, sajdah: Tanzil `quran-data.xml`
+- Terjemah: Kementerian Agama RI, via Tanzil (`id.indonesian`)
 - Audio: [EveryAyah](https://everyayah.com), hak rekaman milik qari atau pemegang haknya
 
 Proyek ini bukan mushaf yang sudah ditashih. Data Qur'an sengaja tidak di-commit sampai izin dan tashih selesai.

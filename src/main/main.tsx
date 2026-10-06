@@ -210,8 +210,8 @@ function App() {
       )}
 
       <footer className="muted">
-        Teks: Al Quran Cloud (quran-uthmani) · Terjemah: Kemenag · Audio: EveryAyah. Data hanya untuk
-        uji coba, belum ditashih untuk diedarkan.
+        Teks: Tanzil Project (tanzil.net), Uthmani 1.1 · Terjemah: Kementerian Agama RI · Audio: EveryAyah.
+        Pratinjau: belum ditashih LPMQ, belum untuk diedarkan luas.
       </footer>
     </main>
   );

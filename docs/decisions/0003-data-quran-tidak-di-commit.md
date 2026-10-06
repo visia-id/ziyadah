@@ -9,7 +9,7 @@ PMA Nomor 44 Tahun 2016 mewajibkan mushaf, termasuk media digital, yang diedarka
 
 ## Keputusan
 
-Teks, terjemah, dan font Qur'an tidak di-commit ke repo. Data diambil lewat script (`npm run fetch-data`) ke `public/data/`, yang masuk `.gitignore`. Kode tetap MIT dan bisa dipublikasikan.
+Teks, terjemah, dan font Qur'an tidak di-commit ke repo. Data dibangun lewat script (`npm run fetch-data`) menjadi `src-tauri/resources/quran.db`, yang masuk `.gitignore`. Yang di-commit hanya script dan checksum sumbernya. Kode tetap MIT dan bisa dipublikasikan.
 
 ## Alasan dan alternatif
 

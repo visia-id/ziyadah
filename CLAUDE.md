@@ -20,7 +20,7 @@ Aplikasi Qur'an desktop gratis dan open source (MIT): tilawah, murottal sambil k
 ## Perintah
 
 - `npm install`
-- `npm run fetch-data`: ambil teks uji coba ke `public/data` (tidak di-commit)
+- `npm run fetch-data`: unduh teks Tanzil, cek checksum, bangun `src-tauri/resources/quran.db` (tidak di-commit; wajib sebelum `cargo test` dan `tauri dev`)
 - `npm run tauri dev`: jalankan aplikasi
 - `npm run build`: cek TypeScript + build frontend
 - `cd src-tauri && cargo test`: tes Rust
@@ -28,7 +28,8 @@ Aplikasi Qur'an desktop gratis dan open source (MIT): tilawah, murottal sambil k
 ## Aturan
 
 - Teks Qur'an adalah amanah: jangan pernah mengubah, merapikan, atau "memperbaiki" teks ayat secara manual. Data hanya berasal dari sumber lewat script.
-- Jangan commit `public/data/` atau data Qur'an lain sampai lisensi dan tashih LPMQ beres.
+- Jangan commit `quran.db`, `.cache/`, atau data Qur'an lain sampai lisensi dan tashih LPMQ beres.
+- Checksum di `scripts/tanzil-sources.json` hanya boleh diganti setelah perubahan teks di Tanzil ditinjau manusia.
 - Audio dan status pemutaran hanya hidup di inti Rust (`src-tauri/src/audio.rs`); jendela hanya mengirim perintah dan mendengar event `player://state`.
 - Di antarmuka pakai istilah "Hafalan baru" dan "Murajaah". "Ziyadah" hanya nama aplikasi.
 - Bahasa antarmuka bawaan: Indonesia. Komentar kode boleh Indonesia.

@@ -3,8 +3,10 @@ dist/
 src-tauri/target/
 src-tauri/gen/
 
-# Data Qur'an diambil lewat `npm run fetch-data`, tidak di-commit
-# sampai urusan lisensi dan tashih selesai.
+# Data Qur'an dibangun lewat `npm run fetch-data` (sumber: Tanzil), tidak di-commit
+# sampai urusan lisensi dan tashih selesai (keputusan 0003).
+src-tauri/resources/quran.db
+.cache/
 public/data/
 
 .DS_Store

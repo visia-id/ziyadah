@@ -20,6 +20,8 @@ serde_json = "1"
 # Audio diputar di inti Rust, bukan di WebView, supaya tidak terikat ke satu jendela.
 rodio = { version = "0.20", default-features = false, features = ["symphonia-mp3"] }
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
+# Membaca quran.db (read-only). "bundled" menyertakan SQLite sehingga tidak bergantung pada sistem.
+rusqlite = { version = "0.32", features = ["bundled"] }
 
 [profile.release]
 codegen-units = 1

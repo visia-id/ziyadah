@@ -1,0 +1,17 @@
+{
+  "text": {
+    "url": "https://tanzil.net/pub/download/index.php?marks=true&sajdah=true&rub=true&alif=true&quranType=uthmani&outType=txt-2&agree=true",
+    "file": "quran-uthmani.txt",
+    "sha256": "d876d2f8522cbcbfc316ff03244f48366c39cd44b18113dbaf017b7bb89ec115"
+  },
+  "translation": {
+    "url": "https://tanzil.net/trans/?transID=id.indonesian&type=txt-2",
+    "file": "id.indonesian.txt",
+    "sha256": "b7741eaef7d43256c718a71e0adfa9cd368125db5cd37b97aa52fa36c5bb63c8"
+  },
+  "metadata": {
+    "url": "https://tanzil.net/res/text/metadata/quran-data.xml",
+    "file": "quran-data.xml",
+    "sha256": "423afa57b81ccee79a4f15a2df1b8aa6a6c06498cfe8ce12e627adc41512c4a9"
+  }
+}

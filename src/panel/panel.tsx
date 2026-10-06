@@ -2,7 +2,7 @@ import { StrictMode, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "../shared/theme.css";
 import "./panel.css";
-import { data, panel, player, type Basmalah, type PlayerState, type Surah } from "../shared/player";
+import { data, panel, player, type PlayerState, type SurahDetail } from "../shared/player";
 
 // Panel Ambient: teks ayat yang sedang dibaca qari, melayang di atas semua jendela.
 // Seret dari mana saja untuk memindah. Kontrol muncul saat kursor di atas panel.
@@ -19,8 +19,7 @@ const MAX_SCREEN_RATIO = 0.4;
 
 function Panel() {
   const [state, setState] = useState<PlayerState | null>(null);
-  const [surah, setSurah] = useState<Surah | null>(null);
-  const [basmalah, setBasmalah] = useState<Basmalah | null>(null);
+  const [surah, setSurah] = useState<SurahDetail | null>(null);
   const [showTranslation, setShowTranslation] = useState(
     () => safeGet("ziyadah.panel.translation") === "1",
   );
@@ -37,7 +36,6 @@ function Panel() {
 
   useEffect(() => {
     player.state().then(setState).catch(() => {});
-    data.basmalah().then(setBasmalah).catch(() => {});
     const un = player.onState(setState);
     return () => {
       un.then((f) => f());
@@ -61,8 +59,8 @@ function Panel() {
   const missingText = !idle && (!surah || surah.number !== state!.surah);
   const isBasmalah = state?.ayah === 0;
   const ayah = !idle && !isBasmalah ? surah!.ayahs.find((a) => a.n === state!.ayah) : undefined;
-  const ar = isBasmalah ? basmalah?.ar : ayah?.ar;
-  const tr = isBasmalah ? basmalah?.id : ayah?.id;
+  const ar = isBasmalah ? surah?.basmalah?.ar : ayah?.ar;
+  const tr = isBasmalah ? surah?.basmalah?.id : ayah?.id;
 
   return (
     <div className="panel" ref={ref} data-tauri-drag-region>

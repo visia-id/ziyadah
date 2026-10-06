@@ -46,6 +46,11 @@ export interface Basmalah {
   id: string;
 }
 
+export interface SurahDetail extends Surah {
+  /** Basmalah di awal surah persis seperti di Tanzil; null untuk Al-Fatihah dan At-Taubah. */
+  basmalah: Basmalah | null;
+}
+
 export const RECITERS = [
   { id: "Alafasy_128kbps", name: "Mishary Rashid Alafasy" },
   { id: "Husary_128kbps", name: "Mahmoud Khalil Al-Husary" },
@@ -76,18 +81,18 @@ export const panel = {
   setClickThrough: (on: boolean) => invoke<void>("panel_set_click_through", { on }),
 };
 
-const cache = new Map<string, unknown>();
-async function loadJson<T>(path: string): Promise<T> {
-  if (!cache.has(path)) {
-    const res = await fetch(path);
-    if (!res.ok) throw new Error(`Data ${path} tidak ditemukan. Jalankan: npm run fetch-data`);
-    cache.set(path, await res.json());
+// Data Qur'an dibaca inti Rust dari quran.db (sumber: Tanzil). Hasil disimpan per jendela.
+const cache = new Map<string, Promise<unknown>>();
+function cached<T>(key: string, load: () => Promise<T>): Promise<T> {
+  if (!cache.has(key)) {
+    const p = load();
+    cache.set(key, p);
+    p.catch(() => cache.delete(key));
   }
-  return cache.get(path) as T;
+  return cache.get(key) as Promise<T>;
 }
 
 export const data = {
-  index: () => loadJson<SurahIndexItem[]>("/data/index.json"),
-  surah: (n: number) => loadJson<Surah>(`/data/surah-${String(n).padStart(3, "0")}.json`),
-  basmalah: () => loadJson<Basmalah>("/data/basmalah.json"),
+  index: () => cached("index", () => invoke<SurahIndexItem[]>("quran_index")),
+  surah: (n: number) => cached(`surah:${n}`, () => invoke<SurahDetail>("quran_surah", { number: n })),
 };

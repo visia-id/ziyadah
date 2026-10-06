@@ -35,9 +35,9 @@ Rujukan kebutuhan: `docs/PRD.md`.
 ### Data
 
 - [x] **F1-04** Putuskan sumber teks utama (Mushaf Standar Indonesia atau Tanzil), catat di `docs/decisions/` (6 Okt 2026: Tanzil, keputusan 0004)
-- [ ] **F1-05** Script pembangun `quran.db` (SQLite) dari berkas resmi Tanzil: 114 surah, metadata juz/halaman/hizb, terjemah Kemenag
-- [ ] **F1-06** Checksum teks dan tes integritas (jumlah ayat 6.236, basmalah, tidak ada teks berubah)
-- [ ] **F1-07** Inti Rust membaca `quran.db`; frontend berhenti memakai JSON di `public/data`
+- [x] **F1-05** Script pembangun `quran.db` (SQLite) dari berkas resmi Tanzil: 114 surah, metadata juz/halaman/hizb, terjemah Kemenag (6 Okt 2026)
+- [x] **F1-06** Checksum teks dan tes integritas (jumlah ayat 6.236, basmalah, tidak ada teks berubah) (6 Okt 2026)
+- [x] **F1-07** Inti Rust membaca `quran.db`; frontend berhenti memakai JSON di `public/data` (6 Okt 2026)
 
 ### Audio
 
@@ -121,3 +121,4 @@ Tulis temuan, hasil uji, dan hal yang mengganjal di sini, dengan tanggal. Yang s
 - 6 Okt 2026: panel Ambient tampil saat idle di tengah bawah layar, menutupi input aplikasi lain, dan tidak bisa ditutup dari panel (tidak ada tombol, hanya lewat tray). Ditindaklanjuti di F1-22; pintasan global tetap di F1-15 karena tombol × tidak bisa diklik saat klik-tembus aktif.
 - 6 Okt 2026: dengan terjemah aktif, baris kedua teks Arab terpotong (Al-Mulk 15) karena tinggi panel dikunci 180 px. Teks Arab juga sengaja di-clamp 3 baris, sehingga ayat panjang selalu terpotong tanpa tanda. Ditindaklanjuti di F1-23.
 - 6 Okt 2026: tinjauan riset tentang Qur'an sebagai suara latar saat bekerja. Yang berdasar kuat: suara ucapan mengganggu tugas verbal (irrelevant speech effect), dan murattal bertempo stabil lebih tidak mengganggu daripada mujawwad (changing-state). Klaim EEG gelombang alfa dan penurunan kortisol berasal dari studi kecil, sebagian pada pasien, dan tidak mengukur kinerja kerja, jadi tidak dipakai sebagai klaim. Hasilnya: F1-24, Pomodoro-istirahat di daftar setelah 1.0, serta pertanyaan terbuka soal qari bawaan dan adab menyimak di PRD.
+- 6 Okt 2026: tes integritas menemukan basmalah di awal surah 95 dan 97 pada teks Tanzil ditulis dengan tasydid pada ba (بِّسْمِ), berbeda dari Al-Fatihah 1. Basmalah kini disimpan per surah apa adanya, tidak disalin dari Al-Fatihah.

@@ -8,11 +8,14 @@
 //! Aplikasi tetap hidup di tray saat jendela utama ditutup; keluar lewat menu tray.
 
 mod audio;
+mod quran;
 
 use audio::{Audio, Command, PlayMode, PlayerState};
 use tauri::menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::TrayIconBuilder;
 use std::sync::atomic::{AtomicBool, Ordering};
+use quran::{Quran, Surah, SurahIndexItem};
+use tauri::path::BaseDirectory;
 use tauri::{AppHandle, Listener, Manager, PhysicalPosition, PhysicalSize, State, WebviewWindow, Wry};
 
 struct ClickThroughItem(CheckMenuItem<Wry>);
@@ -63,6 +66,18 @@ fn player_stop(audio: State<Audio>) {
 #[tauri::command]
 fn player_state(audio: State<Audio>) -> PlayerState {
     audio.state()
+}
+
+// ---------- Perintah data Qur'an ----------
+
+#[tauri::command]
+fn quran_index(quran: State<Quran>) -> Result<Vec<SurahIndexItem>, String> {
+    quran.index()
+}
+
+#[tauri::command]
+fn quran_surah(quran: State<Quran>, number: u16) -> Result<Surah, String> {
+    quran.surah(number)
 }
 
 // ---------- Perintah panel ----------
@@ -188,6 +203,10 @@ pub fn run() {
             let cache_dir = app.path().app_cache_dir()?.join("audio");
             app.manage(Audio::start(handle.clone(), cache_dir));
 
+            // Data Qur'an dibundel sebagai resource; bila belum dibangun, perintah quran_* mengembalikan pesan galat.
+            let db_path = app.path().resolve("resources/quran.db", BaseDirectory::Resource)?;
+            app.manage(Quran::open(&db_path));
+
             if let Some(panel) = app.get_webview_window("panel") {
                 place_panel(&panel);
             }
@@ -257,6 +276,8 @@ pub fn run() {
             player_prev,
             player_stop,
             player_state,
+            quran_index,
+            quran_surah,
             panel_toggle,
             panel_hide,
             panel_fit,
