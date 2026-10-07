@@ -27,7 +27,7 @@
         "create": false,
         "title": "Ziyadah Panel",
         "url": "panel.html",
-        "width": 440,
+        "width": 380,
         "height": 180,
         "minWidth": 280,
         "minHeight": 100,

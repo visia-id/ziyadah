@@ -18,7 +18,7 @@ use serde::{Deserialize, Serialize};
 use tauri::{Monitor, PhysicalPosition, PhysicalSize, Runtime, WebviewWindow, Window};
 
 /// Lebar bawaan dan jarak ke tepi area kerja (kanan dan bawah sama), dalam piksel logis.
-const DEFAULT_WIDTH: f64 = 440.0;
+const DEFAULT_WIDTH: f64 = 380.0;
 const DEFAULT_MARGIN: f64 = 24.0;
 /// Penulisan berkas ditunda sebentar setelah perubahan terakhir supaya tidak menulis terus saat panel diseret.
 /// Yang ditulis selalu posisi terbaru, jadi posisi akhir tidak pernah terlewat.
@@ -192,10 +192,10 @@ mod tests {
     #[test]
     fn bawaan_di_pojok_kanan_bawah_area_kerja() {
         let p = default_placement(1.0);
-        assert_eq!(p, Placement { right: 24, bottom: 24, width: 440 });
-        assert_eq!(position_in(AREA, p, 150), (1920 - 24 - 440, 1032 - 24 - 150));
+        assert_eq!(p, Placement { right: 24, bottom: 24, width: 380 });
+        assert_eq!(position_in(AREA, p, 150), (1920 - 24 - 380, 1032 - 24 - 150));
         // Skala 125%: jarak kanan dan bawah tetap sama.
-        assert_eq!(default_placement(1.25), Placement { right: 30, bottom: 30, width: 550 });
+        assert_eq!(default_placement(1.25), Placement { right: 30, bottom: 30, width: 475 });
     }
 
     #[test]

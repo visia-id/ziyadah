@@ -72,6 +72,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [x] **F1-20** Ukur CPU dan memori saat memutar; optimalkan bila di atas target PRD (7 Okt 2026: CPU sekitar 1%, memori 205 MB versi Task Manager; lihat Catatan)
 - [ ] **F1-32** Memori di bawah 200 MB: tutup jendela utama sepenuhnya saat masuk tray dan buat lagi saat dibuka (hemat satu renderer WebView2, sekitar 25 sampai 40 MB), ukur waktu munculnya
 - [x] **F1-33** Masuk Mode Layar Penuh langsung dari panel (ikon ⛶ saat kursor di atas panel) dan menu tray; keluar kembali ke keadaan semula, jendela utama tetap di tray bila tadinya di tray (7 Okt 2026)
+- [x] **F1-34** Lebar panel diatur pengguna dengan menyeret tepi kiri (minimum 280, tepi kanan tetap, lebar diingat); lebar bawaan 380, bukan 440. Lebar otomatis mengikuti ayat sengaja tidak dipakai karena tepi yang bergerak tiap ganti ayat menarik perhatian saat bekerja (7 Okt 2026)
 - [ ] **F1-21** Installer Windows dan macOS, checksum SHA-256, rilis v0.1 di GitHub Releases berlabel pratinjau
 
 **Gerbang Fase 1:** panel transparan dan klik-tembus terbukti jalan di macOS dan Windows; satu juz penuh diputar tanpa jeda terdengar; CPU rata-rata di bawah 3%.

@@ -1,5 +1,6 @@
 import { StrictMode, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import "../shared/theme.css";
 import "./panel.css";
 import { data, panel, player, type PlayerState, type SurahDetail } from "../shared/player";
@@ -118,6 +119,17 @@ function Panel() {
           </div>
         </>
       )}
+
+      {/* Lebar panel diatur pengguna dengan menyeret tepi kiri; tepi kanan tetap, tinggi tetap mengikuti isi (F1-34). */}
+      <div
+        className="resize-left"
+        title="Seret untuk mengubah lebar panel"
+        onMouseDown={(e) => {
+          if (e.button !== 0) return;
+          e.preventDefault();
+          getCurrentWindow().startResizeDragging("West").catch(() => {});
+        }}
+      />
 
       <div className="controls" dir="ltr">
         <button onClick={() => player.prev()} title="Ayat sebelumnya">⏮</button>
