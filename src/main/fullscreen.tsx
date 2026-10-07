@@ -132,7 +132,12 @@ export function Fullscreen({ state, surahNo, onStart, onExit }: Props) {
       box.style.setProperty("--fs-ar", `${size}px`);
       // Harakat yang menonjol di atas/bawah baris ditampung padding .fs-current, jadi isi dianggap muat hanya bila
       // benar-benar muat. Kelonggaran di sini dulu (+16 px) membuat harakat baris terakhir terpotong.
-      while (box.scrollHeight > box.clientHeight + 1 && size > AR_MIN) {
+      // Tinggi isi diukur dari offsetTop/offsetHeight, bukan scrollHeight: animasi masuk menggeser ayat 28 px
+      // ke bawah, dan geseran sementara itu ikut terhitung di scrollHeight sehingga huruf mengecil tanpa perlu.
+      const last = box.lastElementChild as HTMLElement | null;
+      const needed = () =>
+        last ? last.offsetTop + last.offsetHeight + parseFloat(getComputedStyle(box).paddingBottom) : 0;
+      while (needed() > box.clientHeight + 1 && size > AR_MIN) {
         size -= 2;
         box.style.setProperty("--fs-ar", `${size}px`);
       }

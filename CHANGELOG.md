@@ -37,6 +37,7 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 ### Diperbaiki
 
 - Mode Layar Penuh: harakat di bawah baris terakhir (misalnya kasratain pada Al-Mulk 3) tidak lagi terpotong (F2-11)
+- Mode Layar Penuh: huruf Arab tidak lagi mengecil tanpa perlu karena animasi masuk ayat ikut terhitung sebagai isi yang tidak muat (F2-11)
 - Jendela utama yang ditutup ke tray tidak lagi menggambar ulang sorot kata tanpa terlihat; CPU saat murottal sekitar 1% (F1-20)
 - Panel tidak lagi kosong bila pemutaran dimulai sebelum data surah selesai dimuat (F1-17)
 - Versi installer tidak lagi gagal memuat data Qur'an saat dibuka ("state not managed"): jendela kini dibuat setelah audio dan data Qur'an siap
