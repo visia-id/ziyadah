@@ -1,4 +1,4 @@
-// Situs Ziyadah: tanpa cookie, tanpa analitik.
+// Situs Ziyadah: tanpa cookie. Kunjungan dihitung Cloudflare Web Analytics (tanpa data pribadi).
 
 // Panel contoh di hero: Al-Insyirah 5 dan 6 apa adanya dari Tanzil (text_display di quran.db), terjemah Kemenag,
 // dan timing per kata Alafasy dari quran-align. Diputar bergantian seperti murottal di aplikasi.

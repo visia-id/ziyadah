@@ -65,7 +65,7 @@ Membangun installer di komputer sendiri membutuhkan variabel `TAURI_SIGNING_PRIV
 
 ## Situs
 
-Landing page statis ada di folder `website/` (HTML, CSS, sedikit JS, tanpa build), untuk `ziyadah.untungkasirin.com`. Tombol unduh otomatis menunjuk ke installer rilis terbaru lewat API GitHub. Situs tidak memakai cookie maupun analitik, dan semua font di-host sendiri.
+Landing page statis ada di folder `website/` (HTML, CSS, sedikit JS, tanpa build), untuk `ziyadah.untungkasirin.com`. Tombol unduh otomatis menunjuk ke installer rilis terbaru lewat API GitHub. Situs tanpa cookie; kunjungan dihitung Cloudflare Web Analytics tanpa data pribadi. Semua font di-host sendiri.
 
 ## Struktur
 

@@ -1,11 +1,12 @@
 # Header untuk Cloudflare Pages (https://developers.cloudflare.com/pages/configuration/headers/).
-# Situs statis tanpa cookie dan analitik; satu-satunya permintaan keluar adalah ke api.github.com untuk tautan unduhan.
+# Situs statis tanpa cookie. Permintaan keluar hanya ke api.github.com (tautan unduhan) dan Cloudflare Web Analytics
+# (penghitung kunjungan tanpa cookie dan tanpa data pribadi).
 
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; font-src 'self'; style-src 'self'; script-src 'self'; connect-src https://api.github.com; frame-ancestors 'none'; base-uri 'self'
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; font-src 'self'; style-src 'self'; script-src 'self' https://static.cloudflareinsights.com; connect-src https://api.github.com https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'
 
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
