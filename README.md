@@ -59,7 +59,7 @@ Aplikasi memeriksa pembaruan dari [GitHub Releases](https://github.com/visia-id/
 
 1. Samakan versi di `package.json`, `src-tauri/Cargo.toml`, dan `src-tauri/tauri.conf.json`.
 2. Commit, lalu `git tag vX.Y.Z` dan `git push origin vX.Y.Z`.
-3. Workflow `release.yml` membangun installer Windows bertanda tangan dan membuat draf rilis. Periksa, lalu publikasikan.
+3. Workflow `release.yml` membangun installer Windows bertanda tangan, menambahkan checksum SHA-256 (`SHA256SUMS.txt` dan di catatan rilis), lalu membuat draf rilis. Periksa, lalu publikasikan.
 
 Membangun installer di komputer sendiri membutuhkan variabel `TAURI_SIGNING_PRIVATE_KEY` berisi kunci privat updater.
 

@@ -77,3 +77,28 @@ jobs:
           releaseDraft: true
           prerelease: false
           includeUpdaterJson: true
+
+      # Checksum SHA-256 installer: diunggah sebagai SHA256SUMS.txt dan ditambahkan ke catatan rilis,
+      # supaya pengguna bisa memastikan berkas yang diunduh asli (misalnya bila diterima lewat WhatsApp).
+      - name: Checksum SHA-256
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd src-tauri/target/release/bundle/nsis
+          sha256sum -- *-setup.exe | sed 's/ \*/  /' > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+          gh release upload "$GITHUB_REF_NAME" SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
+          read -r HASH FILE < SHA256SUMS.txt
+          gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json body -q .body > notes.md
+          {
+            echo
+            echo "**Checksum SHA-256** \`$FILE\`:"
+            echo
+            echo '```'
+            echo "$HASH"
+            echo '```'
+            echo
+            echo "Cek di PowerShell, di folder tempat berkas diunduh: \`Get-FileHash $FILE\` lalu cocokkan dengan angka di atas. Bila berbeda, jangan dipasang."
+          } >> notes.md
+          gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --notes-file notes.md
