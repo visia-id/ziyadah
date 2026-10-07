@@ -84,6 +84,10 @@
 .fs-current {
   position: relative; /* titik acuan offsetTop kata aktif */
   max-height: 58vh;
+  /* Ruang untuk harakat yang menonjol keluar kotak baris (misalnya kasratain di baris terakhir), supaya tidak
+     terpotong oleh overflow kotak ini. */
+  box-sizing: border-box;
+  padding: calc(var(--fs-ar, 64px) * 0.2) 0 calc(var(--fs-ar, 64px) * 0.4);
   overflow-y: auto;
   scrollbar-width: none;
   width: 100%;

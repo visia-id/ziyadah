@@ -130,11 +130,9 @@ export function Fullscreen({ state, surahNo, onStart, onExit }: Props) {
       const max = Math.min(76, Math.max(34, window.innerWidth * 0.046)) * scale;
       let size = max;
       box.style.setProperty("--fs-ar", `${size}px`);
-      // Harakat di bawah huruf menonjol beberapa piksel keluar kotak baris, sehingga scrollHeight selalu sedikit
-      // lebih besar bila baris Arab berada paling bawah (terjemah mati). Huruf dikecilkan hanya bila isi benar-benar
-      // melebihi ruang ayat (max-height .fs-current), bukan karena tonjolan harakat itu.
-      const limit = parseFloat(getComputedStyle(box).maxHeight) + 16;
-      while (box.scrollHeight > limit && size > AR_MIN) {
+      // Harakat yang menonjol di atas/bawah baris ditampung padding .fs-current, jadi isi dianggap muat hanya bila
+      // benar-benar muat. Kelonggaran di sini dulu (+16 px) membuat harakat baris terakhir terpotong.
+      while (box.scrollHeight > box.clientHeight + 1 && size > AR_MIN) {
         size -= 2;
         box.style.setProperty("--fs-ar", `${size}px`);
       }
