@@ -69,7 +69,8 @@ Rujukan kebutuhan: `docs/PRD.md`.
 
 - [ ] **F1-18** Penyimpanan preferensi pengguna (`user.db` atau file pengaturan)
 - [x] **F1-19** Satu instance saja (plugin single-instance) (6 Okt 2026)
-- [ ] **F1-20** Ukur CPU dan memori saat memutar; optimalkan bila di atas target PRD
+- [x] **F1-20** Ukur CPU dan memori saat memutar; optimalkan bila di atas target PRD (7 Okt 2026: CPU sekitar 1%, memori 205 MB versi Task Manager; lihat Catatan)
+- [ ] **F1-32** Memori di bawah 200 MB: tutup jendela utama sepenuhnya saat masuk tray dan buat lagi saat dibuka (hemat satu renderer WebView2, sekitar 25 sampai 40 MB), ukur waktu munculnya
 - [ ] **F1-21** Installer Windows dan macOS, checksum SHA-256, rilis v0.1 di GitHub Releases berlabel pratinjau
 
 **Gerbang Fase 1:** panel transparan dan klik-tembus terbukti jalan di macOS dan Windows; satu juz penuh diputar tanpa jeda terdengar; CPU rata-rata di bawah 3%.
@@ -138,3 +139,4 @@ Tulis temuan, hasil uji, dan hal yang mengganjal di sini, dengan tanggal. Yang s
 - 6 Okt 2026 (F1-17): indeks kata quran-align tidak menghitung basmalah dan token tanda waqaf yang berdiri sendiri; dengan aturan itu 99,8% ayat cocok persis. Ayat yang tidak konsisten (antara lain muqatta'ah di awal surah 10 sampai 15) memakai sorot per ayat. Data Sudais di rilis quran-align rusak (berisi log galat). Data Al-Husary dan Abdul Basit dari bitrate 64 kbps, durasinya sama dengan rekaman yang diputar (selisih sekitar 0,1 detik).
 - 6 Okt 2026: panel crash (kosong) bila pemutaran mulai sebelum data surah selesai dimuat; diperbaiki bersama F1-17.
 - 6 Okt 2026: installer 0.0.3 pertama gagal memuat data ("state not managed") karena Tauri membuat jendela sebelum setup selesai dan build release memuat halaman sangat cepat. Jendela kini dibuat di setup setelah state siap. Pelajaran: uji build release, bukan hanya `tauri dev`, sebelum installer dikirim.
+- 7 Okt 2026 (F1-20): diukur pada build release di Windows 11, 12 inti logis, semua proses dijumlah (ziyadah.exe dan proses WebView2-nya). Murottal Al-Baqarah 250 dengan panel tampil, sorot per kata dan terjemah aktif, jendela utama di tray: CPU semula 1,7 sampai 2,7% dari total. Penyebabnya, jendela utama yang tersembunyi tetap menggambar ulang 286 ayat tiap 100 ms karena WebView2 tidak mengubah `document.visibilityState` saat jendela disembunyikan. Setelah diperbaiki: CPU sekitar 1% (renderer jendela utama turun dari 9,5% ke 0,2% satu inti). Memori 205 MB (private working set, seperti Task Manager) atau 266 MB (private bytes); terbesar proses GPU WebView2 (sekitar 85 MB) dan dua renderer (sekitar 40 MB masing-masing). Diam: CPU 0,1%. Mode Layar Penuh dengan galaksi berputar: CPU 2,9%, memori sampai 410 MB (mode ini dipakai di depan layar, bukan sambil kerja, jadi tidak dihitung ke target). Lanjutan memori di F1-32.

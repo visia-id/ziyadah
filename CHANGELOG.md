@@ -35,6 +35,7 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 
 ### Diperbaiki
 
+- Jendela utama yang ditutup ke tray tidak lagi menggambar ulang sorot kata tanpa terlihat; CPU saat murottal sekitar 1% (F1-20)
 - Panel tidak lagi kosong bila pemutaran dimulai sebelum data surah selesai dimuat (F1-17)
 - Versi installer tidak lagi gagal memuat data Qur'an saat dibuka ("state not managed"): jendela kini dibuat setelah audio dan data Qur'an siap
 - Panel tidak lagi menempel ke taskbar: jarak ke taskbar sama dengan jarak ke sisi kanan, posisi tidak lagi tercatat keliru saat tinggi panel berubah, dan lebar bawaan 440 (F1-28)

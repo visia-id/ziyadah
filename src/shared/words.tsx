@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { data, player, type AyahTiming, type PlayerPos } from "./player";
+import { data, player, useWindowShown, type AyahTiming, type PlayerPos } from "./player";
 
 // Sorot per kata (F1-17) memakai timing quran-align.
 // Teks ayat tidak diubah: teks dipecah per spasi lalu disusun ulang dengan spasi yang sama.
@@ -27,6 +27,8 @@ function segmentAt(timing: AyahTiming | undefined, posMs: number): [number, numb
 /**
  * Kata yang sedang dibaca qari, atau null bila qari/ayat tidak punya timing (tampilan memakai sorot per ayat).
  * Basmalah diputar dari berkas Al-Fatihah 1, jadi timing-nya diambil dari ayat itu.
+ * Posisi audio (tiap 100 ms) hanya didengar saat memutar dan jendela terlihat, supaya jendela di tray
+ * tidak menggambar ulang tanpa guna (F1-20).
  */
 export function useActiveWords(reciter: string | undefined, surah: number | undefined, playing: boolean) {
   const [timings, setTimings] = useState<Map<number, AyahTiming>>(new Map());
@@ -50,16 +52,16 @@ export function useActiveWords(reciter: string | undefined, surah: number | unde
     };
   }, [reciter, surah]);
 
+  const shown = useWindowShown();
+  const listening = playing && shown;
   useEffect(() => {
+    setPos(null);
+    if (!listening) return;
     const un = player.onPos(setPos);
     return () => {
       un.then((f) => f());
     };
-  }, []);
-
-  useEffect(() => {
-    if (!playing) setPos(null);
-  }, [playing]);
+  }, [listening]);
 
   if (!pos || pos.surah !== surah) return null;
   const timing = pos.ayah === 0 ? basmalah : timings.get(pos.ayah);

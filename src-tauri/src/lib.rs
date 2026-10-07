@@ -18,7 +18,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use panel_place::PanelPlacement;
 use quran::{AyahTiming, Quran, Surah, SurahIndexItem};
 use tauri::path::BaseDirectory;
-use tauri::{AppHandle, Listener, Manager, PhysicalPosition, PhysicalSize, State, WebviewWindow, Wry};
+use tauri::{AppHandle, Emitter, Listener, Manager, PhysicalPosition, PhysicalSize, State, WebviewWindow, Wry};
 
 struct ClickThroughItem(CheckMenuItem<Wry>);
 
@@ -99,7 +99,7 @@ fn panel_toggle(app: AppHandle) -> Result<bool, String> {
 
 #[tauri::command]
 fn panel_hide(app: AppHandle) -> Result<(), String> {
-    panel_window(&app)?.hide().map_err(|e| e.to_string())
+    set_shown(&panel_window(&app)?, false)
 }
 
 /// Masuk/keluar Mode Layar Penuh: sembunyikan panel saat masuk, munculkan lagi saat keluar bila murottal berjalan.
@@ -109,7 +109,7 @@ fn panel_set_suppressed(app: AppHandle, audio: State<Audio>, on: bool) -> Result
         flag.0.store(on, Ordering::SeqCst);
     }
     if on {
-        panel_window(&app)?.hide().map_err(|e| e.to_string())
+        set_shown(&panel_window(&app)?, false)
     } else if audio.state().status != "idle" {
         show_panel(&app)
     } else {
@@ -165,7 +165,7 @@ fn toggle_panel(app: &AppHandle) -> Result<bool, String> {
     let panel = panel_window(app)?;
     let visible = panel.is_visible().map_err(|e| e.to_string())?;
     if visible {
-        panel.hide().map_err(|e| e.to_string())?;
+        set_shown(&panel, false)?;
     } else {
         show_panel(app)?;
     }
@@ -177,7 +177,7 @@ fn show_panel(app: &AppHandle) -> Result<(), String> {
         return Ok(());
     }
     let panel = panel_window(app)?;
-    panel.show().map_err(|e| e.to_string())?;
+    set_shown(&panel, true)?;
     // Pastikan tetap di atas setelah ditampilkan ulang.
     let _ = panel.set_always_on_top(true);
     Ok(())
@@ -198,7 +198,7 @@ fn watch_player_for_panel(app: &AppHandle) {
         let status = state["status"].as_str().unwrap_or("idle");
         if should_hide_panel(was_active.load(Ordering::Relaxed), status) {
             if let Ok(panel) = panel_window(&handle) {
-                let _ = panel.hide();
+                let _ = set_shown(&panel, false);
             }
         }
         was_active.store(status != "idle", Ordering::Relaxed);
@@ -214,9 +214,23 @@ fn set_click_through(app: &AppHandle, on: bool) -> Result<(), String> {
     Ok(())
 }
 
+/// Tampilkan atau sembunyikan jendela, lalu kabari halamannya lewat event `window://shown`.
+/// WebView2 tidak mengubah `document.visibilityState` saat jendela disembunyikan, jadi tanpa event ini
+/// jendela utama yang ada di tray tetap menggambar ulang sorot kata tiap 100 ms tanpa terlihat (F1-20).
+/// Semua tampil/sembunyi jendela harus lewat sini.
+fn set_shown(window: &WebviewWindow, shown: bool) -> Result<(), String> {
+    if shown {
+        window.show().map_err(|e| e.to_string())?;
+    } else {
+        window.hide().map_err(|e| e.to_string())?;
+    }
+    let _ = window.emit_to(window.label(), "window://shown", shown);
+    Ok(())
+}
+
 fn show_main(app: &AppHandle) {
     if let Some(w) = app.get_webview_window("main") {
-        let _ = w.show();
+        let _ = set_shown(&w, true);
         let _ = w.unminimize();
         let _ = w.set_focus();
     }
@@ -307,7 +321,9 @@ pub fn run() {
             // Menutup jendela utama hanya menyembunyikannya; murottal tetap jalan dari tray.
             tauri::WindowEvent::CloseRequested { api, .. } if window.label() == "main" => {
                 api.prevent_close();
-                let _ = window.hide();
+                if let Some(main) = window.app_handle().get_webview_window("main") {
+                    let _ = set_shown(&main, false);
+                }
             }
             tauri::WindowEvent::Moved(_) | tauri::WindowEvent::Resized(_) if window.label() == "panel" => {
                 if let Some(placement) = window.try_state::<PanelPlacement>() {

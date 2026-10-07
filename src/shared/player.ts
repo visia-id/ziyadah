@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 
 // Status pemutaran dipegang inti Rust dan disiarkan ke semua jendela.
 export type PlayerStatus = "idle" | "loading" | "playing" | "paused";
@@ -87,6 +89,22 @@ export const player = {
   onPos: (cb: (p: PlayerPos) => void): Promise<UnlistenFn> =>
     listen<PlayerPos>("player://pos", (e) => cb(e.payload)),
 };
+
+/**
+ * Apakah jendela ini sedang ditampilkan. Dikabari inti Rust lewat `window://shown` karena WebView2 tidak
+ * mengubah `document.visibilityState` saat jendela disembunyikan ke tray.
+ */
+export function useWindowShown(): boolean {
+  const [shown, setShown] = useState(true);
+  useEffect(() => {
+    // Dengar lewat jendela ini saja: `listen` biasa menerima event yang ditujukan ke jendela mana pun.
+    const un = getCurrentWebviewWindow().listen<boolean>("window://shown", (e) => setShown(e.payload));
+    return () => {
+      un.then((f) => f());
+    };
+  }, []);
+  return shown;
+}
 
 export const panel = {
   toggle: () => invoke<boolean>("panel_toggle"),
