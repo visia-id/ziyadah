@@ -1,7 +1,7 @@
 {
   "name": "ziyadah",
   "private": true,
-  "version": "0.0.11",
+  "version": "0.0.12",
   "type": "module",
   "description": "Ziyadah: aplikasi Qur'an desktop untuk tilawah, murottal sambil kerja, dan hafalan",
   "license": "MIT",
