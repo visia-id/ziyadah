@@ -25,6 +25,10 @@ struct ClickThroughItem(CheckMenuItem<Wry>);
 /// Selama Mode Layar Penuh, panel Ambient tidak dimunculkan (ia selalu di atas dan akan menutupi layar penuh).
 struct PanelSuppressed(AtomicBool);
 
+/// Layar penuh dibuka dari panel atau tray saat jendela utama ada di tray. Saat keluar, jendela utama
+/// dikembalikan ke tray supaya pengguna kembali ke keadaan Ambient seperti semula (F1-33).
+struct FullscreenFromTray(AtomicBool);
+
 // ---------- Perintah pemutar ----------
 
 #[tauri::command]
@@ -108,6 +112,16 @@ fn panel_set_suppressed(app: AppHandle, audio: State<Audio>, on: bool) -> Result
     if let Some(flag) = app.try_state::<PanelSuppressed>() {
         flag.0.store(on, Ordering::SeqCst);
     }
+    if !on && app.try_state::<FullscreenFromTray>().is_some_and(|f| f.0.swap(false, Ordering::SeqCst)) {
+        if let Some(main) = app.get_webview_window("main") {
+            // Di Windows, keluar layar penuh memulihkan jendela belakangan dan ikut memunculkannya lagi,
+            // jadi jendela disembunyikan setelah pemulihan itu selesai.
+            std::thread::spawn(move || {
+                std::thread::sleep(std::time::Duration::from_millis(300));
+                let _ = set_shown(&main, false);
+            });
+        }
+    }
     if on {
         set_shown(&panel_window(&app)?, false)
     } else if audio.state().status != "idle" {
@@ -149,6 +163,24 @@ fn panel_fit(app: AppHandle, height: f64) -> Result<(), String> {
             .set_position(PhysicalPosition::new(pos.x, bottom - applied as i32))
             .map_err(|e| e.to_string())
     }
+}
+
+/// Buka Mode Layar Penuh dari panel atau tray tanpa membuka jendela utama lebih dulu (F1-33).
+#[tauri::command]
+fn fullscreen_open(app: AppHandle) {
+    open_fullscreen(&app);
+}
+
+fn open_fullscreen(app: &AppHandle) {
+    let Some(main) = app.get_webview_window("main") else { return };
+    if !main.is_fullscreen().unwrap_or(false) {
+        let in_tray = !main.is_visible().unwrap_or(true) || main.is_minimized().unwrap_or(false);
+        if let Some(flag) = app.try_state::<FullscreenFromTray>() {
+            flag.0.store(in_tray, Ordering::SeqCst);
+        }
+    }
+    show_main(app);
+    let _ = main.emit_to("main", "main://fullscreen", ());
 }
 
 #[tauri::command]
@@ -274,12 +306,14 @@ pub fn run() {
             let toggle = MenuItem::with_id(app, "toggle_panel", "Tampilkan/sembunyikan panel", true, None::<&str>)?;
             let click = CheckMenuItem::with_id(app, "click_through", "Klik-tembus panel", true, false, None::<&str>)?;
             let play_pause = MenuItem::with_id(app, "play_pause", "Putar/jeda", true, None::<&str>)?;
+            let full = MenuItem::with_id(app, "fullscreen", "Layar penuh", true, None::<&str>)?;
             let open = MenuItem::with_id(app, "open_main", "Buka jendela utama", true, None::<&str>)?;
             let quit = MenuItem::with_id(app, "quit", "Keluar", true, None::<&str>)?;
             let sep = PredefinedMenuItem::separator(app)?;
-            let menu = Menu::with_items(app, &[&play_pause, &toggle, &click, &sep, &open, &quit])?;
+            let menu = Menu::with_items(app, &[&play_pause, &toggle, &click, &full, &sep, &open, &quit])?;
             app.manage(ClickThroughItem(click.clone()));
             app.manage(PanelSuppressed(AtomicBool::new(false)));
+            app.manage(FullscreenFromTray(AtomicBool::new(false)));
 
             TrayIconBuilder::with_id("ziyadah-tray")
                 .icon(app.default_window_icon().cloned().expect("ikon aplikasi tidak ada"))
@@ -306,6 +340,7 @@ pub fn run() {
                             _ => show_main(app),
                         }
                     }
+                    "fullscreen" => open_fullscreen(app),
                     "open_main" => show_main(app),
                     "quit" => {
                         app.state::<Audio>().send(Command::Stop);
@@ -333,6 +368,7 @@ pub fn run() {
             _ => {}
         })
         .invoke_handler(tauri::generate_handler![
+            fullscreen_open,
             player_play,
             player_set_mode,
             player_pause,

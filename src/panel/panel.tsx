@@ -130,6 +130,9 @@ function Panel() {
         <button className={showTranslation ? "on" : ""} onClick={toggleTranslation} title="Terjemah">
           ID
         </button>
+        <button onClick={() => panel.openFullscreen()} title="Layar penuh (Esc untuk kembali)">
+          ⛶
+        </button>
         <button className="hide" onClick={() => panel.hide()} title="Sembunyikan panel (murottal tetap jalan)">
           ×
         </button>

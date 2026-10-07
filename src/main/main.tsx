@@ -18,6 +18,7 @@ import { scrollBehavior, useManualScrollPause } from "../shared/follow";
 import { UpdateBanner } from "./updater";
 import { Fullscreen } from "./fullscreen";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 
 // Pilihan terakhir diingat antar sesi; pertama kali dibuka mulai dari Al-Fatihah.
 const KEY_SURAH = "ziyadah.main.surah";
@@ -112,9 +113,20 @@ function App() {
   };
   const exitFull = () => {
     setFull(false);
-    getCurrentWindow().setFullscreen(false).catch(() => {});
-    panel.setSuppressed(false).catch(() => {});
+    // Tunggu jendela keluar dari layar penuh dulu: bila layar penuh dibuka dari panel, inti Rust lalu
+    // mengembalikan jendela ini ke tray, dan keluar layar penuh yang belum selesai akan memunculkannya lagi.
+    getCurrentWindow()
+      .setFullscreen(false)
+      .catch(() => {})
+      .finally(() => panel.setSuppressed(false).catch(() => {}));
   };
+  // Layar penuh juga bisa dibuka dari panel atau tray (F1-33); inti Rust memunculkan jendela ini lalu mengabari.
+  useEffect(() => {
+    const un = getCurrentWebviewWindow().listen("main://fullscreen", () => enterFull());
+    return () => {
+      un.then((f) => f());
+    };
+  }, []);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "F11") return;

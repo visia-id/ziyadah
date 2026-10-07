@@ -114,6 +114,8 @@ export const panel = {
   /** Tinggi logis (CSS px) isi panel; jendela panel menyesuaikan dengan tepi bawah tetap. */
   fit: (height: number) => invoke<void>("panel_fit", { height }),
   setClickThrough: (on: boolean) => invoke<void>("panel_set_click_through", { on }),
+  /** Masuk Mode Layar Penuh langsung dari panel; keluar kembali ke panel (F1-33). */
+  openFullscreen: () => invoke<void>("fullscreen_open"),
 };
 
 // Data Qur'an dibaca inti Rust dari quran.db (sumber: Tanzil). Hasil disimpan per jendela.
