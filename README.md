@@ -43,15 +43,15 @@ Build pertama Rust butuh beberapa menit. Build berikutnya jauh lebih cepat.
 
 ## Checklist uji spike
 
-Ini gerbang Fase 1 di PRD. Centang setelah dicoba:
+Ini gerbang Fase 1 di PRD. Windows 11 lolos semua (10 Okt 2026, F1-01); macOS belum (F1-03). Poin 1, 2, dan 4 bisa diuji otomatis: jalankan Ziyadah dengan `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9334`, putar murottal, lalu `powershell -STA -File scripts/uji-spike.ps1`. Jangan memakai keyboard dan mouse selama uji.
 
-- [ ] Panel tampil transparan di atas aplikasi lain (editor, browser)
-- [ ] Saat ayat berganti, fokus keyboard tidak pindah ke panel (coba sambil mengetik di editor)
-- [ ] Panel bisa diseret dan kontrolnya muncul saat kursor di atasnya
-- [ ] Klik-tembus aktif: klik di area panel mengenai jendela di bawahnya
-- [ ] Pergantian ayat tanpa jeda yang terasa
-- [ ] Menutup jendela utama, murottal tetap jalan; tray bisa jeda dan keluar
-- [ ] Pemakaian CPU saat memutar (Task Manager) di bawah 3%
+- [x] Panel tampil transparan di atas aplikasi lain (editor, browser)
+- [x] Saat ayat berganti, fokus keyboard tidak pindah ke panel (coba sambil mengetik di editor)
+- [x] Panel bisa diseret dan kontrolnya muncul saat kursor di atasnya
+- [x] Klik-tembus aktif: klik di area panel mengenai jendela di bawahnya
+- [x] Pergantian ayat tanpa jeda yang terasa
+- [x] Menutup jendela utama, murottal tetap jalan; tray bisa jeda dan keluar
+- [x] Pemakaian CPU saat memutar (Task Manager) di bawah 3%
 
 ## Rilis dan pembaruan otomatis
 
