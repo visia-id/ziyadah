@@ -143,7 +143,7 @@ impl Entry {
     }
 }
 
-fn ayah_count(surah: u16) -> u16 {
+pub(crate) fn ayah_count(surah: u16) -> u16 {
     AYAH_COUNTS[(surah.clamp(1, 114) - 1) as usize]
 }
 

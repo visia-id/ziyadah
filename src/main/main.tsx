@@ -7,6 +7,7 @@ import {
   panel,
   player,
   RECITERS,
+  tray,
   type PlayMode,
   type PlayerState,
   type Surah,
@@ -78,7 +79,19 @@ function App() {
     safeSet(KEY_SURAH, String(surahNo));
   }, [surahNo]);
 
-  useEffect(() => safeSet(KEY_RECITER, reciter), [reciter]);
+  useEffect(() => {
+    safeSet(KEY_RECITER, reciter);
+    tray.setReciter(reciter).catch(() => {});
+  }, [reciter]);
+  // Qari bisa diganti dari menu tray (F1-16).
+  useEffect(() => {
+    const un = getCurrentWebviewWindow().listen<string>("tray://reciter", (e) => {
+      if (RECITERS.some((r) => r.id === e.payload)) setReciter(e.payload);
+    });
+    return () => {
+      un.then((f) => f());
+    };
+  }, []);
   useEffect(() => safeSet(KEY_MODE, JSON.stringify(mode)), [mode]);
 
   // Mode lanjut bisa pindah surah sendiri; jendela utama ikut menampilkan surah yang sedang diputar.

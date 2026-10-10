@@ -52,7 +52,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 - [ ] **F1-13** Pengaturan tampilan panel: ukuran huruf, lebar, warna, transparansi, kurangi gerakan
 - [x] **F1-14** Simpan posisi dan ukuran panel per monitor (tanpa plugin window-state: posisi diingat relatif terhadap tepi bawah karena tinggi panel mengikuti ayat, dan plugin ikut memulihkan status tampil yang bentrok dengan F1-22) (6 Okt 2026)
 - [ ] **F1-15** Pintasan global tampil/sembunyi panel dan putar/jeda
-- [ ] **F1-16** Tray: pilih surah, qari, dan mode putar langsung dari menu
+- [x] **F1-16** Tray: pilih surah, qari, dan mode putar langsung dari menu (10 Okt 2026: surah dikelompokkan per 20, ganti qari saat memutar langsung melanjutkan ayat yang sama, rentang ayat tetap dari jendela utama)
 - [x] **F1-17** Sorot per kata memakai data quran-align untuk qari yang tersedia, turun ke sorot per ayat bila tidak ada (6 Okt 2026)
 - [x] **F1-22** Panel bisa disembunyikan: tombol × di kontrol panel, panel hanya tampil saat murottal diputar dan tersembunyi saat idle (6 Okt 2026)
 - [x] **F1-23** Teks Arab di panel tidak pernah terpotong: tinggi panel mengikuti isi (maks 40% layar), huruf Arab mengecil sampai 18 px bila perlu, lalu bisa di-scroll (6 Okt 2026)

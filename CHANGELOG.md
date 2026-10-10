@@ -8,6 +8,7 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 
 ### Ditambahkan
 
+- Menu tray: putar surah (dikelompokkan per 20 surah), pilih qari, dan mode putar tanpa membuka jendela utama; pilihan selalu sama dengan jendela utama (F1-16)
 - Lebar panel Ambient bisa diatur dengan menyeret tepi kirinya (minimum 280) dan diingat; lebar bawaan kini 380 (F1-34)
 - Mode Layar Penuh bisa dibuka langsung dari panel Ambient (ikon ⛶) dan menu tray; Esc atau Keluar kembali ke panel tanpa membuka jendela utama (F1-33)
 - Spike mode Ambient: panel transparan selalu di atas, klik-tembus, tray, murottal per ayat dari inti Rust dengan cache dan basmalah otomatis (F0-01)

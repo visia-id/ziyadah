@@ -106,6 +106,11 @@ export function useWindowShown(): boolean {
   return shown;
 }
 
+/** Menu tray memakai qari yang sama dengan jendela utama (F1-16). */
+export const tray = {
+  setReciter: (reciter: string) => invoke<void>("tray_set_reciter", { reciter }),
+};
+
 export const panel = {
   toggle: () => invoke<boolean>("panel_toggle"),
   hide: () => invoke<void>("panel_hide"),

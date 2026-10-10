@@ -10,6 +10,7 @@
 mod audio;
 mod panel_place;
 mod quran;
+mod tray;
 
 use audio::{Audio, Command, PlayMode, PlayerState};
 use tauri::menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem};
@@ -17,6 +18,7 @@ use tauri::tray::TrayIconBuilder;
 use std::sync::atomic::{AtomicBool, Ordering};
 use panel_place::PanelPlacement;
 use quran::{AyahTiming, Quran, Surah, SurahIndexItem};
+use tray::{TrayAction, TrayMenus};
 use tauri::path::BaseDirectory;
 use tauri::{AppHandle, Emitter, Listener, Manager, PhysicalPosition, PhysicalSize, State, WebviewWindow, Wry};
 
@@ -165,6 +167,42 @@ fn panel_fit(app: AppHandle, height: f64) -> Result<(), String> {
     }
 }
 
+/// Jendela utama mengabarkan qari pilihannya supaya tray memutar dengan qari yang sama (F1-16).
+#[tauri::command]
+fn tray_set_reciter(menus: State<TrayMenus>, reciter: String) {
+    menus.set_reciter(&reciter);
+}
+
+/// Pilihan surah, qari, atau mode dari menu tray (F1-16).
+fn handle_tray_action(app: &AppHandle, action: TrayAction) {
+    let audio = app.state::<Audio>();
+    let Some(menus) = app.try_state::<TrayMenus>() else { return };
+    match action {
+        TrayAction::Surah(surah) => {
+            // Mode rentang ayat ikut berlaku seperti saat memutar dari jendela utama.
+            let start_ayah = match audio.state().mode {
+                PlayMode::Range { from, .. } if from <= audio::ayah_count(surah) => from,
+                _ => 1,
+            };
+            let _ = show_panel(app);
+            audio.send(Command::Play { surah, start_ayah, reciter: menus.reciter() });
+        }
+        TrayAction::Reciter(reciter) => {
+            menus.set_reciter(&reciter);
+            let _ = app.emit_to("main", "tray://reciter", &reciter);
+            // Saat murottal berjalan, ayat yang sama langsung dilanjutkan dengan suara qari baru.
+            let state = audio.state();
+            if state.status == "playing" || state.status == "loading" {
+                audio.send(Command::Play { surah: state.surah, start_ayah: state.ayah.max(1), reciter });
+            }
+        }
+        TrayAction::Mode(mode) => {
+            audio.send(Command::SetMode(mode));
+            menus.sync_mode(&mode);
+        }
+    }
+}
+
 /// Buka Mode Layar Penuh dari panel atau tray tanpa membuka jendela utama lebih dulu (F1-33).
 #[tauri::command]
 fn fullscreen_open(app: AppHandle) {
@@ -310,7 +348,26 @@ pub fn run() {
             let open = MenuItem::with_id(app, "open_main", "Buka jendela utama", true, None::<&str>)?;
             let quit = MenuItem::with_id(app, "quit", "Keluar", true, None::<&str>)?;
             let sep = PredefinedMenuItem::separator(app)?;
-            let menu = Menu::with_items(app, &[&play_pause, &toggle, &click, &full, &sep, &open, &quit])?;
+            let sep2 = PredefinedMenuItem::separator(app)?;
+            // Daftar surah dari quran.db; bila data belum dibangun, submenu surah tampil nonaktif.
+            let index = app.state::<Quran>().index().unwrap_or_default();
+            let (menus, [surah_menu, reciter_menu, mode_menu]) = TrayMenus::build(app.handle(), &index)?;
+            let menu = Menu::with_items(
+                app,
+                &[
+                    &play_pause, &surah_menu, &reciter_menu, &mode_menu, &sep,
+                    &toggle, &click, &full, &sep2,
+                    &open, &quit,
+                ],
+            )?;
+            menus.sync_mode(&app.state::<Audio>().state().mode);
+            app.manage(menus);
+            let tray_handle = handle.clone();
+            app.listen_any("player://state", move |_| {
+                if let (Some(menus), Some(audio)) = (tray_handle.try_state::<TrayMenus>(), tray_handle.try_state::<Audio>()) {
+                    menus.sync_mode(&audio.state().mode);
+                }
+            });
             app.manage(ClickThroughItem(click.clone()));
             app.manage(PanelSuppressed(AtomicBool::new(false)));
             app.manage(FullscreenFromTray(AtomicBool::new(false)));
@@ -346,7 +403,11 @@ pub fn run() {
                         app.state::<Audio>().send(Command::Stop);
                         app.exit(0);
                     }
-                    _ => {}
+                    id => {
+                        if let Some(action) = tray::parse_id(id) {
+                            handle_tray_action(app, action);
+                        }
+                    }
                 })
                 .build(app)?;
 
@@ -368,6 +429,7 @@ pub fn run() {
             _ => {}
         })
         .invoke_handler(tauri::generate_handler![
+            tray_set_reciter,
             fullscreen_open,
             player_play,
             player_set_mode,
