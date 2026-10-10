@@ -29,8 +29,8 @@ Rujukan kebutuhan: `docs/PRD.md`.
 ### Spike (gerbang paling berisiko, kerjakan dulu)
 
 - [x] **F1-01** Uji spike di Windows sesuai checklist di `README.md`, catat hasilnya di bagian Catatan di bawah (10 Okt 2026: semua lolos, lihat Catatan)
-- [ ] **F1-02** Perbaiki temuan spike Windows (fokus, transparansi, klik-tembus, drag)
-- [ ] **F1-03** Uji spike di macOS (pinjam Mac bila perlu) dan perbaiki temuannya
+- [x] **F1-02** Perbaiki temuan spike Windows (fokus, transparansi, klik-tembus, drag) (10 Okt 2026: tidak ada temuan, uji F1-01 lolos semua)
+- [ ] **F1-03** Uji spike di macOS (pinjam Mac bila perlu) dan perbaiki temuannya *(ditunda atas keputusan pemilik, 10 Okt 2026; menunggu Om Robin)*
 
 ### Data
 
@@ -43,7 +43,7 @@ Rujukan kebutuhan: `docs/PRD.md`.
 
 - [x] **F1-08** Mode putar: berhenti di akhir surah, lanjut ke surah berikutnya, ulang ayat, ulang surah, rentang ayat (6 Okt 2026)
 - [x] **F1-09** Jeda 1 detik antar surah saat mode lanjut (6 Okt 2026)
-- [ ] **F1-10** Kontrol media OS (tombol media keyboard/headset, kontrol media Windows, Now Playing macOS)
+- [~] **F1-10** Kontrol media OS (tombol media keyboard/headset, kontrol media Windows, Now Playing macOS)
 - [ ] **F1-11** Manajer unduhan offline per surah, per juz, dan seluruh mushaf per qari, bisa dilanjutkan
 - [ ] **F1-12** Tampilan ruang disk per qari dan tombol hapus audio
 
