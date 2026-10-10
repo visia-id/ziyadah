@@ -6006,7 +6006,7 @@ dependencies = [
 
 [[package]]
 name = "ziyadah"
-version = "0.0.13"
+version = "0.0.14"
 dependencies = [
  "reqwest 0.12.28",
  "rodio",
