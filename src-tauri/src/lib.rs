@@ -8,6 +8,7 @@
 //! Aplikasi tetap hidup di tray saat jendela utama ditutup; keluar lewat menu tray.
 
 mod audio;
+mod media;
 mod panel_place;
 mod quran;
 mod tray;
@@ -362,10 +363,21 @@ pub fn run() {
             )?;
             menus.sync_mode(&app.state::<Audio>().state().mode);
             app.manage(menus);
+            // Kontrol media OS (F1-10); bila OS menolak, aplikasi tetap jalan tanpa kontrol media.
+            if let Some(media) = media::Media::start(app.handle()) {
+                app.manage(media);
+            }
+            let names: Vec<String> = index.iter().map(|s| s.name_latin.clone()).collect();
             let tray_handle = handle.clone();
             app.listen_any("player://state", move |_| {
-                if let (Some(menus), Some(audio)) = (tray_handle.try_state::<TrayMenus>(), tray_handle.try_state::<Audio>()) {
-                    menus.sync_mode(&audio.state().mode);
+                let Some(audio) = tray_handle.try_state::<Audio>() else { return };
+                let state = audio.state();
+                if let Some(menus) = tray_handle.try_state::<TrayMenus>() {
+                    menus.sync_mode(&state.mode);
+                }
+                if let Some(media) = tray_handle.try_state::<media::Media>() {
+                    let name = names.get(state.surah.saturating_sub(1) as usize).map(String::as_str);
+                    media.update(&state, name.unwrap_or("Ziyadah"));
                 }
             });
             app.manage(ClickThroughItem(click.clone()));

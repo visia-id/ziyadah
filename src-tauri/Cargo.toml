@@ -26,6 +26,8 @@ rusqlite = { version = "0.32", features = ["bundled"] }
 tauri-plugin-single-instance = "2"
 tauri-plugin-updater = "2"
 tauri-plugin-process = "2"
+# Kontrol media OS: tombol media keyboard/headset, kontrol media Windows (SMTC), Now Playing macOS (F1-10).
+souvlaki = "0.8"
 
 [profile.release]
 codegen-units = 1

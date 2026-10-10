@@ -8,6 +8,7 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 
 ### Ditambahkan
 
+- Tombol media keyboard dan headset (putar/jeda, berikutnya, sebelumnya) mengendalikan murottal; kontrol media Windows dan Now Playing macOS menampilkan surah, ayat, dan qari (F1-10)
 - Menu tray: putar surah (dikelompokkan per 20 surah), pilih qari, dan mode putar tanpa membuka jendela utama; pilihan selalu sama dengan jendela utama (F1-16)
 - Lebar panel Ambient bisa diatur dengan menyeret tepi kirinya (minimum 280) dan diingat; lebar bawaan kini 380 (F1-34)
 - Mode Layar Penuh bisa dibuka langsung dari panel Ambient (ikon ⛶) dan menu tray; Esc atau Keluar kembali ke panel tanpa membuka jendela utama (F1-33)
