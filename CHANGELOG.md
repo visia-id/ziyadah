@@ -8,6 +8,7 @@ Setiap tugas roadmap yang selesai dicatat di "Belum dirilis" dengan ID-nya. Saat
 
 ### Ditambahkan
 
+- Ruang disk audio per qari (jumlah berkas dan ukuran) dengan tombol hapus, termasuk sisa audio qari yang sudah tidak dipakai (F1-12)
 - Unduh untuk offline: per surah, per juz, atau seluruh mushaf per qari; ukuran tiap berkas diverifikasi, bisa dibatalkan dan dilanjutkan (juga setelah aplikasi ditutup), surah yang lengkap bertanda ✓ offline (F1-11)
 - Tombol media keyboard dan headset (putar/jeda, berikutnya, sebelumnya) mengendalikan murottal; kontrol media Windows dan Now Playing macOS menampilkan surah, ayat, dan qari (F1-10)
 - Menu tray: putar surah (dikelompokkan per 20 surah), pilih qari, dan mode putar tanpa membuka jendela utama; pilihan selalu sama dengan jendela utama (F1-16)

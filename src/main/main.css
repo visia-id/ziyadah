@@ -103,3 +103,9 @@ footer { font-size: 11px; margin-top: 8px; }
 .offline-status progress { width: 100%; margin-top: 6px; }
 .offline-status.done { color: var(--accent); }
 .offline-status.interrupted, .offline-status.failed { background: transparent; }
+
+/* Ruang disk audio per qari (F1-12) */
+.disk { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; }
+.disk-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.disk-row { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center; padding: 4px 0; }
+.disk-row button { padding: 4px 10px; }

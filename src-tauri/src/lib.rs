@@ -147,6 +147,17 @@ fn offline_counts(offline: State<offline::Offline>, reciter: String) -> Vec<u16>
     offline.counts(&reciter)
 }
 
+/// Ruang disk audio per qari (F1-12).
+#[tauri::command]
+fn offline_usage(offline: State<offline::Offline>) -> Vec<offline::Usage> {
+    offline.usage()
+}
+
+#[tauri::command]
+fn offline_delete(app: AppHandle, offline: State<offline::Offline>, reciter: String) -> Result<offline::Deleted, String> {
+    offline.delete(&app, &reciter)
+}
+
 // ---------- Perintah panel ----------
 
 #[tauri::command]
@@ -499,6 +510,8 @@ pub fn run() {
             offline_cancel,
             offline_status,
             offline_counts,
+            offline_usage,
+            offline_delete,
             tray_set_reciter,
             fullscreen_open,
             player_play,

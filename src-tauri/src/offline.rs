@@ -97,6 +97,91 @@ pub fn counts_per_surah<'a>(names: impl IntoIterator<Item = &'a str>) -> Vec<u16
     counts
 }
 
+/// Pemakaian disk satu folder qari (F1-12).
+#[derive(Clone, Debug, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct Usage {
+    pub reciter: String,
+    pub files: u32,
+    pub bytes: u64,
+}
+
+#[derive(Clone, Debug, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct Deleted {
+    pub files: u32,
+    pub bytes: u64,
+    /// Berkas yang tidak bisa dihapus, biasanya karena sedang diputar.
+    pub skipped: u32,
+}
+
+/// Nama folder qari yang aman dipakai sebagai satu komponen path di dalam folder audio.
+pub fn is_safe_name(name: &str) -> bool {
+    !name.is_empty()
+        && name.len() <= 100
+        && name.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'_' || b == b'-')
+        && !name.starts_with('-')
+}
+
+/// Berkas yang dibuat Ziyadah di folder qari: audio ayat dan berkas sementara unduhan.
+fn is_audio_file(name: &str) -> bool {
+    let stem = name.split('.').next().unwrap_or("");
+    let ext = &name[stem.len()..];
+    stem.len() == 6 && stem.bytes().all(|b| b.is_ascii_digit()) && matches!(ext, ".mp3" | ".part" | ".offline-part")
+}
+
+/// Pemakaian disk per folder qari di `cache_dir`, terbesar dulu. Hanya berkas audio Ziyadah yang dihitung.
+pub fn usage_in(cache_dir: &Path) -> Vec<Usage> {
+    let mut list: Vec<Usage> = fs::read_dir(cache_dir)
+        .map(|rd| rd.filter_map(|e| e.ok()).collect::<Vec<_>>())
+        .unwrap_or_default()
+        .into_iter()
+        .filter(|e| e.file_type().map(|t| t.is_dir()).unwrap_or(false))
+        .filter_map(|e| {
+            let reciter = e.file_name().to_string_lossy().into_owned();
+            if !is_safe_name(&reciter) {
+                return None;
+            }
+            let (mut files, mut bytes) = (0u32, 0u64);
+            for f in fs::read_dir(e.path()).ok()?.filter_map(|f| f.ok()) {
+                if is_audio_file(&f.file_name().to_string_lossy()) {
+                    files += 1;
+                    bytes += f.metadata().map(|m| m.len()).unwrap_or(0);
+                }
+            }
+            (files > 0).then_some(Usage { reciter, files, bytes })
+        })
+        .collect();
+    list.sort_by(|a, b| b.bytes.cmp(&a.bytes));
+    list
+}
+
+/// Hapus berkas audio Ziyadah di folder satu qari, lalu foldernya bila sudah kosong.
+/// Berkas lain yang mungkin ditaruh pengguna di sana tidak disentuh.
+pub fn delete_in(cache_dir: &Path, reciter: &str) -> Result<Deleted, String> {
+    if !is_safe_name(reciter) {
+        return Err("Nama qari tidak valid".into());
+    }
+    let dir = cache_dir.join(reciter);
+    let mut out = Deleted { files: 0, bytes: 0, skipped: 0 };
+    let Ok(rd) = fs::read_dir(&dir) else { return Ok(out) };
+    for f in rd.filter_map(|f| f.ok()) {
+        if !is_audio_file(&f.file_name().to_string_lossy()) || !f.file_type().map(|t| t.is_file()).unwrap_or(false) {
+            continue;
+        }
+        let len = f.metadata().map(|m| m.len()).unwrap_or(0);
+        match fs::remove_file(f.path()) {
+            Ok(()) => {
+                out.files += 1;
+                out.bytes += len;
+            }
+            Err(_) => out.skipped += 1,
+        }
+    }
+    let _ = fs::remove_dir(&dir); // hanya berhasil bila kosong
+    Ok(out)
+}
+
 enum Msg {
     Start { job: Job, files: Vec<(u16, u16)> },
 }
@@ -164,6 +249,21 @@ impl Offline {
                 let _ = app.emit("offline://progress", p.clone());
             }
         }
+    }
+
+    pub fn usage(&self) -> Vec<Usage> {
+        usage_in(&self.cache_dir)
+    }
+
+    /// Hapus audio satu qari. Unduhan offline qari itu dihentikan dan dilupakan lebih dulu.
+    pub fn delete(&self, app: &AppHandle, reciter: &str) -> Result<Deleted, String> {
+        let downloading = self.status().job.is_some_and(|j| j.reciter == reciter);
+        if downloading || self.saved_job().is_some_and(|j| j.reciter == reciter) {
+            self.cancel(app);
+            // Beri waktu thread unduhan berhenti sebelum berkasnya dihapus.
+            thread::sleep(Duration::from_millis(300));
+        }
+        delete_in(&self.cache_dir, reciter)
     }
 
     pub fn counts(&self, reciter: &str) -> Vec<u16> {
@@ -282,6 +382,52 @@ mod tests {
         assert_eq!(counts[0], 2);
         assert_eq!(counts[66], 2, "ayat 31 tidak ada di Al-Mulk, berkas .part tidak dihitung");
         assert_eq!(counts.iter().map(|&c| c as u32).sum::<u32>(), 4);
+    }
+
+    #[test]
+    fn nama_qari_aman_untuk_path() {
+        assert!(is_safe_name("Alafasy_128kbps"));
+        assert!(is_safe_name("Abdurrahmaan_As-Sudais_192kbps"));
+        for bad in ["", "..", "../x", "a/b", r"a\b", "C:", "-rf", "a b", "Alafasy.."] {
+            assert!(!is_safe_name(bad), "{bad}");
+        }
+    }
+
+    #[test]
+    fn hanya_berkas_audio_ziyadah() {
+        assert!(is_audio_file("067001.mp3"));
+        assert!(is_audio_file("067001.part"));
+        assert!(is_audio_file("067001.offline-part"));
+        for other in ["catatan.txt", "67001.mp3", "067001.mp3.bak", "desktop.ini", "067001"] {
+            assert!(!is_audio_file(other), "{other}");
+        }
+    }
+
+    #[test]
+    fn hitung_lalu_hapus_satu_qari() {
+        let root = std::env::temp_dir().join(format!("ziyadah-uji-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&root);
+        let a = root.join("Alafasy_128kbps");
+        let b = root.join("Husary_128kbps");
+        fs::create_dir_all(&a).unwrap();
+        fs::create_dir_all(&b).unwrap();
+        fs::write(a.join("001001.mp3"), [0u8; 100]).unwrap();
+        fs::write(a.join("067001.mp3"), [0u8; 300]).unwrap();
+        fs::write(a.join("catatan.txt"), b"milik pengguna").unwrap();
+        fs::write(b.join("067001.mp3"), [0u8; 50]).unwrap();
+
+        let usage = usage_in(&root);
+        assert_eq!(usage[0], Usage { reciter: "Alafasy_128kbps".into(), files: 2, bytes: 400 });
+        assert_eq!(usage[1], Usage { reciter: "Husary_128kbps".into(), files: 1, bytes: 50 });
+
+        assert_eq!(delete_in(&root, "Alafasy_128kbps").unwrap(), Deleted { files: 2, bytes: 400, skipped: 0 });
+        assert!(a.join("catatan.txt").exists(), "berkas lain tidak disentuh, folder tetap ada");
+        assert!(b.join("067001.mp3").exists(), "qari lain tidak terhapus");
+        assert!(delete_in(&root, "../Husary_128kbps").is_err());
+
+        assert_eq!(delete_in(&root, "Husary_128kbps").unwrap().files, 1);
+        assert!(!b.exists(), "folder kosong ikut dihapus");
+        fs::remove_dir_all(&root).unwrap();
     }
 
     #[test]

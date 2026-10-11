@@ -120,6 +120,19 @@ export interface OfflineProgress {
   error: string | null;
 }
 
+export interface OfflineUsage {
+  reciter: string;
+  files: number;
+  bytes: number;
+}
+
+export interface OfflineDeleted {
+  files: number;
+  bytes: number;
+  /** Berkas yang tidak bisa dihapus, biasanya karena sedang diputar. */
+  skipped: number;
+}
+
 export const offline = {
   start: (reciter: string, scope: OfflineScope) => invoke<void>("offline_start", { reciter, scope }),
   resume: () => invoke<void>("offline_resume"),
@@ -127,6 +140,9 @@ export const offline = {
   status: () => invoke<OfflineProgress>("offline_status"),
   /** Jumlah berkas ayat yang sudah tersimpan per surah (indeks 0 = surah 1). */
   counts: (reciter: string) => invoke<number[]>("offline_counts", { reciter }),
+  /** Ruang disk audio per qari, terbesar dulu (F1-12). */
+  usage: () => invoke<OfflineUsage[]>("offline_usage"),
+  remove: (reciter: string) => invoke<OfflineDeleted>("offline_delete", { reciter }),
   onProgress: (cb: (p: OfflineProgress) => void): Promise<UnlistenFn> =>
     listen<OfflineProgress>("offline://progress", (e) => cb(e.payload)),
 };

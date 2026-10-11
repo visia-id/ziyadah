@@ -61,7 +61,8 @@ function App() {
   const [clickThrough, setClickThrough] = useState(false);
   const [mode, setMode] = useState<PlayMode>(storedMode);
   const offlineProgress = useOfflineProgress();
-  const offlineCounts = useOfflineCounts(reciter, offlineProgress);
+  const [offlineVersion, setOfflineVersion] = useState(0);
+  const offlineCounts = useOfflineCounts(reciter, offlineProgress, offlineVersion);
 
   useEffect(() => {
     data
@@ -327,6 +328,7 @@ function App() {
             index={index}
             counts={offlineCounts}
             progress={offlineProgress}
+            onChanged={() => setOfflineVersion((v) => v + 1)}
           />
 
           {surah && (

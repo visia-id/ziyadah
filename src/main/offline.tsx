@@ -1,16 +1,23 @@
 import { useEffect, useRef, useState } from "react";
-import { offline, RECITERS, type OfflineProgress, type OfflineScope, type SurahIndexItem } from "../shared/player";
+import {
+  offline,
+  RECITERS,
+  type OfflineProgress,
+  type OfflineScope,
+  type OfflineUsage,
+  type SurahIndexItem,
+} from "../shared/player";
 
 // Unduh audio untuk didengar tanpa internet (F1-11). Pekerjaan berjalan di inti Rust; di sini hanya kendali
 // dan tampilan kemajuan. Satu pekerjaan berjalan pada satu waktu.
 
 /** Jumlah berkas ayat yang sudah tersimpan per surah untuk qari ini; diperbarui saat unduhan berjalan dan selesai. */
-export function useOfflineCounts(reciter: string, progress: OfflineProgress | null) {
+export function useOfflineCounts(reciter: string, progress: OfflineProgress | null, version = 0) {
   const [counts, setCounts] = useState<number[]>([]);
   const refresh = () => offline.counts(reciter).then(setCounts).catch(() => {});
   useEffect(() => {
     refresh();
-  }, [reciter, progress?.status]);
+  }, [reciter, progress?.status, version]);
   // Selama berjalan, cukup beberapa detik sekali: membaca folder ribuan berkas tidak perlu tiap event.
   useEffect(() => {
     if (progress?.status !== "running") return;
@@ -40,18 +47,89 @@ function scopeLabel(scope: OfflineScope, index: SurahIndexItem[]) {
 
 const reciterName = (id: string) => RECITERS.find((r) => r.id === id)?.name ?? id;
 
+/** Folder qari yang tidak lagi ada di daftar (misalnya As-Sudais) tetap ditampilkan supaya bisa dibersihkan. */
+const folderName = (id: string) =>
+  RECITERS.some((r) => r.id === id) ? reciterName(id) : `${id.replace(/_\d+kbps$/, "").replace(/_/g, " ")} (tidak dipakai lagi)`;
+
+export function formatBytes(bytes: number) {
+  if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toLocaleString("id-ID", { maximumFractionDigits: 1 })} GB`;
+  return `${Math.max(1, Math.round(bytes / 1024 ** 2)).toLocaleString("id-ID")} MB`;
+}
+
+/** Ruang disk audio per qari dan tombol hapus (F1-12). */
+function DiskUsage({ progress, onChanged }: { progress: OfflineProgress | null; onChanged: () => void }) {
+  const [usage, setUsage] = useState<OfflineUsage[]>([]);
+  const [message, setMessage] = useState<string | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+  const refresh = () => offline.usage().then(setUsage).catch(() => {});
+  useEffect(() => {
+    refresh();
+  }, [progress?.status]);
+  useEffect(() => {
+    if (progress?.status !== "running") return;
+    const t = setInterval(refresh, 5000);
+    return () => clearInterval(t);
+  }, [progress?.status]);
+
+  const remove = async (u: OfflineUsage) => {
+    const ok = window.confirm(
+      `Hapus audio ${folderName(u.reciter)} (${u.files.toLocaleString("id-ID")} berkas, ${formatBytes(u.bytes)})?\n\n` +
+        "Ayat qari ini akan diunduh lagi saat diputar, jadi butuh internet.",
+    );
+    if (!ok) return;
+    setBusy(u.reciter);
+    try {
+      const d = await offline.remove(u.reciter);
+      setMessage(
+        `Terhapus ${d.files.toLocaleString("id-ID")} berkas (${formatBytes(d.bytes)}).` +
+          (d.skipped > 0 ? ` ${d.skipped} berkas sedang dipakai dan tidak terhapus; coba lagi setelah murottal berhenti.` : ""),
+      );
+    } catch (e) {
+      setMessage(String(e));
+    }
+    setBusy(null);
+    refresh();
+    onChanged();
+  };
+
+  const total = usage.reduce((sum, u) => sum + u.bytes, 0);
+  return (
+    <div className="disk">
+      <div className="disk-head">
+        <strong>Ruang disk</strong>
+        <span className="muted">{usage.length ? `Total ${formatBytes(total)}` : "Belum ada audio tersimpan"}</span>
+      </div>
+      {usage.map((u) => (
+        <div key={u.reciter} className="disk-row">
+          <span>{folderName(u.reciter)}</span>
+          <span className="muted">
+            {u.files.toLocaleString("id-ID")} berkas · {formatBytes(u.bytes)}
+          </span>
+          <button disabled={busy !== null} onClick={() => remove(u)}>
+            {busy === u.reciter ? "Menghapus..." : "Hapus"}
+          </button>
+        </div>
+      ))}
+      {message && <p className="muted">{message}</p>}
+    </div>
+  );
+}
+
 export function OfflinePanel({
   reciter,
   surah,
   index,
   counts,
   progress,
+  onChanged,
 }: {
   reciter: string;
   surah: SurahIndexItem | undefined;
   index: SurahIndexItem[];
   counts: number[];
   progress: OfflineProgress | null;
+  /** Audio terhapus: hitungan per surah perlu dibaca ulang. */
+  onChanged: () => void;
 }) {
   const [juz, setJuz] = useState(30);
   const [error, setError] = useState<string | null>(null);
@@ -150,6 +228,7 @@ export function OfflinePanel({
         </button>
       </div>
       {error && <p className="err">{error}</p>}
+      <DiskUsage progress={progress} onChanged={onChanged} />
     </details>
   );
 }
