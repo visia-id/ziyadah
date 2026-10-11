@@ -73,6 +73,15 @@ impl Quran {
         f(&conn).map_err(|e| e.to_string())
     }
 
+    /// Semua ayat dalam satu juz, urut mushaf, sebagai `(surah, ayat)` (F1-11).
+    pub fn juz_ayahs(&self, juz: u8) -> Result<Vec<(u16, u16)>, String> {
+        self.with(|c| {
+            let mut st = c.prepare("SELECT surah, ayah FROM ayah WHERE juz = ?1 ORDER BY surah, ayah")?;
+            let rows = st.query_map([juz], |r| Ok((r.get(0)?, r.get(1)?)))?;
+            rows.collect()
+        })
+    }
+
     pub fn index(&self) -> Result<Vec<SurahIndexItem>, String> {
         self.with(|c| {
             let mut st = c.prepare("SELECT number, name_ar, name_latin, ayah_count FROM surah ORDER BY number")?;
@@ -153,6 +162,17 @@ mod tests {
         assert_eq!(index.iter().map(|s| s.ayah_count as u32).sum::<u32>(), 6236);
         let total: u32 = (1..=114).map(|n| q.surah(n).unwrap().ayahs.len() as u32).sum();
         assert_eq!(total, 6236);
+    }
+
+    #[test]
+    fn ayat_per_juz_lengkap_untuk_unduhan_offline() {
+        let q = db();
+        let all: Vec<_> = (1..=30).flat_map(|j| q.juz_ayahs(j).unwrap()).collect();
+        assert_eq!(all.len(), 6236, "setiap ayat tepat satu juz");
+        assert_eq!(q.juz_ayahs(1).unwrap()[0], (1, 1));
+        assert_eq!(q.juz_ayahs(30).unwrap()[0], (78, 1));
+        assert_eq!(*q.juz_ayahs(30).unwrap().last().unwrap(), (114, 6));
+        assert!(q.juz_ayahs(31).unwrap().is_empty());
     }
 
     #[test]

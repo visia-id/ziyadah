@@ -9,6 +9,7 @@
 
 mod audio;
 mod media;
+mod offline;
 mod panel_place;
 mod quran;
 mod tray;
@@ -95,6 +96,55 @@ fn quran_surah(quran: State<Quran>, number: u16) -> Result<Surah, String> {
 #[tauri::command]
 fn quran_timing(quran: State<Quran>, reciter: String, surah: u16) -> Result<Vec<AyahTiming>, String> {
     quran.timing(&reciter, surah)
+}
+
+// ---------- Unduhan offline (F1-11) ----------
+
+#[tauri::command]
+fn offline_start(
+    app: AppHandle,
+    quran: State<Quran>,
+    offline: State<offline::Offline>,
+    reciter: String,
+    scope: offline::Scope,
+) -> Result<(), String> {
+    if !tray::is_reciter(&reciter) {
+        return Err("Qari tidak dikenal".into());
+    }
+    let ayahs: Vec<(u16, u16)> = match &scope {
+        offline::Scope::Surah { surah } if (1..=114).contains(surah) => {
+            (1..=audio::ayah_count(*surah)).map(|a| (*surah, a)).collect()
+        }
+        offline::Scope::Juz { juz } if (1..=30).contains(juz) => quran.juz_ayahs(*juz)?,
+        offline::Scope::All => (1..=114u16).flat_map(|s| (1..=audio::ayah_count(s)).map(move |a| (s, a))).collect(),
+        _ => return Err("Cakupan unduhan tidak valid".into()),
+    };
+    offline.begin(offline::Job { reciter, scope }, offline::files_for(ayahs));
+    let _ = app.emit("offline://progress", offline.status());
+    Ok(())
+}
+
+/// Lanjutkan pekerjaan yang tersimpan (setelah terputus atau setelah aplikasi dibuka lagi).
+#[tauri::command]
+fn offline_resume(app: AppHandle, quran: State<Quran>, offline: State<offline::Offline>) -> Result<(), String> {
+    let job = offline.saved_job().ok_or("Tidak ada unduhan untuk dilanjutkan")?;
+    offline_start(app, quran, offline, job.reciter, job.scope)
+}
+
+#[tauri::command]
+fn offline_cancel(app: AppHandle, offline: State<offline::Offline>) {
+    offline.cancel(&app);
+}
+
+#[tauri::command]
+fn offline_status(offline: State<offline::Offline>) -> offline::Progress {
+    offline.status()
+}
+
+/// Jumlah berkas ayat yang sudah ada per surah untuk satu qari (indeks 0 = surah 1).
+#[tauri::command]
+fn offline_counts(offline: State<offline::Offline>, reciter: String) -> Vec<u16> {
+    offline.counts(&reciter)
 }
 
 // ---------- Perintah panel ----------
@@ -320,7 +370,10 @@ pub fn run() {
 
             // Mesin audio dengan cache di folder cache aplikasi.
             let cache_dir = app.path().app_cache_dir()?.join("audio");
-            app.manage(Audio::start(handle.clone(), cache_dir));
+            app.manage(Audio::start(handle.clone(), cache_dir.clone()));
+            // Unduhan offline memakai folder audio yang sama (F1-11).
+            let offline_file = app.path().app_config_dir()?.join("offline.json");
+            app.manage(offline::Offline::start(handle.clone(), cache_dir, offline_file));
 
             // Data Qur'an dibundel sebagai resource; bila belum dibangun, perintah quran_* mengembalikan pesan galat.
             let db_path = app.path().resolve("resources/quran.db", BaseDirectory::Resource)?;
@@ -441,6 +494,11 @@ pub fn run() {
             _ => {}
         })
         .invoke_handler(tauri::generate_handler![
+            offline_start,
+            offline_resume,
+            offline_cancel,
+            offline_status,
+            offline_counts,
             tray_set_reciter,
             fullscreen_open,
             player_play,

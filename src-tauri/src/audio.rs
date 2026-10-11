@@ -24,7 +24,7 @@ use rodio::{Decoder, OutputStream, Sink, Source};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Emitter};
 
-const BASE_URL: &str = "https://everyayah.com/data";
+pub(crate) const BASE_URL: &str = "https://everyayah.com/data";
 /// Jumlah entri yang dijaga ada di antrian Sink (yang sedang diputar + berikutnya).
 const LOOKAHEAD: usize = 2;
 /// Jumlah ayat ke depan yang diunduh lebih dulu ke cache.
@@ -292,7 +292,7 @@ fn spawn_downloader(current_gen: Arc<AtomicU64>) -> Sender<DownloadJob> {
                     if path.exists() {
                         continue;
                     }
-                    if let Err(e) = download(&client, url, path) {
+                    if let Err(e) = download(&client, url, path, "part") {
                         eprintln!("[ziyadah] gagal mengunduh {url}: {e}");
                     }
                 }
@@ -302,7 +302,10 @@ fn spawn_downloader(current_gen: Arc<AtomicU64>) -> Sender<DownloadJob> {
     tx
 }
 
-fn download(client: &reqwest::blocking::Client, url: &str, path: &Path) -> Result<(), String> {
+/// Unduh satu file audio. Ukuran yang diterima harus sama dengan Content-Length dari server dan tidak boleh kosong.
+/// File ditulis ke `<nama>.<part_ext>` dulu lalu di-rename, supaya pemutar tidak membaca file setengah jadi;
+/// pengunduh pemutaran dan pengunduh offline memakai `part_ext` berbeda supaya tidak saling menimpa.
+pub(crate) fn download(client: &reqwest::blocking::Client, url: &str, path: &Path, part_ext: &str) -> Result<(), String> {
     if let Some(dir) = path.parent() {
         fs::create_dir_all(dir).map_err(|e| e.to_string())?;
     }
@@ -310,9 +313,17 @@ fn download(client: &reqwest::blocking::Client, url: &str, path: &Path) -> Resul
     if !res.status().is_success() {
         return Err(format!("HTTP {}", res.status()));
     }
+    let expected = res.content_length();
     let bytes = res.bytes().map_err(|e| e.to_string())?;
-    // Tulis ke .part dulu lalu rename, supaya pemutar tidak membaca file setengah jadi.
-    let part = path.with_extension("part");
+    if bytes.is_empty() {
+        return Err("file kosong".into());
+    }
+    if let Some(n) = expected {
+        if bytes.len() as u64 != n {
+            return Err(format!("ukuran tidak cocok: {} dari {n} byte", bytes.len()));
+        }
+    }
+    let part = path.with_extension(part_ext);
     fs::write(&part, &bytes).map_err(|e| e.to_string())?;
     fs::rename(&part, path).map_err(|e| e.to_string())?;
     Ok(())

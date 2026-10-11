@@ -18,6 +18,7 @@ import { ArabicWords, useActiveWords } from "../shared/words";
 import { scrollBehavior, useManualScrollPause } from "../shared/follow";
 import { UpdateBanner } from "./updater";
 import { Fullscreen } from "./fullscreen";
+import { OfflinePanel, useOfflineCounts, useOfflineProgress } from "./offline";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 
@@ -59,6 +60,8 @@ function App() {
   const [state, setState] = useState<PlayerState | null>(null);
   const [clickThrough, setClickThrough] = useState(false);
   const [mode, setMode] = useState<PlayMode>(storedMode);
+  const offlineProgress = useOfflineProgress();
+  const offlineCounts = useOfflineCounts(reciter, offlineProgress);
 
   useEffect(() => {
     data
@@ -233,6 +236,7 @@ function App() {
                 {index.map((s) => (
                   <option key={s.number} value={s.number}>
                     {s.number}. {s.nameLatin} ({s.ayahCount} ayat)
+                    {(offlineCounts[s.number - 1] ?? 0) >= s.ayahCount ? " ✓ offline" : ""}
                   </option>
                 ))}
               </select>
@@ -316,6 +320,14 @@ function App() {
               </button>
             </div>
           </section>
+
+          <OfflinePanel
+            reciter={reciter}
+            surah={index.find((s) => s.number === surahNo)}
+            index={index}
+            counts={offlineCounts}
+            progress={offlineProgress}
+          />
 
           {surah && (
             <section className="card ayahs">

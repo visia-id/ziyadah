@@ -106,6 +106,31 @@ export function useWindowShown(): boolean {
   return shown;
 }
 
+// ---------- Unduhan offline (F1-11) ----------
+
+export type OfflineScope = { kind: "surah"; surah: number } | { kind: "juz"; juz: number } | { kind: "all" };
+
+export interface OfflineProgress {
+  /** pending: unduhan dari sesi sebelumnya yang belum selesai, menunggu "Lanjutkan". */
+  status: "idle" | "running" | "done" | "failed" | "interrupted" | "cancelled" | "pending";
+  job: { reciter: string; scope: OfflineScope } | null;
+  done: number;
+  total: number;
+  failed: number;
+  error: string | null;
+}
+
+export const offline = {
+  start: (reciter: string, scope: OfflineScope) => invoke<void>("offline_start", { reciter, scope }),
+  resume: () => invoke<void>("offline_resume"),
+  cancel: () => invoke<void>("offline_cancel"),
+  status: () => invoke<OfflineProgress>("offline_status"),
+  /** Jumlah berkas ayat yang sudah tersimpan per surah (indeks 0 = surah 1). */
+  counts: (reciter: string) => invoke<number[]>("offline_counts", { reciter }),
+  onProgress: (cb: (p: OfflineProgress) => void): Promise<UnlistenFn> =>
+    listen<OfflineProgress>("offline://progress", (e) => cb(e.payload)),
+};
+
 /** Menu tray memakai qari yang sama dengan jendela utama (F1-16). */
 export const tray = {
   setReciter: (reciter: string) => invoke<void>("tray_set_reciter", { reciter }),
