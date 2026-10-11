@@ -1,6 +1,6 @@
 [package]
 name = "ziyadah"
-version = "0.0.14"
+version = "0.0.15"
 description = "Ziyadah: aplikasi Qur'an desktop"
 authors = ["Untung Kasirin"]
 license = "MIT"
