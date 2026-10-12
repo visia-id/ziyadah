@@ -85,7 +85,7 @@ scripts/
 
 ## Sumber data dan lisensi
 
-- Kode: MIT, lihat [LICENSE](LICENSE)
+- Kode: MIT, lihat [LICENSE](LICENSE). Lisensi MIT hanya untuk kode; data Qur'an, terjemah, font, dan audio mengikuti sumbernya masing-masing (lihat [NOTICE](NOTICE))
 - Teks: [Tanzil Project](https://tanzil.net), Tanzil Quran Text (Uthmani, versi 1.1). Disalin verbatim tanpa perubahan sesuai syarat Tanzil; lihat [keputusan 0004](docs/decisions/0004-teks-tanzil.md)
 - Metadata juz, halaman, rub' hizb, sajdah: Tanzil `quran-data.xml`
 - Terjemah: Kementerian Agama RI, via Tanzil (`id.indonesian`)
